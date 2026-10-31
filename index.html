@@ -28,6 +28,7 @@ html{-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none!important
   --ink: #151922;
   --muted: #5a6372;
   --line: #d8dce4;
+  --hdr: #1B3F94;
   --accent: #1f45b7;
   --accent-ink: #ffffff;
   --accent-soft: #e4eafb;
@@ -48,6 +49,7 @@ html{-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none!important
     --ink: #e8ebf1;
     --muted: #98a2b3;
     --line: #2a313d;
+    --hdr: #12296B;
     --accent: #8ea8ff;
     --accent-ink: #0d1117;
     --accent-soft: #1c2542;
@@ -67,6 +69,7 @@ html{-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none!important
   --ink: #e8ebf1;
   --muted: #98a2b3;
   --line: #2a313d;
+  --hdr: #12296B;
   --accent: #8ea8ff;
   --accent-ink: #0d1117;
   --accent-soft: #1c2542;
@@ -86,7 +89,7 @@ body {
   font-family: var(--ui);
   font-size: 15px;
   line-height: 1.5;
-  padding-block: 12px 48px;
+  padding-block: 12px calc(96px + env(safe-area-inset-bottom, 0px));
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
@@ -95,14 +98,25 @@ button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.brand { font-family: var(--display); font-weight: 600; font-size: 22px; letter-spacing: -0.01em; }
-.brand small { font-family: var(--ui); font-weight: 500; font-size: 12px; color: var(--muted); margin-left: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
-.streak { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.top { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 16px 18px; border-radius: 18px; background-color: var(--hdr); color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cpath d='M24 4L30 18L44 24L30 30L24 44L18 30L4 24L18 18Z' fill='none' stroke='white' stroke-opacity='.14' stroke-width='1.5'/%3E%3Ccircle cx='0' cy='0' r='3' fill='white' fill-opacity='.14'/%3E%3Ccircle cx='48' cy='0' r='3' fill='white' fill-opacity='.14'/%3E%3Ccircle cx='0' cy='48' r='3' fill='white' fill-opacity='.14'/%3E%3Ccircle cx='48' cy='48' r='3' fill='white' fill-opacity='.14'/%3E%3C/svg%3E"); }
+.brand { display: flex; flex-direction: column; font-family: var(--ui); font-weight: 700; font-size: 24px; letter-spacing: -0.02em; line-height: 1.15; }
+.brand small { font-weight: 500; font-size: 12px; opacity: .82; letter-spacing: 0.08em; text-transform: uppercase; }
+.top-r { display: flex; align-items: center; gap: 8px; }
+.streak { font-size: 13px; font-weight: 600; background: rgba(255,255,255,.16); border-radius: 999px; padding: 6px 12px; font-variant-numeric: tabular-nums; }
+.streak:empty { display: none; }
+.gear { width: 44px; height: 44px; border: 0; border-radius: 999px; background: rgba(255,255,255,.16); color: #fff; display: inline-flex; align-items: center; justify-content: center; }
+.gear[aria-pressed="true"] { background: #fff; color: var(--hdr); }
+.gear[hidden] { display: none; }
 
-.tabs { display: flex; gap: 4px; background: var(--surface-2); padding: 4px; border-radius: 10px; overflow-x: auto; }
-.tab { flex: 1 0 auto; border: 0; background: transparent; padding: 8px 12px; border-radius: 7px; font-weight: 500; color: var(--muted); white-space: nowrap; }
-.tab[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; background: var(--surface); border-top: 1px solid var(--line);
+  padding: 8px max(8px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+.tab { border: 0; background: transparent; padding: 4px 0; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; font-weight: 500; color: var(--muted); white-space: nowrap; min-width: 0; }
+.tab .ti { display: flex; padding: 3px 16px; border-radius: 999px; }
+.tab[aria-selected="true"] { color: var(--accent); font-weight: 700; }
+.tab[aria-selected="true"] .ti { background: var(--accent-soft); }
+@media (max-height: 560px) { .tabs { position: static; } body { padding-bottom: 12px !important; } }
+.settings:not([open]) { display: none; }
 
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
 .settings { padding: 0; }
@@ -221,11 +235,11 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 </head>
 <body>
 <div class="wrap">
-<header class="top"><div class="brand">Vamos lá<small>B1.2 · pt-PT</small></div><div class="streak" id="streak"></div></header>
-<nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
+<header class="top"><div class="brand">Vamos lá<small>B1.2 · pt-PT</small></div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwp57q4</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwpbb5a</p>
 </div>
+<nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
 /* Движок спряжений европейского португальского (pt-PT).
    Лица: eu, tu, ele/ela/você, nós, eles/elas/vocês (vós не используется). */
@@ -2672,14 +2686,15 @@ h2 { font-size: 15px; margin: 0 0 10px; }
   }
 
   // ---------- каркас ----------
-  var TABS = [['conj', 'Спряжения'], ['sent', 'Предложения'], ['words', 'Слова'], ['listen', 'Слух'], ['prog', 'Прогресс']];
+  var TABS = [['conj', 'Спряжения', '<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg>'], ['sent', 'Фразы', '<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>'], ['words', 'Слова', '<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 2-2h11v16H7a2 2 0 0 0-2 2V5z"/><path d="M5 19a2 2 0 0 0 2 2h11"/></svg>'], ['listen', 'Аудио', '<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg>'], ['prog', 'Прогресс', '<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20V11M12 20V5M18 20v-6"/></svg>']];
   function render() {
     var s = streak();
     document.getElementById('streak').textContent = s ? 'Серия: ' + s + ' ' + dayWord(s) : '';
     document.getElementById('tabs').innerHTML = TABS.map(function (t) {
-      return '<button type="button" role="tab" class="tab" aria-selected="' + (TAB === t[0]) + '" data-act="tab" data-v="' + t[0] + '">' + t[1] + '</button>';
+      return '<button type="button" role="tab" class="tab" aria-selected="' + (TAB === t[0]) + '" data-act="tab" data-v="' + t[0] + '"><span class="ti">' + t[2] + '</span>' + t[1] + '</button>';
     }).join('');
     var open = {};
+    var gb = document.getElementById('gear'); if (gb) gb.hidden = TAB === 'prog';
     var det = $view.querySelector('details.settings');
     var wasOpen = det && det.open && lastTab === TAB;
     lastTab = TAB;
@@ -2691,6 +2706,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     else html = progressView();
     $view.innerHTML = html;
     if (wasOpen) { var d2 = $view.querySelector('details.settings'); if (d2) d2.open = true; }
+    if (gb) gb.setAttribute('aria-pressed', String(!!$view.querySelector('details.settings[open]')));
     if (TAB !== 'prog') {
       var a = document.getElementById('ans') || document.querySelector('.tin');
       if (a && !a.disabled && document.activeElement !== a && !(TAB === 'listen' && false)) { try { a.focus({ preventScroll: true }); } catch (e) {} }
@@ -2744,7 +2760,15 @@ h2 { font-size: 15px; margin: 0 0 10px; }
   function doAct(act, el) {
     var v = el.getAttribute('data-v');
     switch (act) {
-      case 'tab': TAB = v; resetAsk = false; render(); break;
+      case 'tab': TAB = v; resetAsk = false; render(); try { window.scrollTo(0, 0); } catch (e) {} break;
+      case 'gear':
+        var sd = $view.querySelector('details.settings');
+        if (sd) {
+          sd.open = !sd.open;
+          el.setAttribute('aria-pressed', String(sd.open));
+          if (sd.open) { try { sd.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {} }
+        }
+        break;
       case 'ch':
         if (lastInput && !lastInput.disabled && document.body.contains(lastInput)) {
           var c = el.getAttribute('data-c'), s = lastInput.selectionStart, e2 = lastInput.selectionEnd, val = lastInput.value;
