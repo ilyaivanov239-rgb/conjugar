@@ -136,28 +136,35 @@ button { cursor: pointer; }
 .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .check { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; }
 
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 1px 2px rgba(16,24,40,.06), 0 8px 24px rgba(27,63,148,.08); }
+.card > h2 { margin: 0; }
+.metawrap { display: flex; flex-direction: column; gap: 8px; }
+.ask { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.lbl { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.stack { display: flex; flex-direction: column; gap: 10px; }
 .meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
 .tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; padding: 3px 9px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); }
 .tag.plain { background: var(--surface-2); color: var(--muted); font-weight: 500; }
 .tag.tense { font-size: 18px; font-weight: 700; letter-spacing: 0; padding: 7px 14px; border-radius: 10px; }
 .tag.irr { background: var(--warn-bg); color: var(--warn); }
-.who { font-family: var(--display); font-size: 20px; font-weight: 600; }
+.who { display: flex; align-items: center; gap: 10px; }
+.who b { font-size: 22px; font-weight: 700; color: var(--accent); }
 .prompt { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .verb { font-family: var(--display); font-size: clamp(30px, 8vw, 42px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; overflow-wrap: anywhere; }
 .gloss { color: var(--muted); font-size: 14px; }
 .answer { display: flex; gap: 8px; }
-.inp { flex: 1; min-width: 0; font-family: var(--display); font-size: 20px; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--bg); }
+.inp { flex: 1; min-width: 0; font-family: var(--display); font-size: 22px; height: 56px; padding: 0 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--bg); }
 .inp:focus { border-color: var(--accent); outline: none; }
 .inp.ok { border-color: var(--good); background: var(--good-bg); }
 .inp.bad { border-color: var(--bad); background: var(--bad-bg); }
 .inp.near { border-color: var(--warn); background: var(--warn-bg); }
-.btn { border: 0; border-radius: 10px; padding: 10px 16px; font-weight: 600; background: var(--accent); color: var(--accent-ink); }
+.btn { border: 0; border-radius: 14px; min-height: 48px; padding: 10px 20px; font-size: 16px; font-weight: 600; background: var(--accent); color: var(--accent-ink); }
 .btn.sec { background: var(--surface-2); color: var(--ink); }
-.btn.sm { padding: 6px 12px; font-size: 13px; border-radius: 8px; }
+.btn.sm { padding: 6px 12px; font-size: 13px; border-radius: 8px; min-height: 0; }
+.btn.sec.sm { background: transparent; color: var(--muted); font-size: 15px; min-height: 44px; padding: 6px 14px; }
 .btn[disabled] { opacity: .5; cursor: default; }
-.keys { display: flex; flex-wrap: wrap; gap: 5px; }
-.key { min-width: 34px; height: 32px; border: 1px solid var(--line); background: var(--surface); border-radius: 7px; font-family: var(--display); font-size: 16px; }
+.keys { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.key { min-width: 0; height: 44px; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; font-family: var(--display); font-size: 18px; }
 .key:active { background: var(--accent-soft); }
 
 .fb { border-radius: 10px; padding: 12px 14px; font-size: 14px; display: flex; flex-direction: column; gap: 6px; }
@@ -244,6 +251,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 .li.two { flex-direction: column; gap: 2px; }
 .tiles.t3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .tiles.t3 .tile b { font-size: 22px; }
+.bbar { margin-top: 4px; }
 
 </style>
 </head>
@@ -251,7 +259,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá<small>B1.2 · pt-PT</small></div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwppv67</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwpzefs</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2280,7 +2288,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     if (C.batchDone) return batchSummary('c');
     var v = C.verb, T = E.TENSES[C.tense], irr = E.resolve(v.inf).irr;
     var box = '';
-    var meta = '<div class="meta"><span class="tag tense">' + esc(T.name) + '</span><span>' + (irr ? '<span class="tag irr">неправильный</span>' : '') + '</span></div>';
+    var meta = '<div class="metawrap"><div class="ask">' + (SET.mode === 'table' ? 'Заполните таблицу во времени' : 'Поставьте глагол в форму') + '</div><div class="meta"><span class="tag tense">' + esc(T.name) + '</span><span>' + (irr ? '<span class="tag irr">неправильный</span>' : '') + '</span></div></div>';
     var head = '<div class="prompt"><div class="verb" lang="pt-PT">' + esc(v.inf) + '</div><div class="gloss">' + esc(v.ru) + '</div></div>';
 
     if (SET.mode === 'table') {
@@ -2300,7 +2308,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
           (okN < tot ? '<div class="why">' + esc(E.explain(v.inf, C.tense)) + '</div>' : '') + '</div>';
       }
       return '<div class="card">' + meta + head + '<div class="table-rows">' + rows + '</div>' + (C.done ? '' : keysHtml()) + fb +
-        '<div class="row">' + (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-table">Проверить</button><button type="button" class="btn sec" data-act="dk-conj">Не знаю</button>') + '</div></div>';
+        '<div class="row">' + (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-table">Проверить</button><button type="button" class="btn sec sm" data-act="dk-conj">Не знаю</button>') + '</div></div>';
     }
 
     var who = T.single ? T.name : PRON[C.person];
@@ -2315,9 +2323,9 @@ h2 { font-size: 15px; margin: 0 0 10px; }
           paradigmHtml(v.inf, C.tense, T.single ? -1 : C.person) + '</div>';
       }
     }
-    return '<div class="card">' + meta + head + '<div class="who">' + esc(who) + '</div>' +
-      '<div class="answer"><input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Ответ"' + (C.done ? ' disabled' : '') + ' value="' + esc(res ? res.u : '') + '" data-enter="check-one">' +
-      (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-one">Проверить</button>') + '</div>' +
+    return '<div class="card">' + meta + head + '<div class="who">' + (T.single ? '' : '<span class="lbl">Лицо</span>') + '<b>' + esc(who) + '</b></div>' +
+      '<div class="stack"><label class="lbl" for="ans">Ваш ответ</label><div class="answer"><input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Ответ"' + (C.done ? ' disabled' : '') + ' value="' + esc(res ? res.u : '') + '" data-enter="check-one">' +
+      (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-one">Проверить</button>') + '</div></div>' +
       (C.done ? '' : keysHtml() + '<div class="row"><button type="button" class="btn sec sm" data-act="dk-conj">Не знаю</button></div>') + fb2 + '</div>';
   }
 
@@ -2411,7 +2419,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var trHtml = tr ? '<div class="tr"><div class="muted">Перевод</div><div>' + esc(tr) + '</div></div>' : '';
     return set + '<div class="card">' + hintBar + '<div class="cloze" lang="pt-PT">' + esc(parts[0]) + inp + esc(parts.slice(1).join('___')) + '</div>' +
       (SN.done ? '' : keysHtml()) +
-      '<div class="row">' + (SN.done ? '<button class="btn" data-act="next-sent" data-next>Дальше</button>' : '<button class="btn" data-act="check-sent">Проверить</button><button type="button" class="btn sec" data-act="dk-sent">Не знаю</button>') + '</div>' + fb + trHtml + '</div>';
+      '<div class="row">' + (SN.done ? '<button class="btn" data-act="next-sent" data-next>Дальше</button>' : '<button class="btn" data-act="check-sent">Проверить</button><button type="button" class="btn sec sm" data-act="dk-sent">Не знаю</button>') + '</div>' + fb + trHtml + '</div>';
   }
   function checkSent(force) {
     var inp = document.getElementById('ans');
@@ -2666,7 +2674,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       (L.reveal && !L.done ? '<div class="fb near" lang="pt-PT">' + esc(it.text) + '</div>' : '') +
       '<textarea class="inp" id="ans" lang="pt-PT" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Запишите услышанное"' + (L.done ? ' disabled' : '') + '>' + esc(L.res ? L.res.u : '') + '</textarea>' +
       (L.done ? '' : keysHtml()) +
-      '<div class="row">' + (L.done ? '<button class="btn" data-act="next-listen" data-next>Дальше</button>' : '<button class="btn" data-act="check-listen">Проверить</button><button type="button" class="btn sec" data-act="dk-listen">Не знаю</button>') + '</div>' + fb + '</div>';
+      '<div class="row">' + (L.done ? '<button class="btn" data-act="next-listen" data-next>Дальше</button>' : '<button class="btn" data-act="check-listen">Проверить</button><button type="button" class="btn sec sm" data-act="dk-listen">Не знаю</button>') + '</div>' + fb + '</div>';
   }
   function strip2(w) { return strip(w); }
   function checkListen(force) {
