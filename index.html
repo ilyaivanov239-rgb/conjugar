@@ -272,7 +272,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá</div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwykc7b</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwyrly2</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -650,9 +650,9 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
       case 'imp':
         return 'Imperfeito: ' + (g === 'ar' ? '-ava, -avas, -ava, -ávamos, -avam' : '-ia, -ias, -ia, -íamos, -iam') + (irr && r.irr.imp ? ' (у этого глагола особая основа)' : '') + '. Ряд: ' + imperfeito(inf).join(', ');
       case 'fut':
-        return 'Futuro: целый инфинитив + -ei, -ás, -á, -emos, -ão' + (futStem(inf) !== inf ? ' (основа ' + futStem(inf) + '-, а не ' + inf + ')' : '') + '.';
+        return futStem(inf) !== inf ? 'Futuro: у этого глагола инфинитив сокращается (' + inf + ' → ' + futStem(inf) + '-), и к основе добавляются -ei, -ás, -á, -emos, -ão.' : 'Futuro: целый инфинитив + -ei, -ás, -á, -emos, -ão.';
       case 'cond':
-        return 'Condicional: целый инфинитив + -ia, -ias, -ia, -íamos, -iam' + (futStem(inf) !== inf ? ' (основа ' + futStem(inf) + '-)' : '') + '.';
+        return futStem(inf) !== inf ? 'Condicional: у этого глагола инфинитив сокращается (' + inf + ' → ' + futStem(inf) + '-), и к основе добавляются -ia, -ias, -ia, -íamos, -iam.' : 'Condicional: целый инфинитив + -ia, -ias, -ia, -íamos, -iam.';
       case 'cpres':
         return r.irr && r.irr.conj
           ? 'Presente do Conjuntivo: особые формы: ' + conjPresente(inf).join(', ')
