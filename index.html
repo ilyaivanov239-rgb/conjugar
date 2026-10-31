@@ -252,6 +252,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 .tiles.t3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .tiles.t3 .tile b { font-size: 22px; }
 .bbar { margin-top: 4px; }
+.card + .card { margin-top: 14px; }
 
 </style>
 </head>
@@ -259,7 +260,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá<small>B1.2 · pt-PT</small></div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwq30j0</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwq9ymp</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2643,12 +2644,10 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     Object.keys(store.tense).forEach(function (k) { tot += store.tense[k].ok + store.tense[k].bad; ok += store.tense[k].ok; });
     var wt = store.words.ok + store.words.bad, lt = store.listen.ok + store.listen.bad;
     var allTot = tot + wt + lt, allOk = ok + store.words.ok + store.listen.ok;
-    var learned = Object.keys(store.srs).filter(function (k) { return store.srs[k].box >= 3; }).length;
     var tiles = '<div class="tiles t3">' +
       '<div class="tile"><b>' + allTot + '</b><span>всего ответов</span></div>' +
       '<div class="tile"><b>' + (allTot ? Math.round(allOk / allTot * 100) : 0) + '%</b><span>точность</span></div>' +
-      '<div class="tile"><b>' + streak() + '</b><span>дней подряд</span></div>' +
-      '<div class="tile"><b>' + learned + '</b><span>закреплено (коробка 3+)</span></div></div>';
+      '<div class="tile"><b>' + streak() + '</b><span>дней подряд</span></div></div>';
     var rows = Object.keys(store.tense).map(function (id) {
       var t = store.tense[id], n = t.ok + t.bad;
       return { id: id, n: n, p: n ? Math.round(t.ok / n * 100) : 0 };
@@ -2667,7 +2666,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     return '<div class="card">' + tiles + '</div>' +
       '<div class="card"><h2>Точность по временам</h2>' + bars + '</div>' +
       '<div class="card"><h2>Слабые места</h2>' + weakHtml + '</div>' +
-      '<div class="card">' + reset + '<div class="muted">Прогресс хранится только в этом браузере и на этом устройстве. Интервалы повторения: 1, 3, 7 и 21 день.</div></div>';
+      '<div class="card">' + reset + '<div class="muted">Прогресс хранится только в этом браузере и на этом устройстве.</div></div>';
   }
 
   // ---------- каркас ----------
