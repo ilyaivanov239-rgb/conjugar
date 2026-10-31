@@ -272,7 +272,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá</div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwz5zas</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvx260iq</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2754,7 +2754,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
     if (SET.lMode === 'word') items = WORDS.filter(function (w) { return w.topic !== 'Инфинитивы'; }).map(function (w) { return { key: 'l|' + w.pt, text: w.pt, ru: w.ru }; });
     else items = LSENTS.map(function (s) {
       var t = s.text.replace('___', s.ans).replace(/^[—–-]\s*/, '').replace(/\s[—–]\s/g, '. ');
-      return { key: 'l|s' + s.i, text: t, ru: null };
+      return { key: 'l|s' + s.i, text: t, ru: (window.PTTr && window.PTTr[s.i]) || null };
     });
     var c = nextCand('l', function () { return pickOne(items); }, 10);
     if (!c) { L = { batchDone: true }; return; }
@@ -2797,13 +2797,14 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
       fb = '<div class="fb ' + (L.res.v === 'ok' ? 'ok' : 'bad') + ' diff"><div>' + (L.res.v === 'ok' ? 'Все слова на месте' : onlyAcc ? 'Слова те же, ошибка только в диакритике (á, ç, ô) или в ударных формах. Красным отмечено, где пишется иначе' : 'Красным отмечено то, что пропущено или написано иначе') + '</div>' +
         '<div class="big" lang="pt-PT">' + tgt + '</div>' +
         (ext.length ? '<div class="why">Лишнее или неверное в вашем тексте: <span class="diff"><span class="w extra">' + ext.map(esc).join(' ') + '</span></span></div>' : '') +
-        (it.ru ? '<div class="why">' + esc(it.ru) + '</div>' : '') + '</div>';
+        '</div>';
     }
     return set + '<div class="card"><div class="meta"><span class="tag">Диктант</span></div>' +
       warn +
       '<div class="row"><button type="button" class="btn" data-act="play"' + (noSpeech ? ' disabled' : '') + '>Прослушать</button>' +
       '<button type="button" class="btn sec" data-act="reveal">' + (L.reveal ? 'Скрыть текст' : 'Показать текст') + '</button></div>' +
       (L.reveal && !L.done ? '<div class="fb near" lang="pt-PT">' + esc(it.text) + '</div>' : '') +
+      (it.ru ? '<div class="tr"><div class="muted">Перевод</div><div>' + esc(it.ru) + '</div></div>' : '') +
       '<textarea class="inp" id="ans" lang="pt-PT" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Запишите услышанное"' + (L.done ? ' disabled' : '') + '>' + esc(L.res ? L.res.u : '') + '</textarea>' +
       dock((L.done ? '' : keysHtml()) + '<div class="row">' + (L.done ? '<button class="btn" data-act="next-listen" data-next>Дальше</button>' : '<button class="btn" data-act="check-listen">Проверить</button><button type="button" class="btn sec sm" data-act="dk-listen">Не знаю</button>') + '</div>') + fb + '</div>';
   }
