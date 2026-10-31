@@ -2344,9 +2344,9 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       else if (rs) {
         if (rs.v === 'ok') tfb = '<div class="fb ok"><div>' + (rs.mine ? 'Засчитано по твоему решению, вариант запомнен' : rs.syn ? 'Засчитано как синоним' : 'Верно') + '</div>' +
           (rs.syn && !rs.mine ? '<div class="why">На доске: <b lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(ref) + '</b></div>' : '') + (rs.note ? '<div class="why">' + esc(rs.note) + '</div>' : '') + '</div>';
-        else tfb = '<div class="fb ' + (rs.v === 'near' ? 'near' : 'bad') + '"><div>' + (rs.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div>' +
+        else tfb = '<div class="fb ' + (rs.v === 'near' ? 'near' : 'bad') + '"><div>' + (rs.dk ? 'Не знал, запомни ответ' : rs.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div>' +
           '<div class="big" lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(ref) + '</div>' +
-          (rs.note ? '<div class="why">' + esc(rs.note) + '</div>' : '') + (rs.nosyn ? '<div class="why">Синонимы проверить не удалось, засчитывается только совпадение с вариантами на доске и в моём списке.</div>' : '') + (rs.v === 'bad' ? '<div class="row"><button type="button" class="btn sec sm" data-act="accept-mine">Мой вариант верный, засчитать</button></div>' : '') + '</div>';
+          (rs.note ? '<div class="why">' + esc(rs.note) + '</div>' : '') + (rs.nosyn && !rs.dk ? '<div class="why">Синонимы проверить не удалось, засчитывается только совпадение с вариантами на доске и в моём списке.</div>' : '') + (rs.v === 'bad' && !rs.dk ? '<div class="row"><button type="button" class="btn sec sm" data-act="accept-mine">Мой вариант верный, засчитать</button></div>' : '') + '</div>';
       }
       var busy = W.pending || W.res;
       return set + '<div class="card"><div class="meta"><span class="tag plain">' + esc(note) + '</span>' + spk + '</div>' +
@@ -2354,7 +2354,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
         '<div class="answer"><input class="inp ' + tcls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="' + (ptSide ? 'ru' : 'pt-PT') + '" aria-label="Ответ"' + (busy ? ' disabled' : '') + ' value="' + esc(W.u || '') + '" data-enter="check-word">' +
         (W.res ? '<button class="btn" data-act="next-word" data-next>Дальше</button>' : '<button class="btn" data-act="check-word"' + (W.pending ? ' disabled' : '') + '>Проверить</button>') + '</div>' +
         (busy || !ptSide ? (busy ? '' : keysHtml()) : '') + tfb +
-        (W.res || W.pending ? '' : '<div class="row"><button class="btn sec sm" data-act="next-word">Пропустить</button></div>') + '</div>';
+        (W.res || W.pending ? '' : '<div class="row"><button type="button" class="btn sec sm" data-act="dont-know">Не знаю</button></div>') + '</div>';
     }
     if (SET.wMode === 'quiz') {
       var opts = W.opts.map(function (o, i) {
@@ -2364,7 +2364,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       }).join('');
       return set + '<div class="card"><div class="meta"><span class="tag plain">' + esc(note) + '</span>' + spk + '</div>' +
         '<div class="flip"><div class="term" lang="' + (ptSide ? 'pt-PT' : 'ru') + '">' + esc(front) + '</div></div><div class="options">' + opts + '</div>' +
-        (W.picked != null ? '<div class="row"><button class="btn" data-act="next-word" data-next>Дальше</button></div>' : '') + '</div>';
+        (W.picked != null ? '<div class="row"><button class="btn" data-act="next-word" data-next>Дальше</button></div>' : '<div class="row"><button type="button" class="btn sec sm" data-act="dont-know">Не знаю</button></div>') + '</div>';
     }
     return set + '<div class="card"><div class="meta"><span class="tag plain">' + esc(note) + '</span>' + spk + '</div>' +
       '<div class="flip"><div class="term" lang="' + (ptSide ? 'pt-PT' : 'ru') + '">' + esc(front) + '</div>' +
@@ -2417,7 +2417,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     save(); render(); focusNext();
   }
   function finishWord(u, m) {
-    W.res = { v: m.v, u: u, syn: m.syn, note: m.note, nosyn: m.nosyn };
+    W.res = { v: m.v, u: u, syn: m.syn, note: m.note, nosyn: m.nosyn, dk: m.dk };
     W.u = u; W.pending = false;
     record('w|' + W.w.pt, 'words', m.v === 'ok', W.w.pt + ' · ' + W.w.ru);
     render(); focusNext();
@@ -2669,6 +2669,19 @@ h2 { font-size: 15px; margin: 0 0 10px; }
         W.picked = +el.getAttribute('data-i');
         record('w|' + W.w.pt, 'words', W.opts[W.picked].pt === W.w.pt, W.w.pt + ' · ' + W.w.ru);
         render(); focusNext(); break;
+      case 'dont-know':
+        if (!W || W.pending) break;
+        if (SET.wMode === 'quiz') {
+          if (W.picked != null) break;
+          W.picked = -1;
+          record('w|' + W.w.pt, 'words', false, W.w.pt + ' · ' + W.w.ru);
+          render(); focusNext();
+        } else {
+          if (W.res) break;
+          wseq++;
+          finishWord('', { v: 'bad', dk: true });
+        }
+        break;
       case 'next-word': wseq++; newWord(); render(); break;
       case 'voice-test': speak('Bom dia! Hoje vamos praticar o conjuntivo e o infinitivo pessoal.', false); break;
       case 'say': speak(el.getAttribute('data-t'), false); break;
