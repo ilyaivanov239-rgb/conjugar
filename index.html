@@ -259,7 +259,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá<small>B1.2 · pt-PT</small></div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwpzefs</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwq30j0</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -1940,6 +1940,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     for (var k2 in (store.set || {})) s[k2] = store.set[k2];
     if (!s.v2) { s.v2 = 1; ['impa', 'impn'].forEach(function (id) { if (s.tenses.indexOf(id) < 0) s.tenses.push(id); }); }
     if (!s.v3) { s.v3 = 1; s.wMode = 'type'; }
+    s.mode = 'one';
     store.set = s;
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
@@ -2215,15 +2216,6 @@ h2 { font-size: 15px; margin: 0 0 10px; }
   function newConj() {
     var vp = verbPool(), tp = tensePool();
     if (!vp.length) vp = VERBS;
-    if (SET.mode === 'table') {
-      var c = nextCand('c', function () {
-        var v = pickOne(vp), t = pickOne(tp);
-        return { key: 'c|' + v.inf + '|' + t + '|t', v: v, t: t };
-      }, 12);
-      if (!c) { C = { batchDone: true }; return; }
-      C = { verb: c.v, tense: c.t, done: false, res: null };
-      return;
-    }
     var c2 = nextCand('c', function () {
       var v = pickOne(vp), t = pickOne(tp), T = E.TENSES[t];
       var forms = E.conjugate(v.inf, t);
@@ -2267,10 +2259,9 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var short = { pres: 'Presente', pps: 'PPS', imp: 'Imperfeito', ppc: 'PPC', mqpc: 'MQPC', fut: 'Futuro', cond: 'Condicional', cpres: 'Pres. Conj.', cimp: 'Imperf. Conj.', cfut: 'Fut. Conj.', cppc: 'PPC Conj.', cmqpc: 'MQPC Conj.', impa: 'Imperativo +', impn: 'Imperativo -', infp: 'Inf. Pessoal', ger: 'Gerúndio', part: 'Particípio' };
     function grp(ids) { return chipRow(ids.map(function (i) { return { id: i, label: short[i] }; }), SET.tenses, 'tense', true); }
     var vf = [{ id: 'all', label: 'Все' }, { id: 'irr', label: 'Неправильные' }, { id: 'reg', label: 'Правильные' }, { id: 'board', label: 'С досок' }];
-    var md = [{ id: 'one', label: 'Одна форма' }, { id: 'table', label: 'Вся таблица' }];
     return '<details class="panel settings"><summary><span>Настройки</span><span><b>' + tensePool().length + '</b> времён · <b>' + verbPool().length + '</b> глаголов</span></summary>' +
       '<div class="settings-body">' +
-      '<div><div class="set-label">Режим</div>' + chipRow(md, SET.mode, 'cmode') + '</div>' + batchSetHtml() +
+      batchSetHtml() +
       '<div><div class="set-label">Времена</div><div class="chips" style="margin-bottom:8px">' +
       '<button type="button" class="chip ghost" data-act="preset" data-v="conj">Только Conjuntivo</button>' +
       '<button type="button" class="chip ghost" data-act="preset" data-v="past">Прошедшие</button>' +
@@ -2288,28 +2279,8 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     if (C.batchDone) return batchSummary('c');
     var v = C.verb, T = E.TENSES[C.tense], irr = E.resolve(v.inf).irr;
     var box = '';
-    var meta = '<div class="metawrap"><div class="ask">' + (SET.mode === 'table' ? 'Заполните таблицу во времени' : 'Поставьте глагол в форму') + '</div><div class="meta"><span class="tag tense">' + esc(T.name) + '</span><span>' + (irr ? '<span class="tag irr">неправильный</span>' : '') + '</span></div></div>';
+    var meta = '<div class="metawrap"><div class="ask">' + 'Поставьте глагол в форму' + '</div><div class="meta"><span class="tag tense">' + esc(T.name) + '</span><span>' + (irr ? '<span class="tag irr">неправильный</span>' : '') + '</span></div></div>';
     var head = '<div class="prompt"><div class="verb" lang="pt-PT">' + esc(v.inf) + '</div><div class="gloss">' + esc(v.ru) + '</div></div>';
-
-    if (SET.mode === 'table') {
-      var forms = E.conjugate(v.inf, C.tense), rows = '';
-      if (T.single) forms = [forms[0]];
-      forms.forEach(function (f, i) {
-        if (!f) return;
-        var r = C.res && C.res[i];
-        rows += '<div class="trow"><label for="t' + i + '">' + esc(T.single ? T.name : PRON[i]) + '</label>' +
-          '<input class="inp tin ' + (r ? r.v : '') + '" id="t' + i + '" data-i="' + i + '" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT"' + (C.done ? ' disabled' : '') + ' value="' + esc(r ? r.u : '') + '">' +
-          (r && r.v !== 'ok' ? '<div class="fix" lang="pt-PT">' + esc(f) + '</div>' : '') + '</div>';
-      });
-      var fb = '';
-      if (C.done) {
-        var okN = C.res.filter(function (r) { return r && r.v === 'ok'; }).length, tot = C.res.filter(Boolean).length;
-        fb = '<div class="fb ' + (okN === tot ? 'ok' : 'bad') + '"><div>Верно ' + okN + ' из ' + tot + '</div>' +
-          (okN < tot ? '<div class="why">' + esc(E.explain(v.inf, C.tense)) + '</div>' : '') + '</div>';
-      }
-      return '<div class="card">' + meta + head + '<div class="table-rows">' + rows + '</div>' + (C.done ? '' : keysHtml()) + fb +
-        '<div class="row">' + (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-table">Проверить</button><button type="button" class="btn sec sm" data-act="dk-conj">Не знаю</button>') + '</div></div>';
-    }
 
     var who = T.single ? T.name : PRON[C.person];
     var res = C.res, cls = res ? res.v : '';
@@ -2343,31 +2314,6 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     render();
     focusNext();
   }
-  function checkTable(force) {
-    if (C.done) return;
-    var T = E.TENSES[C.tense], v = C.verb, forms = E.conjugate(v.inf, C.tense);
-    if (T.single) forms = [forms[0]];
-    var ins = document.querySelectorAll('.tin'), res = [];
-    var any = false;
-    ins.forEach(function (el) {
-      var i = +el.getAttribute('data-i');
-      var j = force ? { v: 'bad' } : judge(el.value, forms[i], SET.strict);
-      if (j.v === 'empty') j = { v: 'bad' };
-      else any = true;
-      j.u = el.value;
-      res[i] = j;
-    });
-    if (!any && !force) return;
-    C.res = res; C.done = true;
-    res.forEach(function (r, i) {
-      if (!r) return;
-      record('c|' + v.inf + '|' + C.tense + '|' + (T.single ? -1 : i), C.tense, r.v === 'ok', v.inf + ' · ' + T.name + (T.single ? '' : ' · ' + PRON[i]));
-    });
-    batchAnswer('c', res.every(function (r) { return !r || r.v === 'ok'; }));
-    render();
-    focusNext();
-  }
-
   // ---------- предложения ----------
   var SENTS = D.SENTENCES.map(function (s, i) {
     return { i: i, text: s[0], inf: s[1], tense: s[2], person: s[3], ans: s[4], board: s[5] };
@@ -2771,11 +2717,6 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     if (t.tagName === 'TEXTAREA') { if (e.shiftKey) return; e.preventDefault(); checkListen(); return; }
     var act = t.getAttribute && t.getAttribute('data-enter');
     if (act) { e.preventDefault(); doAct(act, t); return; }
-    if (t.classList && t.classList.contains('tin')) {
-      e.preventDefault();
-      var ins = Array.prototype.slice.call(document.querySelectorAll('.tin')), i = ins.indexOf(t);
-      if (i < ins.length - 1) ins[i + 1].focus(); else checkTable();
-    }
   });
   document.addEventListener('change', function (e) {
     var t = e.target, act = t.getAttribute && t.getAttribute('data-act');
@@ -2826,14 +2767,12 @@ h2 { font-size: 15px; margin: 0 0 10px; }
         save(); C = null; BT.c = null; render(); break;
       case 'preset': togglePreset(v); C = null; BT.c = null; render(); break;
       case 'vf': setPref('vf', v); C = null; BT.c = null; render(); break;
-      case 'cmode': setPref('mode', v); C = null; BT.c = null; render(); break;
       case 'batch': setPref('batch', +v); BT = {}; C = null; SN = null; W = null; L = null; render(); break;
       case 'next-batch': BT[v] = null; if (v === 'c') C = null; else if (v === 's') SN = null; else if (v === 'w') W = null; else L = null; render(); break;
-      case 'dk-conj': if (C && !C.done) { if (SET.mode === 'table') checkTable(true); else checkOne(true); } break;
+      case 'dk-conj': if (C && !C.done) checkOne(true); break;
       case 'dk-sent': if (SN && !SN.done) checkSent(true); break;
       case 'dk-listen': if (L && !L.done) checkListen(true); break;
       case 'check-one': checkOne(); break;
-      case 'check-table': checkTable(); break;
       case 'next': case 'skip': newConj(); render(); break;
       case 'sboard': setPref('sBoard', v); SN = null; BT.s = null; render(); break;
       case 'stense': setPref('sTense', v); SN = null; BT.s = null; render(); break;
