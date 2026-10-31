@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Vamos lá B1.2</title>
 <meta name="description" content="Тренажёр европейского португальского: спряжения, предложения, слова, диктант">
 <meta name="theme-color" content="#1f45b7">
@@ -254,13 +254,25 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 .bbar { margin-top: 4px; }
 .card + .card { margin-top: 14px; }
 
+/* режим ввода: пока печатают, всё лишнее свёрнуто, а действия закреплены над клавиатурой */
+.dock { display: flex; flex-direction: column; gap: 12px; }
+.dock .row { flex-wrap: nowrap; }
+.dock .row .btn:not(.sm) { flex: 1; }
+body.kb { padding-bottom: calc(150px + var(--kb, 0px)) !important; }
+body.kb .top, body.kb .tabs, body.kb details.settings, body.kb .metawrap .ask, body.kb .icon-btn { display: none !important; }
+body.kb .dock { position: fixed; left: 0; right: 0; bottom: var(--kb, 0px); z-index: 30; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -6px 16px rgba(16,24,40,.10); padding: 8px max(12px, env(safe-area-inset-left, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)); gap: 8px; }
+body.kb .dock .keys { display: flex; overflow-x: auto; gap: 6px; scrollbar-width: none; }
+body.kb .dock .keys::-webkit-scrollbar { display: none; }
+body.kb .dock .key { flex: 0 0 40px; height: 38px; }
+body.kb .dock .btn:not(.sm) { min-height: 46px; }
+
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá</div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwu5qbb</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwyayee</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2410,6 +2422,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     C = { verb: c2.v, tense: c2.t, person: c2.p, done: false, res: null };
   }
 
+  function dock(inner) { return '<div class="dock">' + inner + '</div>'; }
   function keysHtml() {
     var ch = ['á', 'à', 'â', 'ã', 'ç', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú'];
     return '<div class="keys" aria-label="Спецсимволы">' + ch.map(function (c) {
@@ -2477,9 +2490,8 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       }
     }
     return '<div class="card">' + meta + head + '<div class="who">' + (T.single ? '' : '<span class="lbl">Лицо</span>') + '<b>' + esc(who) + '</b></div>' +
-      '<div class="stack"><label class="lbl" for="ans">Ваш ответ</label><div class="answer"><input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Ответ"' + (C.done ? ' disabled' : '') + ' value="' + esc(res ? res.u : '') + '" data-enter="check-one">' +
-      (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-one">Проверить</button>') + '</div></div>' +
-      (C.done ? '' : keysHtml() + '<div class="row"><button type="button" class="btn sec sm" data-act="dk-conj">Не знаю</button></div>') + fb2 + '</div>';
+      '<div class="stack"><label class="lbl" for="ans">Ваш ответ</label><div class="answer"><input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Ответ"' + (C.done ? ' disabled' : '') + ' value="' + esc(res ? res.u : '') + '" data-enter="check-one"></div></div>' +
+      dock((C.done ? '' : keysHtml()) + '<div class="row">' + (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-one">Проверить</button><button type="button" class="btn sec sm" data-act="dk-conj">Не знаю</button>') + '</div>') + fb2 + '</div>';
   }
 
   function checkOne(force) {
@@ -2531,7 +2543,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var inp = '<input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Пропуск" size="' + Math.max(7, s.ans.length + 2) + '"' + (SN.done ? ' disabled' : '') + ' value="' + esc(SN.res ? SN.res.u : '') + '" data-enter="check-sent">';
     var T = E.TENSES[s.tense];
     var hint = '<div class="hint">' + (SET.sHint ? '<span class="tag tense">' + esc(T.name) + '</span>' : '') + '<span class="tag plain" lang="pt-PT">' + esc(s.inf) + '</span>' +
-      (SET.sHint ? (s.person != null ? '<span class="tag plain">' + esc(PRON[s.person]) + '</span>' : '') + '<span class="tag plain">' + esc(s.board) + '</span>' : '') + '</div>';
+      (SET.sHint ? (s.person != null ? '<span class="tag plain">' + esc(PRON[s.person]) + '</span>' : '') : '') + '</div>';
     var fb = '';
     if (SN.res) {
       if (SN.res.v === 'ok') fb = '<div class="fb ok">Верно' + (SN.res.accent ? ', но пишется <b lang="pt-PT">' + esc(s.ans) + '</b>' : '') + '</div>';
@@ -2546,8 +2558,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var hintBar = '<div class="meta">' + hint + '<button type="button" class="icon-btn" data-act="hint" aria-pressed="' + SET.sHint + '">' + (SET.sHint ? 'Скрыть время и лицо' : 'Показать время и лицо') + '</button></div>';
     var trHtml = tr ? '<div class="tr"><div class="muted">Перевод</div><div>' + esc(tr) + '</div></div>' : '';
     return set + '<div class="card">' + hintBar + '<div class="cloze" lang="pt-PT">' + esc(parts[0]) + inp + esc(parts.slice(1).join('___')) + '</div>' +
-      (SN.done ? '' : keysHtml()) +
-      '<div class="row">' + (SN.done ? '<button class="btn" data-act="next-sent" data-next>Дальше</button>' : '<button class="btn" data-act="check-sent">Проверить</button><button type="button" class="btn sec sm" data-act="dk-sent">Не знаю</button>') + '</div>' + fb + trHtml + '</div>';
+      dock((SN.done ? '' : keysHtml()) + '<div class="row">' + (SN.done ? '<button class="btn" data-act="next-sent" data-next>Дальше</button>' : '<button class="btn" data-act="check-sent">Проверить</button><button type="button" class="btn sec sm" data-act="dk-sent">Не знаю</button>') + '</div>') + fb + trHtml + '</div>';
   }
   function checkSent(force) {
     var inp = document.getElementById('ans');
@@ -2641,10 +2652,8 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       var busy = W.pending || W.res;
       return set + '<div class="card"><div class="meta"><span class="tag plain">' + esc(note) + '</span>' + spk + '</div>' +
         '<div class="flip"><div class="term" lang="' + (ptSide ? 'pt-PT' : 'ru') + '">' + esc(front) + '</div><div class="note">' + (ptSide ? 'Введите перевод на русском' : 'Введите слово по-португальски') + '</div></div>' +
-        '<div class="answer"><input class="inp ' + tcls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="' + (ptSide ? 'ru' : 'pt-PT') + '" aria-label="Ответ"' + (busy ? ' disabled' : '') + ' value="' + esc(W.u || '') + '" data-enter="check-word">' +
-        (W.res ? '<button class="btn" data-act="next-word" data-next>Дальше</button>' : '<button class="btn" data-act="check-word"' + (W.pending ? ' disabled' : '') + '>Проверить</button>') + '</div>' +
-        (busy || !ptSide ? (busy ? '' : keysHtml()) : '') + tfb +
-        (W.res || W.pending ? '' : '<div class="row"><button type="button" class="btn sec sm" data-act="dont-know">Не знаю</button></div>') + '</div>';
+        '<div class="answer"><input class="inp ' + tcls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="' + (ptSide ? 'ru' : 'pt-PT') + '" aria-label="Ответ"' + (busy ? ' disabled' : '') + ' value="' + esc(W.u || '') + '" data-enter="check-word"></div>' +
+        dock((busy || !ptSide ? (busy ? '' : keysHtml()) : '') + '<div class="row">' + (W.res ? '<button class="btn" data-act="next-word" data-next>Дальше</button>' : '<button class="btn" data-act="check-word"' + (W.pending ? ' disabled' : '') + '>Проверить</button>' + (W.pending ? '' : '<button type="button" class="btn sec sm" data-act="dont-know">Не знаю</button>')) + '</div>') + tfb + '</div>';
     }
     if (SET.wMode === 'quiz') {
       var opts = W.opts.map(function (o, i) {
@@ -2801,8 +2810,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       '<button type="button" class="btn sec" data-act="reveal">' + (L.reveal ? 'Скрыть текст' : 'Показать текст') + '</button></div>' +
       (L.reveal && !L.done ? '<div class="fb near" lang="pt-PT">' + esc(it.text) + '</div>' : '') +
       '<textarea class="inp" id="ans" lang="pt-PT" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Запишите услышанное"' + (L.done ? ' disabled' : '') + '>' + esc(L.res ? L.res.u : '') + '</textarea>' +
-      (L.done ? '' : keysHtml()) +
-      '<div class="row">' + (L.done ? '<button class="btn" data-act="next-listen" data-next>Дальше</button>' : '<button class="btn" data-act="check-listen">Проверить</button><button type="button" class="btn sec sm" data-act="dk-listen">Не знаю</button>') + '</div>' + fb + '</div>';
+      dock((L.done ? '' : keysHtml()) + '<div class="row">' + (L.done ? '<button class="btn" data-act="next-listen" data-next>Дальше</button>' : '<button class="btn" data-act="check-listen">Проверить</button><button type="button" class="btn sec sm" data-act="dk-listen">Не знаю</button>') + '</div>') + fb + '</div>';
   }
   function strip2(w) { return strip(w); }
   function checkListen(force) {
@@ -2877,15 +2885,25 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       var a = document.getElementById('ans') || document.querySelector('.tin');
       if (a && !a.disabled && document.activeElement !== a) { try { a.focus({ preventScroll: true }); } catch (e) {} }
     }
+    syncKb();
   }
+  // режим ввода: пока печатают, шапка и нижнее меню сворачиваются, а панель с символами и «Проверить» закреплена над клавиатурой
+  function syncKb() { try { document.body.classList.toggle('kb', !!typing && TAB !== 'prog'); } catch (e) {} }
+  function kbVar() {
+    var vv = window.visualViewport; if (!vv) return;
+    var k = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+    document.documentElement.style.setProperty('--kb', k + 'px');
+  }
+  if (window.visualViewport) { window.visualViewport.addEventListener('resize', kbVar); window.visualViewport.addEventListener('scroll', kbVar); }
   var typing = false;
   function isTextField(t) { return !!t && (t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && (!t.type || t.type === 'text'))); }
   document.addEventListener('pointerdown', function (e) { if (isTextField(e.target)) typing = true; }, true);
   document.addEventListener('focusout', function (e) {
     // человек убрал клавиатуру сам (поле потеряло фокус, и DOM не перестраивался): больше не возвращаем её
-    if (isTextField(e.target) && !e.relatedTarget) setTimeout(function () { if (document.contains(e.target) && document.activeElement !== e.target) typing = false; }, 0);
+    if (isTextField(e.target) && !e.relatedTarget) setTimeout(function () { if (document.contains(e.target) && document.activeElement !== e.target) { typing = false; syncKb(); } }, 0);
   });
-  document.addEventListener('visibilitychange', function () { if (document.hidden) typing = false; });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) { typing = false; syncKb(); } });
+  document.addEventListener('focusin', function (e) { if (isTextField(e.target)) { if (typing) syncKb(); } }, true);
   function dayWord(n) { var m = n % 10, h = n % 100; if (m === 1 && h !== 11) return 'день'; if (m >= 2 && m <= 4 && (h < 12 || h > 14)) return 'дня'; return 'дней'; }
   function focusNext() {
     var b = document.querySelector('[data-next]');
