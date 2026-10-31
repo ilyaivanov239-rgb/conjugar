@@ -1,0 +1,2384 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conjugar B1.2</title>
+<meta name="description" content="Тренажёр европейского португальского: спряжения, предложения, слова, диктант">
+<meta name="theme-color" content="#1f45b7">
+<meta name="color-scheme" content="light dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Conjugar">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap">
+<style>
+html{-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none!important}
+/* Раскладка: узкая колонка тренажёра; карточка задания как единственный крупный объект, остальное тихое.
+   Цвет: холодный серо-синий нейтрал + кобальт. Шрифты: Literata для португальских форм, IBM Plex Sans для интерфейса. */
+:root {
+  --bg: #f3f4f7;
+  --surface: #ffffff;
+  --surface-2: #eceef3;
+  --ink: #151922;
+  --muted: #5a6372;
+  --line: #d8dce4;
+  --accent: #1f45b7;
+  --accent-ink: #ffffff;
+  --accent-soft: #e4eafb;
+  --good: #146c43;
+  --good-bg: #e2f3ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe8e6;
+  --warn: #7a5200;
+  --warn-bg: #fff1d3;
+  --display: 'Literata', Georgia, 'Times New Roman', serif;
+  --ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1117;
+    --surface: #161b23;
+    --surface-2: #1f2530;
+    --ink: #e8ebf1;
+    --muted: #98a2b3;
+    --line: #2a313d;
+    --accent: #8ea8ff;
+    --accent-ink: #0d1117;
+    --accent-soft: #1c2542;
+    --good: #5cd39b;
+    --good-bg: #12301f;
+    --bad: #ff8a80;
+    --bad-bg: #3a1815;
+    --warn: #f2c26b;
+    --warn-bg: #33270a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1117;
+  --surface: #161b23;
+  --surface-2: #1f2530;
+  --ink: #e8ebf1;
+  --muted: #98a2b3;
+  --line: #2a313d;
+  --accent: #8ea8ff;
+  --accent-ink: #0d1117;
+  --accent-soft: #1c2542;
+  --good: #5cd39b;
+  --good-bg: #12301f;
+  --bad: #ff8a80;
+  --bad-bg: #3a1815;
+  --warn: #f2c26b;
+  --warn-bg: #33270a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--ui);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-block: 12px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font-family: var(--display); font-weight: 600; font-size: 22px; letter-spacing: -0.01em; }
+.brand small { font-family: var(--ui); font-weight: 500; font-size: 12px; color: var(--muted); margin-left: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.streak { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.tabs { display: flex; gap: 4px; background: var(--surface-2); padding: 4px; border-radius: 10px; overflow-x: auto; }
+.tab { flex: 1 0 auto; border: 0; background: transparent; padding: 8px 12px; border-radius: 7px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.tab[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.settings { padding: 0; }
+.settings > summary { list-style: none; cursor: pointer; padding: 11px 14px; display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); }
+.settings > summary::-webkit-details-marker { display: none; }
+.settings > summary b { color: var(--ink); font-weight: 600; }
+.settings[open] > summary { border-bottom: 1px solid var(--line); }
+.settings-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 14px; }
+.set-label { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 11px; font-size: 13px; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.chip.ghost { color: var(--muted); border-style: dashed; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.check { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; padding: 3px 9px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); }
+.tag.plain { background: var(--surface-2); color: var(--muted); font-weight: 500; }
+.tag.irr { background: var(--warn-bg); color: var(--warn); }
+.who { font-family: var(--display); font-size: 20px; font-weight: 600; }
+.prompt { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.verb { font-family: var(--display); font-size: clamp(30px, 8vw, 42px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; overflow-wrap: anywhere; }
+.gloss { color: var(--muted); font-size: 14px; }
+.answer { display: flex; gap: 8px; }
+.inp { flex: 1; min-width: 0; font-family: var(--display); font-size: 20px; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--bg); }
+.inp:focus { border-color: var(--accent); outline: none; }
+.inp.ok { border-color: var(--good); background: var(--good-bg); }
+.inp.bad { border-color: var(--bad); background: var(--bad-bg); }
+.inp.near { border-color: var(--warn); background: var(--warn-bg); }
+.btn { border: 0; border-radius: 10px; padding: 10px 16px; font-weight: 600; background: var(--accent); color: var(--accent-ink); }
+.btn.sec { background: var(--surface-2); color: var(--ink); }
+.btn.sm { padding: 6px 12px; font-size: 13px; border-radius: 8px; }
+.btn[disabled] { opacity: .5; cursor: default; }
+.keys { display: flex; flex-wrap: wrap; gap: 5px; }
+.key { min-width: 34px; height: 32px; border: 1px solid var(--line); background: var(--surface); border-radius: 7px; font-family: var(--display); font-size: 16px; }
+.key:active { background: var(--accent-soft); }
+
+.fb { border-radius: 10px; padding: 12px 14px; font-size: 14px; display: flex; flex-direction: column; gap: 6px; }
+.fb.ok { background: var(--good-bg); color: var(--good); }
+.fb.bad { background: var(--bad-bg); color: var(--bad); }
+.fb.near { background: var(--warn-bg); color: var(--warn); }
+.fb .big { font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--ink); }
+.fb .why { color: var(--ink); opacity: .85; }
+.paradigm { width: 100%; border-collapse: collapse; font-size: 14px; }
+.paradigm td { padding: 5px 8px; border-top: 1px solid var(--line); }
+.paradigm td:first-child { color: var(--muted); width: 38%; }
+.paradigm td:last-child { font-family: var(--display); font-size: 16px; }
+.paradigm tr.hit td { background: var(--accent-soft); font-weight: 600; }
+.scroll { overflow-x: auto; }
+
+.table-rows { display: flex; flex-direction: column; gap: 8px; }
+.trow { display: grid; grid-template-columns: minmax(78px, 30%) 1fr; gap: 10px; align-items: center; }
+.trow label { color: var(--muted); font-size: 14px; }
+.trow .inp { font-size: 18px; padding: 8px 10px; }
+.trow .fix { grid-column: 2; font-family: var(--display); color: var(--good); font-size: 16px; margin-top: -4px; }
+
+.cloze { font-family: var(--display); font-size: clamp(19px, 4.6vw, 24px); line-height: 1.7; }
+.cloze .inp { display: inline-block; width: auto; max-width: 100%; font-size: inherit; padding: 2px 8px; margin: 0 2px; vertical-align: baseline; }
+.hint { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+.flip { text-align: center; padding: 30px 12px; }
+.flip .term { font-family: var(--display); font-size: clamp(26px, 7vw, 36px); font-weight: 600; line-height: 1.2; overflow-wrap: anywhere; }
+.flip .back { margin-top: 14px; font-size: 20px; color: var(--accent); }
+.flip .note { margin-top: 8px; font-size: 12px; color: var(--muted); }
+.options { display: grid; gap: 8px; }
+.opt { text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 10px; padding: 10px 14px; }
+.opt.ok { border-color: var(--good); background: var(--good-bg); }
+.opt.bad { border-color: var(--bad); background: var(--bad-bg); }
+.icon-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+.icon-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+.diff .w { padding: 0 3px; border-radius: 4px; }
+.diff .miss { background: var(--bad-bg); color: var(--bad); }
+.diff .extra { text-decoration: line-through; color: var(--muted); }
+textarea.inp { width: 100%; min-height: 84px; resize: vertical; font-size: 18px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.tile { background: var(--surface-2); border-radius: 10px; padding: 10px 12px; }
+.tile b { display: block; font-family: var(--display); font-size: 24px; font-variant-numeric: tabular-nums; }
+.tile span { font-size: 12px; color: var(--muted); }
+.bars { display: flex; flex-direction: column; gap: 9px; }
+.bar { display: grid; grid-template-columns: minmax(110px, 38%) 1fr 52px; gap: 10px; align-items: center; font-size: 13px; }
+.bar .track { height: 10px; background: var(--surface-2); border-radius: 5px; overflow: hidden; }
+.bar .fill { height: 100%; background: var(--accent); }
+.bar .pct { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+.list { display: flex; flex-direction: column; }
+.li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14px; flex-wrap: wrap; }
+.li:first-child { border-top: 0; }
+.li .f { font-family: var(--display); font-weight: 600; }
+h2 { font-size: 15px; margin: 0 0 10px; }
+.muted { color: var(--muted); font-size: 13px; }
+.empty { color: var(--muted); padding: 8px 0; }
+.foot { color: var(--muted); font-size: 12px; text-align: center; }
+@media (max-width: 480px) {
+  .card { padding: 16px; }
+  .bar { grid-template-columns: minmax(96px, 40%) 1fr 44px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .inp, .chip, .opt { transition: border-color .12s, background-color .12s; }
+}
+
+.tr { border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 2px; font-size: 16px; }
+
+.sel { font-family: var(--ui); font-size: 14px; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); max-width: 100%; min-width: 0; }
+.modes { margin-bottom: -4px; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand">Conjugar<small>B1.2 · pt-PT</small></div><div class="streak" id="streak"></div></header>
+<nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
+<main id="view"></main>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.</p>
+</div>
+<script>
+/* Движок спряжений европейского португальского (pt-PT).
+   Лица: eu, tu, ele/ela/você, nós, eles/elas/vocês (vós не используется). */
+(function (root) {
+  'use strict';
+
+  var PERSONS = ['eu', 'tu', 'ele/ela/você', 'nós', 'eles/elas/vocês'];
+  var VOWELS = 'aeiou';
+
+  // ---------- таблицы неправильных глаголов ----------
+  // pres, pps, imp: массивы из 5 форм. part, ger, fut (основа для Futuro/Condicional),
+  // conj: Presente do Conjuntivo, когда форма eu не оканчивается на -o.
+  var IRR = {
+    ser:   { pres: ['sou', 'és', 'é', 'somos', 'são'],
+             pps: ['fui', 'foste', 'foi', 'fomos', 'foram'],
+             imp: ['era', 'eras', 'era', 'éramos', 'eram'],
+             part: 'sido', conj: ['seja', 'sejas', 'seja', 'sejamos', 'sejam'], imper: 'sê' },
+    estar: { pres: ['estou', 'estás', 'está', 'estamos', 'estão'],
+             pps: ['estive', 'estiveste', 'esteve', 'estivemos', 'estiveram'],
+             conj: ['esteja', 'estejas', 'esteja', 'estejamos', 'estejam'], strong: true },
+    ter:   { pres: ['tenho', 'tens', 'tem', 'temos', 'têm'],
+             pps: ['tive', 'tiveste', 'teve', 'tivemos', 'tiveram'],
+             imp: ['tinha', 'tinhas', 'tinha', 'tínhamos', 'tinham'],
+             part: 'tido', strong: true },
+    ir:    { pres: ['vou', 'vais', 'vai', 'vamos', 'vão'],
+             pps: ['fui', 'foste', 'foi', 'fomos', 'foram'],
+             part: 'ido', conj: ['vá', 'vás', 'vá', 'vamos', 'vão'] },
+    vir:   { pres: ['venho', 'vens', 'vem', 'vimos', 'vêm'],
+             pps: ['vim', 'vieste', 'veio', 'viemos', 'vieram'],
+             imp: ['vinha', 'vinhas', 'vinha', 'vínhamos', 'vinham'],
+             part: 'vindo', strong: true },
+    ver:   { pres: ['vejo', 'vês', 'vê', 'vemos', 'veem'],
+             pps: ['vi', 'viste', 'viu', 'vimos', 'viram'],
+             part: 'visto' },
+    ler:   { pres: ['leio', 'lês', 'lê', 'lemos', 'leem'],
+             pps: ['li', 'leste', 'leu', 'lemos', 'leram'] },
+    crer:  { pres: ['creio', 'crês', 'crê', 'cremos', 'creem'],
+             pps: ['cri', 'creste', 'creu', 'cremos', 'creram'] },
+    dar:   { pres: ['dou', 'dás', 'dá', 'damos', 'dão'],
+             pps: ['dei', 'deste', 'deu', 'demos', 'deram'],
+             conj: ['dê', 'dês', 'dê', 'demos', 'deem'], strong: true },
+    fazer: { pres: ['faço', 'fazes', 'faz', 'fazemos', 'fazem'],
+             pps: ['fiz', 'fizeste', 'fez', 'fizemos', 'fizeram'],
+             part: 'feito', fut: 'far', strong: true },
+    dizer: { pres: ['digo', 'dizes', 'diz', 'dizemos', 'dizem'],
+             pps: ['disse', 'disseste', 'disse', 'dissemos', 'disseram'],
+             part: 'dito', fut: 'dir', strong: true },
+    trazer:{ pres: ['trago', 'trazes', 'traz', 'trazemos', 'trazem'],
+             pps: ['trouxe', 'trouxeste', 'trouxe', 'trouxemos', 'trouxeram'],
+             fut: 'trar', strong: true },
+    poder: { pres: ['posso', 'podes', 'pode', 'podemos', 'podem'],
+             pps: ['pude', 'pudeste', 'pôde', 'pudemos', 'puderam'], strong: true },
+    querer:{ pres: ['quero', 'queres', 'quer', 'queremos', 'querem'],
+             pps: ['quis', 'quiseste', 'quis', 'quisemos', 'quiseram'],
+             conj: ['queira', 'queiras', 'queira', 'queiramos', 'queiram'], strong: true },
+    saber: { pres: ['sei', 'sabes', 'sabe', 'sabemos', 'sabem'],
+             pps: ['soube', 'soubeste', 'soube', 'soubemos', 'souberam'],
+             conj: ['saiba', 'saibas', 'saiba', 'saibamos', 'saibam'], strong: true },
+    'pôr': { pres: ['ponho', 'pões', 'põe', 'pomos', 'põem'],
+             pps: ['pus', 'puseste', 'pôs', 'pusemos', 'puseram'],
+             imp: ['punha', 'punhas', 'punha', 'púnhamos', 'punham'],
+             part: 'posto', ger: 'pondo', fut: 'por', strong: true },
+    haver: { pres: ['hei', 'hás', 'há', 'havemos', 'hão'],
+             pps: ['houve', 'houveste', 'houve', 'houvemos', 'houveram'],
+             conj: ['haja', 'hajas', 'haja', 'hajamos', 'hajam'], strong: true },
+    caber: { pres: ['caibo', 'cabes', 'cabe', 'cabemos', 'cabem'],
+             pps: ['coube', 'coubeste', 'coube', 'coubemos', 'couberam'], strong: true },
+    valer: { pres: ['valho', 'vales', 'vale', 'valemos', 'valem'] },
+    rir:   { pres: ['rio', 'ris', 'ri', 'rimos', 'riem'],
+             pps: ['ri', 'riste', 'riu', 'rimos', 'riram'] },
+    ouvir: { pres: ['ouço', 'ouves', 'ouve', 'ouvimos', 'ouvem'] },
+    pedir: { pres: ['peço', 'pedes', 'pede', 'pedimos', 'pedem'] },
+    medir: { pres: ['meço', 'medes', 'mede', 'medimos', 'medem'] },
+    dormir:{ pres: ['durmo', 'dormes', 'dorme', 'dormimos', 'dormem'] },
+    vestir:{ pres: ['visto', 'vestes', 'veste', 'vestimos', 'vestem'] },
+    seguir:{ pres: ['sigo', 'segues', 'segue', 'seguimos', 'seguem'] },
+    sentir:{ pres: ['sinto', 'sentes', 'sente', 'sentimos', 'sentem'] },
+    mentir:{ pres: ['minto', 'mentes', 'mente', 'mentimos', 'mentem'] },
+    servir:{ pres: ['sirvo', 'serves', 'serve', 'servimos', 'servem'] },
+    repetir:{ pres: ['repito', 'repetes', 'repete', 'repetimos', 'repetem'] },
+    preferir:{ pres: ['prefiro', 'preferes', 'prefere', 'preferimos', 'preferem'] },
+    sugerir:{ pres: ['sugiro', 'sugeres', 'sugere', 'sugerimos', 'sugerem'] },
+    divertir:{ pres: ['divirto', 'divertes', 'diverte', 'divertimos', 'divertem'] },
+    competir:{ pres: ['compito', 'competes', 'compete', 'competimos', 'competem'] },
+    cobrir:{ pres: ['cubro', 'cobres', 'cobre', 'cobrimos', 'cobrem'], part: 'coberto' },
+    descobrir:{ pres: ['descubro', 'descobres', 'descobre', 'descobrimos', 'descobrem'], part: 'descoberto' },
+    abrir: { part: 'aberto' },
+    escrever:{ part: 'escrito' },
+    subir: { pres: ['subo', 'sobes', 'sobe', 'subimos', 'sobem'] },
+    fugir: { pres: ['fujo', 'foges', 'foge', 'fugimos', 'fogem'] },
+    sair:  { pres: ['saio', 'sais', 'sai', 'saímos', 'saem'] },
+    cair:  { pres: ['caio', 'cais', 'cai', 'caímos', 'caem'] },
+    trair: { pres: ['traio', 'trais', 'trai', 'traímos', 'traem'] },
+    descrever:{ part: 'descrito' },
+    construir:{ pres: ['construo', 'constróis', 'constrói', 'construímos', 'constroem'] },
+    destruir: { pres: ['destruo', 'destróis', 'destrói', 'destruímos', 'destroem'] },
+    pagar: { part: 'pago' },
+    gastar:{ part: 'gasto' },
+    ganhar:{ part: 'ganho' }
+  };
+
+  // Глаголы с двойным причастием: [для ter, для ser/estar]
+  var DOUBLE_PART = {
+    aceitar: ['aceitado', 'aceite'], entregar: ['entregado', 'entregue'],
+    matar: ['matado', 'morto'], salvar: ['salvado', 'salvo'],
+    prender: ['prendido', 'preso'], eleger: ['elegido', 'eleito'],
+    expulsar: ['expulsado', 'expulso'], imprimir: ['imprimido', 'impresso'],
+    limpar: ['limpado', 'limpo'], acender: ['acendido', 'aceso'],
+    envolver: ['envolvido', 'envolto'], suspender: ['suspendido', 'suspenso'],
+    morrer: ['morrido', 'morto']
+  };
+
+  // Производные глаголы: префикс + база. Формы базы получают префикс.
+  var COMPOUNDS = {};
+  [['ter', ['man', 'con', 'ob', 're', 'de', 'ater', 'abs', 'entre', 'sus']],
+   ['vir', ['con', 'inter', 'pro', 'sobre', 'ad']],
+   ['pôr', ['com', 're', 'pro', 'su', 'dis', 'ex', 'im', 'op', 'de', 'ante', 'sobre']],
+   ['ver', ['pre', 're', 'ante']],
+   ['fazer', ['des', 're', 'satis', 'contra']],
+   ['dizer', ['contra', 'des', 'pre']],
+   ['ler', ['re']],
+   ['seguir', ['con', 'per']],
+   ['trair', ['a', 'dis', 'con', 'sub', 'abs', 're']]].forEach(function (pair) {
+    var base = pair[0];
+    pair[1].forEach(function (pre) {
+      var baseStem = base === 'pôr' ? 'por' : base;
+      COMPOUNDS[pre + baseStem] = { base: base, prefix: pre };
+    });
+  });
+
+  // ---------- вспомогательные ----------
+  function group(inf) {
+    if (/ôr$/.test(inf)) return 'or';
+    return inf.slice(-2);
+  }
+  function stem(inf) {
+    if (/ôr$/.test(inf)) return inf.slice(0, -2);
+    return inf.slice(0, -2);
+  }
+  function endsVowel(s) { return s.length > 0 && VOWELS.indexOf(s[s.length - 1]) >= 0; }
+  function accentLast(s) {
+    // ставит ударение на последнюю гласную основы перед -ssemos / -ramos
+    var map = { a: 'á', e: 'ê', i: 'í', o: 'ô', u: 'ú' };
+    var c = s[s.length - 1];
+    return map[c] ? s.slice(0, -1) + map[c] : s;
+  }
+  function addPrefix(prefix, arr) {
+    return arr.map(function (f) { return prefix + f; });
+  }
+
+  // ---------- разбор глагола: (irr, prefix) ----------
+  function resolve(inf) {
+    var key = inf;
+    var prefix = '';
+    var base = null;
+    if (IRR[inf]) { base = IRR[inf]; key = inf; }
+    else if (COMPOUNDS[inf]) {
+      var c = COMPOUNDS[inf];
+      base = IRR[c.base]; key = c.base; prefix = c.prefix;
+    }
+    return { irr: base, key: key, prefix: prefix, inf: inf };
+  }
+
+  function strongOf(inf) {
+    var r = resolve(inf);
+    return !!(r.irr && r.irr.strong);
+  }
+
+  // ---------- Presente ----------
+  function presente(inf) {
+    var r = resolve(inf);
+    if (r.irr && r.irr.pres) {
+      var forms = addPrefix(r.prefix, r.irr.pres);
+      if (r.prefix && r.key === 'ter') { forms[1] = forms[1].replace(/tens$/, 'téns'); forms[2] = forms[2].replace(/tem$/, 'tém'); }
+      if (r.prefix && r.key === 'vir') { forms[1] = forms[1].replace(/vens$/, 'véns'); forms[2] = forms[2].replace(/vem$/, 'vém'); }
+      return forms;
+    }
+    var g = group(inf), s = stem(inf);
+    if (/ear$/.test(inf)) {
+      return [s + 'io', s + 'ias', s + 'ia', s + 'amos', s + 'iam'];
+    }
+    if (g === 'ar') return [s + 'o', s + 'as', s + 'a', s + 'amos', s + 'am'];
+    if (/uir$/.test(inf) && !/(gu|qu)ir$/.test(inf)) {
+      return [s + 'o', s + 'is', s + 'i', s + 'ímos', s + 'em'];
+    }
+    var eu = s;
+    if (g === 'er' || g === 'ir') {
+      if (/gu$/.test(s)) eu = s.slice(0, -1);
+      else if (/g$/.test(s)) eu = s.slice(0, -1) + 'j';
+      else if (/c$/.test(s)) eu = s.slice(0, -1) + 'ç';
+    }
+    if (g === 'er') return [eu + 'o', s + 'es', s + 'e', s + 'emos', s + 'em'];
+    return [eu + 'o', s + 'es', s + 'e', s + 'imos', s + 'em'];
+  }
+
+  // ---------- Pretérito Perfeito Simples ----------
+  function pps(inf) {
+    var r = resolve(inf);
+    if (r.irr && r.irr.pps) return addPrefix(r.prefix, r.irr.pps);
+    var g = group(inf), s = stem(inf);
+    if (g === 'ar') {
+      var eu = s + 'ei';
+      if (/c$/.test(s)) eu = s.slice(0, -1) + 'quei';
+      else if (/g$/.test(s)) eu = s + 'uei';
+      else if (/ç$/.test(s)) eu = s.slice(0, -1) + 'cei';
+      return [eu, s + 'aste', s + 'ou', s + 'ámos', s + 'aram'];
+    }
+    if (/(a|u)ir$/.test(inf) && !/(gu|qu)ir$/.test(inf)) {
+      return [s + 'í', s + 'íste', s + 'iu', s + 'ímos', s + 'íram'];
+    }
+    if (g === 'er') return [s + 'i', s + 'este', s + 'eu', s + 'emos', s + 'eram'];
+    return [s + 'i', s + 'iste', s + 'iu', s + 'imos', s + 'iram'];
+  }
+
+  // ---------- Imperfeito ----------
+  function imperfeito(inf) {
+    var r = resolve(inf);
+    if (r.irr && r.irr.imp) return addPrefix(r.prefix, r.irr.imp);
+    var g = group(inf), s = stem(inf);
+    if (g === 'ar') return [s + 'ava', s + 'avas', s + 'ava', s + 'ávamos', s + 'avam'];
+    if (endsVowel(s)) return [s + 'ía', s + 'ías', s + 'ía', s + 'íamos', s + 'íam'];
+    return [s + 'ia', s + 'ias', s + 'ia', s + 'íamos', s + 'iam'];
+  }
+
+  // ---------- Particípio / Gerúndio ----------
+  function participio(inf, forSer) {
+    if (DOUBLE_PART[inf]) return DOUBLE_PART[inf][forSer ? 1 : 0];
+    var r = resolve(inf);
+    if (r.irr && r.irr.part) return r.prefix + r.irr.part;
+    var g = group(inf), s = stem(inf);
+    if (g === 'ar') return s + 'ado';
+    if (endsVowel(s)) return s + 'ído';
+    return s + 'ido';
+  }
+  function gerundio(inf) {
+    var r = resolve(inf);
+    if (r.irr && r.irr.ger) return r.prefix + r.irr.ger;
+    var g = group(inf), s = stem(inf);
+    if (g === 'ar') return s + 'ando';
+    if (g === 'er') return s + 'endo';
+    return s + 'indo';
+  }
+
+  // ---------- Futuro / Condicional ----------
+  function futStem(inf) {
+    var r = resolve(inf);
+    if (r.irr && r.irr.fut) return r.prefix + r.irr.fut;
+    return inf;
+  }
+  function futuro(inf) {
+    var f = futStem(inf);
+    return [f + 'ei', f + 'ás', f + 'á', f + 'emos', f + 'ão'];
+  }
+  function condicional(inf) {
+    var f = futStem(inf);
+    return [f + 'ia', f + 'ias', f + 'ia', f + 'íamos', f + 'iam'];
+  }
+
+  // ---------- Conjuntivo ----------
+  function conjPresente(inf) {
+    var r = resolve(inf);
+    if (r.irr && r.irr.conj) return addPrefix(r.prefix, r.irr.conj);
+    var eu = presente(inf)[0];
+    var g = group(inf);
+    var s = eu.replace(/o$/, '');
+    if (g === 'ar') {
+      if (/ear$/.test(inf)) {
+        var t = inf.slice(0, -2);
+        return [s + 'e', s + 'es', s + 'e', t + 'emos', s + 'em'];
+      }
+      var s2 = s;
+      if (/c$/.test(s)) s2 = s.slice(0, -1) + 'qu';
+      else if (/g$/.test(s)) s2 = s + 'u';
+      else if (/ç$/.test(s)) s2 = s.slice(0, -1) + 'c';
+      return [s2 + 'e', s2 + 'es', s2 + 'e', s2 + 'emos', s2 + 'em'];
+    }
+    return [s + 'a', s + 'as', s + 'a', s + 'amos', s + 'am'];
+  }
+  function conjImperfeito(inf) {
+    var eles = pps(inf)[4];
+    var st = eles.replace(/ram$/, '');
+    var nos = st;
+    if (!/[áéíóúâêô]$/.test(st)) {
+      if (/e$/.test(st) && strongOf(inf)) nos = st.slice(0, -1) + 'é';
+      else nos = accentLast(st);
+    }
+    return [st + 'sse', st + 'sses', st + 'sse', nos + 'ssemos', st + 'ssem'];
+  }
+  function personalInf(inf, base) {
+    // eu/ele: сам инфинитив; остальные лица: основа без циркумфлекса (pôr → por)
+    var b = base || inf;
+    var bb = /ôr$/.test(b) ? b.slice(0, -2) + 'or' : b;
+    var tuForm = bb + 'es', elesForm = bb + 'em';
+    if (/(a|u)ir$/.test(bb) && !/(gu|qu)ir$/.test(bb)) {
+      tuForm = bb.slice(0, -2) + 'íres';
+      elesForm = bb.slice(0, -2) + 'írem';
+    }
+    return [b, tuForm, b, bb + 'mos', elesForm];
+  }
+  function conjFuturo(inf) {
+    var eles = pps(inf)[4];
+    var b = eles.replace(/am$/, '');
+    if (/(a|u)ír$/.test(b)) b = b.slice(0, -2) + 'ir';
+    return personalInf(inf, b);
+  }
+
+  // ---------- Составные времена ----------
+  function composto(auxForms, inf) {
+    var p = participio(inf, false);
+    return auxForms.map(function (a) { return a + ' ' + p; });
+  }
+
+  // ---------- Императив ----------
+  function imperAfirm(inf) {
+    var r = resolve(inf);
+    var pr = presente(inf), cj = conjPresente(inf);
+    var tu = (r.irr && r.irr.imper && !r.prefix) ? r.irr.imper : pr[2];
+    return [null, tu, cj[2], cj[3], cj[4]];
+  }
+  function imperNeg(inf) {
+    var cj = conjPresente(inf);
+    return [null, 'não ' + cj[1], 'não ' + cj[2], 'não ' + cj[3], 'não ' + cj[4]];
+  }
+
+  // ---------- публичный API ----------
+  var TENSES = {
+    pres:     { id: 'pres', name: 'Presente', mood: 'ind', persons: 5, fn: presente },
+    pps:      { id: 'pps', name: 'Pretérito Perfeito Simples', mood: 'ind', persons: 5, fn: pps },
+    imp:      { id: 'imp', name: 'Pretérito Imperfeito', mood: 'ind', persons: 5, fn: imperfeito },
+    ppc:      { id: 'ppc', name: 'Pretérito Perfeito Composto', mood: 'ind', persons: 5,
+                fn: function (v) { return composto(presente('ter'), v); } },
+    mqpc:     { id: 'mqpc', name: 'Pretérito Mais-que-Perfeito Composto', mood: 'ind', persons: 5,
+                fn: function (v) { return composto(imperfeito('ter'), v); } },
+    fut:      { id: 'fut', name: 'Futuro Simples', mood: 'ind', persons: 5, fn: futuro },
+    cond:     { id: 'cond', name: 'Condicional', mood: 'ind', persons: 5, fn: condicional },
+    cpres:    { id: 'cpres', name: 'Presente do Conjuntivo', mood: 'conj', persons: 5, fn: conjPresente },
+    cimp:     { id: 'cimp', name: 'Imperfeito do Conjuntivo', mood: 'conj', persons: 5, fn: conjImperfeito },
+    cfut:     { id: 'cfut', name: 'Futuro do Conjuntivo', mood: 'conj', persons: 5, fn: conjFuturo },
+    cppc:     { id: 'cppc', name: 'Pretérito Perfeito Composto do Conjuntivo', mood: 'conj', persons: 5,
+                fn: function (v) { return composto(conjPresente('ter'), v); } },
+    cmqpc:    { id: 'cmqpc', name: 'Mais-que-Perfeito Composto do Conjuntivo', mood: 'conj', persons: 5,
+                fn: function (v) { return composto(conjImperfeito('ter'), v); } },
+    impa:     { id: 'impa', name: 'Imperativo afirmativo', mood: 'imp', persons: 5, fn: imperAfirm },
+    impn:     { id: 'impn', name: 'Imperativo negativo', mood: 'imp', persons: 5, fn: imperNeg },
+    infp:     { id: 'infp', name: 'Infinitivo Pessoal', mood: 'nom', persons: 5,
+                fn: function (v) { return personalInf(v); } },
+    ger:      { id: 'ger', name: 'Gerúndio', mood: 'nom', persons: 0, single: true,
+                fn: function (v) { return [gerundio(v)]; } },
+    part:     { id: 'part', name: 'Particípio passado', mood: 'nom', persons: 0, single: true,
+                fn: function (v) { return [participio(v, false)]; } }
+  };
+
+  function conjugate(inf, tenseId) {
+    return TENSES[tenseId].fn(inf);
+  }
+
+  // Короткое объяснение, как получена форма (по-русски, для разбора ошибок).
+  function explain(inf, t) {
+    var r = resolve(inf);
+    var irr = !!r.irr;
+    var g = group(inf);
+    var eu = presente(inf)[0];
+    var ppsEles = pps(inf)[4];
+    switch (t) {
+      case 'pres':
+        return irr || /ear$|uir$|air$/.test(inf)
+          ? 'Presente: форма особая, её нужно знать: ' + presente(inf).join(', ')
+          : 'Presente: основа ' + stem(inf) + '- + окончания (-o, -' + (g === 'ar' ? 'as, -a, -amos, -am' : 'es, -e, -' + (g === 'er' ? 'emos' : 'imos') + ', -em') + ').';
+      case 'pps':
+        return irr && r.irr.pps
+          ? 'PPS: неправильный глагол, весь ряд: ' + pps(inf).join(', ')
+          : 'PPS: основа ' + stem(inf) + '- + окончания (tu -ste, eles -ram). Ряд: ' + pps(inf).join(', ');
+      case 'imp':
+        return 'Imperfeito: ' + (g === 'ar' ? '-ava, -avas, -ava, -ávamos, -avam' : '-ia, -ias, -ia, -íamos, -iam') + (irr && r.irr.imp ? ' (у этого глагола особая основа)' : '') + '. Ряд: ' + imperfeito(inf).join(', ');
+      case 'fut':
+        return 'Futuro: целый инфинитив + -ei, -ás, -á, -emos, -ão' + (futStem(inf) !== inf ? ' (основа ' + futStem(inf) + '-, а не ' + inf + ')' : '') + '.';
+      case 'cond':
+        return 'Condicional: целый инфинитив + -ia, -ias, -ia, -íamos, -iam' + (futStem(inf) !== inf ? ' (основа ' + futStem(inf) + '-)' : '') + '.';
+      case 'cpres':
+        return r.irr && r.irr.conj
+          ? 'Presente do Conjuntivo: особые формы: ' + conjPresente(inf).join(', ')
+          : 'Presente do Conjuntivo: форма eu в presente (' + eu + ') без -o, затем «противоположная» гласная: ' + (g === 'ar' ? '-e, -es, -e, -emos, -em' : '-a, -as, -a, -amos, -am') + '.';
+      case 'cimp':
+        return 'Imperfeito do Conjuntivo: PPS eles (' + ppsEles + ') без -ram = ' + ppsEles.replace(/ram$/, '') + '-, плюс -sse, -sses, -sse, -ssemos, -ssem. В nós ударение на гласной перед -ssemos.';
+      case 'cfut':
+        return 'Futuro do Conjuntivo: PPS eles (' + ppsEles + ') без -am = ' + ppsEles.replace(/am$/, '') + ', плюс (-), -es, (-), -mos, -em.';
+      case 'ppc':
+        return 'PPC: ter в presente (tenho, tens, tem, temos, têm) + particípio (' + participio(inf, false) + ').';
+      case 'mqpc':
+        return 'Mais-que-Perfeito Composto: ter в imperfeito (tinha, tinhas, tinha, tínhamos, tinham) + particípio (' + participio(inf, false) + ').';
+      case 'cppc':
+        return 'PPCC: ter в Presente do Conjuntivo (tenha, tenhas, tenha, tenhamos, tenham) + particípio (' + participio(inf, false) + ').';
+      case 'cmqpc':
+        return 'Mais-que-Perfeito do Conjuntivo: ter в Imperfeito do Conjuntivo (tivesse, tivesses, tivesse, tivéssemos, tivessem) + particípio (' + participio(inf, false) + ').';
+      case 'impa':
+        return 'Imperativo afirmativo: tu = форма ele из presente; você, nós, vocês = Presente do Conjuntivo.';
+      case 'impn':
+        return 'Imperativo negativo: não + Presente do Conjuntivo для всех лиц (não faças).';
+      case 'infp':
+        return 'Infinitivo Pessoal: инфинитив + (-), -es, (-), -mos, -em.';
+      case 'ger':
+        return 'Gerúndio: инфинитив без -r + -ndo' + (r.irr && r.irr.ger ? ' (особая форма)' : '') + '.';
+      case 'part':
+        return DOUBLE_PART[inf]
+          ? 'Particípio: две формы. С ter: ' + DOUBLE_PART[inf][0] + '; с ser/estar/ficar: ' + DOUBLE_PART[inf][1] + '.'
+          : 'Particípio: -ar → -ado, -er/-ir → -ido' + (irr && r.irr.part ? ' (у этого глагола особая форма)' : '') + '.';
+    }
+    return '';
+  }
+
+  var api = {
+    PERSONS: PERSONS, TENSES: TENSES, conjugate: conjugate, explain: explain,
+    participio: participio, gerundio: gerundio, doublePart: DOUBLE_PART,
+    resolve: resolve
+  };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.PTEngine = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Данные с двух досок (Olya e Ilya B1.1 и B1.2).
+   VERBS:   [инфинитив, перевод, 1 если глагол встречается на досках]
+   WORDS:   [португальский, русский, тема, 1 если перевод добавлен не с доски]
+   SENTENCES: [предложение с ___, инфинитив, время, лицо (0-4 или null), ответ, доска] */
+(function (root) {
+  'use strict';
+
+  var VERBS = [
+    ['ser', 'быть (по природе)', 1], ['estar', 'быть (находиться, состояние)', 1], ['ter', 'иметь', 1],
+    ['ir', 'идти, ехать', 1], ['vir', 'приходить', 1], ['ver', 'видеть', 1], ['ler', 'читать', 1],
+    ['dar', 'давать', 1], ['fazer', 'делать', 1], ['dizer', 'говорить', 1], ['trazer', 'приносить', 1],
+    ['poder', 'мочь', 1], ['querer', 'хотеть', 1], ['saber', 'знать (факт), уметь', 1], ['pôr', 'класть, ставить', 1],
+    ['haver', 'быть, иметься (hei de: когда-нибудь обязательно)', 1], ['caber', 'помещаться', 1],
+    ['ouvir', 'слышать, слушать', 1], ['pedir', 'просить', 1], ['sair', 'выходить', 1], ['cair', 'падать', 1],
+    ['construir', 'строить', 1], ['destruir', 'разрушать', 1], ['incluir', 'включать', 1], ['trair', 'предавать', 1],
+    ['conseguir', 'суметь, получиться', 1], ['seguir', 'следовать', 1], ['sentir', 'чувствовать', 1],
+    ['vestir', 'одевать', 1], ['dormir', 'спать', 1], ['preferir', 'предпочитать', 1], ['sugerir', 'предлагать', 1],
+    ['abrir', 'открывать', 1], ['cobrir', 'покрывать', 1], ['descobrir', 'открывать (новое)', 1],
+    ['escrever', 'писать', 1], ['descrever', 'описывать', 1], ['morrer', 'умирать', 1], ['matar', 'убивать', 1],
+    ['salvar', 'спасать', 1], ['aceitar', 'принимать, соглашаться', 1], ['eleger', 'избирать', 1],
+    ['envolver', 'вовлекать, обёртывать', 1], ['perder', 'терять, проигрывать', 1], ['escolher', 'выбирать', 1],
+    ['resolver', 'решать', 1], ['conhecer', 'знать (кого-то), знакомиться', 1], ['esquecer', 'забывать', 1],
+    ['medir', 'измерять', 1], ['rir', 'смеяться', 0], ['valer', 'стоить, быть достойным', 0],
+    ['repetir', 'повторять', 0], ['subir', 'подниматься', 0], ['fugir', 'убегать', 0],
+    ['manter', 'поддерживать, сохранять', 1], ['compor', 'сочинять, составлять', 0], ['propor', 'предлагать', 0],
+    ['prever', 'предвидеть', 0], ['desfazer', 'разобрать, отменить', 0], ['convir', 'подходить, быть выгодным', 0],
+    ['falar', 'говорить', 1], ['comer', 'есть', 1], ['partir', 'уезжать, ломать', 1], ['beber', 'пить', 1],
+    ['viver', 'жить', 1], ['vender', 'продавать', 1], ['ficar', 'оставаться, становиться', 1],
+    ['ganhar', 'зарабатывать, выигрывать', 1], ['gastar', 'тратить', 1], ['pagar', 'платить', 1],
+    ['praticar', 'практиковать', 1], ['indicar', 'указывать', 1], ['aplicar', 'применять', 1],
+    ['alugar', 'снимать, сдавать в аренду', 1], ['carregar', 'нести, нажимать, заряжать', 1],
+    ['começar', 'начинать', 1], ['passar', 'проходить, проводить', 1], ['passear', 'гулять', 1],
+    ['trabalhar', 'работать', 1], ['estudar', 'учиться, изучать', 1], ['chegar', 'приезжать, прибывать', 1],
+    ['comprar', 'покупать', 1], ['tomar', 'брать, принимать', 1], ['ajudar', 'помогать', 1],
+    ['gostar', 'нравиться', 1], ['precisar', 'нуждаться', 1], ['levar', 'брать с собой, увозить', 1],
+    ['voltar', 'возвращаться', 1], ['acabar', 'заканчивать', 1], ['continuar', 'продолжать', 1],
+    ['acordar', 'просыпаться, будить', 1], ['ligar', 'звонить, включать', 1], ['esperar', 'ждать, надеяться', 1],
+    ['encontrar', 'находить, встречать', 1], ['entrar', 'входить', 1], ['deixar', 'оставлять, позволять', 1],
+    ['jantar', 'ужинать', 1], ['almoçar', 'обедать', 1], ['explicar', 'объяснять', 1], ['mudar', 'менять, переезжать', 1],
+    ['telefonar', 'звонить по телефону', 1], ['avisar', 'предупреждать', 1], ['lembrar', 'напоминать', 1],
+    ['acreditar', 'верить', 1], ['ignorar', 'игнорировать', 1], ['acontecer', 'случаться', 1],
+    ['preparar', 'готовить', 1], ['visitar', 'посещать', 1], ['aumentar', 'увеличивать', 1],
+    ['adotar', 'усыновлять, брать', 1], ['brincar', 'играть, шутить', 1], ['consultar', 'консультироваться', 1],
+    ['jogar', 'играть (в игру)', 1], ['tentar', 'пытаться', 1], ['mostrar', 'показывать', 1],
+    ['contribuir', 'вносить вклад', 1], ['inventar', 'выдумывать', 1], ['ofender', 'обижать', 1],
+    ['viajar', 'путешествовать', 1], ['marcar', 'отмечать, назначать', 1], ['portar', 'вести себя (portar-se)', 1],
+    ['proteger', 'защищать', 0], ['conhecer', 'знакомиться', 1]
+  ];
+  // убрать дубль conhecer (оставить первую запись)
+  (function () {
+    var seen = {};
+    VERBS = VERBS.filter(function (v) { if (seen[v[0]]) return false; seen[v[0]] = 1; return true; });
+  })();
+
+  var WORDS = [
+    // Глаголы и конструкции
+    ['apoiar', 'поддерживать (морально)', 'Глаголы', 0], ['confiar em', 'доверять', 'Глаголы', 0],
+    ['contar com', 'рассчитывать на', 'Глаголы', 0], ['queixar-se de', 'жаловаться на', 'Глаголы', 0],
+    ['abusar de', 'злоупотреблять', 'Глаголы', 0], ['arrepender-se de', 'раскаиваться в', 'Глаголы', 0],
+    ['tratar de', 'заниматься, ухаживать за', 'Глаголы', 0], ['dar-se bem/mal com', 'ладить / не ладить с', 'Глаголы', 0],
+    ['conhecer-se com', 'познакомиться', 'Глаголы', 0], ['ficar amigos', 'подружиться', 'Глаголы', 0],
+    ['fazer amigos', 'находить друзей', 'Глаголы', 0], ['resultar em', 'приводить к', 'Глаголы', 0],
+    ['resultar de', 'быть результатом', 'Глаголы', 0], ['lidar com', 'справляться с, иметь дело с', 'Глаголы', 1],
+    ['mimar', 'баловать', 'Глаголы', 0], ['pegar em', 'схватить, взять', 'Глаголы', 0],
+    ['deixar de fazer', 'бросить, перестать делать', 'Глаголы', 0], ['deixar fazer', 'позволить делать', 'Глаголы', 0],
+    ['voltar a fazer', 'снова делать', 'Глаголы', 0], ['montar', 'собирать', 'Глаголы', 0],
+    ['processar alguém', 'подать в суд на кого-то', 'Глаголы', 0], ['descarregar', 'скачать', 'Глаголы', 0],
+    ['carregar', 'нажать / зарядить / загрузить', 'Глаголы', 1], ['espirrar', 'чихать', 'Глаголы', 1],
+    ['chatear', 'раздражать, надоедать', 'Глаголы', 1], ['reparar em', 'замечать', 'Глаголы', 1],
+    ['dar por', 'замечать', 'Глаголы', 1], ['dar jeito', 'пригодиться, сгодиться', 'Глаголы', 0],
+    ['ter a ver com', 'иметь отношение к', 'Глаголы', 1], ['pedir emprestado', 'брать взаймы', 'Глаголы', 1],
+    ['emprestar', 'одолжить', 'Глаголы', 1], ['devolver', 'вернуть', 'Глаголы', 1],
+    ['dar para', 'выходить на (вид); быть возможным', 'Глаголы', 1], ['dar com', 'наткнуться, встретить', 'Глаголы', 1],
+    ['dar em', 'привести к (результату)', 'Глаголы', 1], ['ficar com', 'взять себе, остаться с', 'Глаголы', 1],
+    ['ficar por fazer', 'остаться несделанным', 'Глаголы', 1], ['ficar de', 'договориться, пообещать', 'Глаголы', 1],
+    ['ficar a pensar', 'задуматься', 'Глаголы', 0], ['ficar a saber', 'узнать, выяснить', 'Глаголы', 0],
+    ['ligar a', 'обращать внимание на', 'Глаголы', 0], ['cheirar a', 'пахнуть чем-то', 'Глаголы', 1],
+    ['soar a', 'звучать как', 'Глаголы', 1], ['saber a', 'иметь вкус чего-то', 'Глаголы', 1],
+    ['achar piada a', 'находить забавным', 'Глаголы', 1], ['enganar-se', 'заблуждаться, ошибаться', 'Глаголы', 0],
+    ['regatear', 'торговаться', 'Глаголы', 0], ['mexer em', 'копаться в, трогать', 'Глаголы', 0],
+    ['mexer-se', 'двигаться', 'Глаголы', 0], ['contemplar', 'любоваться, созерцать', 'Глаголы', 0],
+    ['assustar-se', 'испугаться', 'Глаголы', 0], ['meter-se em', 'вмешиваться в', 'Глаголы', 0],
+    ['assaltar', 'напасть, ограбить', 'Глаголы', 0], ['estar viciado em', 'быть зависимым от', 'Глаголы', 0],
+    ['ir parar', 'оказаться (где-то)', 'Глаголы', 0], ['inventar', 'выдумывать', 'Глаголы', 0],
+    ['insultar', 'оскорблять', 'Глаголы', 0], ['ofender', 'обижать', 'Глаголы', 1],
+    ['encenar', 'ставить спектакль', 'Глаголы', 0], ['interagir', 'взаимодействовать', 'Глаголы', 0],
+    ['inserir', 'вставлять', 'Глаголы', 0], ['ficar inspirado por', 'вдохновиться кем-то', 'Глаголы', 0],
+    ['ocupar o lugar', 'занять место', 'Глаголы', 0], ['caber', 'помещаться', 'Глаголы', 0],
+    ['esgotar', 'исчерпать; (билеты) закончиться', 'Глаголы', 1], ['entrar em vigor', 'вступать в силу', 'Глаголы', 0],
+    ['derrotar', 'победить, разгромить', 'Глаголы', 0], ['contribuir para', 'вносить вклад в', 'Глаголы', 1],
+    ['escusar', 'избавлять; не нужно', 'Глаголы', 1], ['sugerir', 'предлагать', 'Глаголы', 1],
+    ['expandir', 'расширять', 'Глаголы', 0], ['encomendar', 'заказывать с доставкой', 'Глаголы', 0],
+    ['bisbilhotar', 'подглядывать, подслушивать', 'Глаголы', 0], ['fofocar', 'сплетничать', 'Глаголы', 0],
+    ['atracar', 'швартоваться', 'Глаголы', 0], ['deitar fora', 'выбросить', 'Глаголы', 1],
+    // Выражения
+    ['Que coincidência!', 'Вот это совпадение!', 'Выражения', 0],
+    ['Antes a morte que tal sorte!', 'Лучше смерть, чем такая судьба!', 'Выражения', 0],
+    ['Não leves a mal!', 'Не сердись! Не пойми неправильно!', 'Выражения', 0],
+    ['Anda mas é beber um vinho', 'Давай-ка выпьем вина', 'Выражения', 0],
+    ['Anda mas é dormir!', 'Иди уже спать!', 'Выражения', 0],
+    ['Sei lá!', 'Не знаю!', 'Выражения', 1], ['cá para mim', 'по-моему', 'Выражения', 1],
+    ['tanto faz', 'всё равно, без разницы', 'Выражения', 1], ['na mesma', 'всё равно; по-прежнему', 'Выражения', 0],
+    ['pelo menos', 'по крайней мере', 'Выражения', 0], ['da última vez', 'в прошлый раз', 'Выражения', 0],
+    ['seguir à letra', 'следовать буквально, по инструкции', 'Выражения', 0],
+    ['graças a', 'благодаря', 'Выражения', 1], ['no caso de', 'в случае', 'Выражения', 1],
+    ['em meados de', 'в середине (месяца)', 'Выражения', 0], ['ora... ora...', 'то... то...', 'Выражения', 0],
+    ['estar à toa', 'бездельничать, быть не у дел', 'Выражения', 0], ['não é o meu género', 'не в моём вкусе', 'Выражения', 1],
+    ['voltar às vacas frias', 'вернуться к нашим баранам', 'Выражения', 1],
+    ['ficar a ver navios', 'остаться ни с чем', 'Выражения', 1],
+    ['Será que...?', 'Неужели...? Интересно, ...?', 'Выражения', 0],
+    ['Estou à sua disposição', 'Я к вашим услугам', 'Выражения', 1],
+    ['Não hesite em contactar-nos', 'Не стесняйтесь обращаться к нам', 'Выражения', 1],
+    // Недвижимость
+    ['o sótão', 'чердак', 'Недвижимость', 0], ['a cave', 'подвал', 'Недвижимость', 0],
+    ['as instalações', 'помещения, объекты', 'Недвижимость', 1], ['o imóvel', 'недвижимость, объект', 'Недвижимость', 1],
+    ['a agência imobiliária', 'агентство недвижимости', 'Недвижимость', 1],
+    ['o agente imobiliário', 'агент по недвижимости', 'Недвижимость', 1],
+    ['o proprietário', 'собственник', 'Недвижимость', 1], ['o comprador', 'покупатель', 'Недвижимость', 1],
+    ['o vendedor', 'продавец', 'Недвижимость', 1], ['a moradia', 'дом, вилла', 'Недвижимость', 1],
+    ['o prédio', 'многоквартирный дом', 'Недвижимость', 1], ['o terreno', 'земельный участок', 'Недвижимость', 1],
+    ['o lote', 'участок (лот)', 'Недвижимость', 1], ['a área útil', 'полезная площадь', 'Недвижимость', 1],
+    ['a área bruta', 'общая площадь', 'Недвижимость', 1], ['os vidros duplos', 'стеклопакеты', 'Недвижимость', 1],
+    ['o isolamento térmico', 'теплоизоляция', 'Недвижимость', 1], ['o isolamento acústico', 'шумоизоляция', 'Недвижимость', 1],
+    ['a orientação solar', 'ориентация по сторонам света', 'Недвижимость', 1],
+    ['o preço pedido', 'запрашиваемая цена', 'Недвижимость', 1], ['o valor de mercado', 'рыночная стоимость', 'Недвижимость', 1],
+    ['a valorização', 'рост стоимости', 'Недвижимость', 1], ['a desvalorização', 'падение стоимости', 'Недвижимость', 1],
+    ['o telhado', 'крыша', 'Недвижимость', 1], ['o teto', 'потолок', 'Недвижимость', 1], ['o chão', 'пол', 'Недвижимость', 1],
+    ['a fachada', 'фасад', 'Недвижимость', 1], ['o quintal', 'двор, задний двор', 'Недвижимость', 1],
+    ['o armazém', 'склад', 'Недвижимость', 1], ['a arrecadação', 'кладовая, подсобное помещение', 'Недвижимость', 1],
+    ['a despensa', 'кладовка для продуктов', 'Недвижимость', 1], ['a lareira', 'камин', 'Недвижимость', 1],
+    ['a chaminé', 'дымоход, труба', 'Недвижимость', 1], ['as persianas', 'жалюзи', 'Недвижимость', 1],
+    ['os estores', 'рольставни', 'Недвижимость', 1], ['as cortinas', 'шторы', 'Недвижимость', 1],
+    ['soalheiro', 'солнечный (о доме)', 'Недвижимость', 1], ['estar virado a sul', 'выходить на юг', 'Недвижимость', 1],
+    ['as assoalhadas', 'комнаты (в квартире)', 'Недвижимость', 1], ['em segunda mão', 'вторичное, б/у', 'Недвижимость', 1],
+    ['em planta', 'на этапе проекта', 'Недвижимость', 1], ['marcar uma visita', 'назначить просмотр', 'Недвижимость', 1],
+    ['negociar o preço', 'торговаться о цене', 'Недвижимость', 1], ['fazer uma proposta', 'сделать предложение', 'Недвижимость', 1],
+    ['baixar o preço', 'снизить цену', 'Недвижимость', 1], ['estar em bom estado', 'быть в хорошем состоянии', 'Недвижимость', 1],
+    ['a precisar de obras', 'требующий ремонта', 'Недвижимость', 1],
+    ['remodelado', 'отремонтированный, реконструированный', 'Недвижимость', 1],
+    ['degradado', 'в плохом состоянии', 'Недвижимость', 1], ['a humidade', 'влажность, сырость', 'Недвижимость', 1],
+    ['o bolor', 'плесень', 'Недвижимость', 0], ['a infiltração', 'протечка, просачивание', 'Недвижимость', 1],
+    ['a fissura', 'трещина', 'Недвижимость', 1], ['a canalização', 'трубопровод, сантехника', 'Недвижимость', 1],
+    ['os esgotos', 'канализация', 'Недвижимость', 1], ['a pressão', 'давление (воды)', 'Недвижимость', 1],
+    ['a impermeabilização', 'гидроизоляция', 'Недвижимость', 1], ['pagar em prestações', 'платить в рассрочку', 'Недвижимость', 1],
+    ['a quantia', 'сумма', 'Недвижимость', 1], ['a taxa', 'сбор, ставка', 'Недвижимость', 1],
+    ['o interruptor', 'выключатель', 'Недвижимость', 0], ['o promotor imobiliário', 'девелопер', 'Недвижимость', 0],
+    // Семья
+    ['o sobrinho / a sobrinha', 'племянник / племянница', 'Семья', 0], ['o primo / a prima', 'двоюродный брат / сестра', 'Семья', 0],
+    ['o bisavô / a bisavó', 'прадед / прабабушка', 'Семья', 0], ['o sogro / a sogra', 'тесть, свёкор / тёща, свекровь', 'Семья', 0],
+    ['o genro / a nora', 'зять / невестка', 'Семья', 0], ['o cunhado', 'муж сестры, брат жены/мужа', 'Семья', 0],
+    ['a cunhada', 'жена брата, сестра жены/мужа', 'Семья', 0],
+    // Спорт
+    ['o adversário', 'соперник', 'Спорт', 0], ['o árbitro', 'судья', 'Спорт', 0], ['o campeonato', 'чемпионат', 'Спорт', 0],
+    ['a Copa do Mundo', 'Кубок мира', 'Спорт', 0], ['o torneio', 'турнир', 'Спорт', 0], ['a vitória', 'победа', 'Спорт', 1],
+    ['a derrota', 'поражение', 'Спорт', 1], ['o empate', 'ничья', 'Спорт', 1], ['vencer', 'побеждать', 'Спорт', 1],
+    ['empatar', 'сыграть вничью', 'Спорт', 1], ['o treinador', 'тренер', 'Спорт', 1], ['a equipa', 'команда', 'Спорт', 1],
+    ['a medalha de ouro', 'золотая медаль', 'Спорт', 1], ['o remo', 'гребля', 'Спорт', 1], ['a esgrima', 'фехтование', 'Спорт', 1],
+    ['o andebol', 'гандбол', 'Спорт', 1], ['o râguebi', 'регби', 'Спорт', 1], ['patinar', 'кататься на коньках, роликах', 'Спорт', 1],
+    ['o atleta', 'спортсмен', 'Спорт', 1], ['amador', 'любитель', 'Спорт', 1],
+    // Медицина
+    ['o comprimido', 'таблетка', 'Медицина', 0], ['a injeção', 'инъекция', 'Медицина', 0], ['a picada', 'укол', 'Медицина', 0],
+    ['o anti-inflamatório', 'противовоспалительное', 'Медицина', 1], ['o antibiótico', 'антибиотик', 'Медицина', 1],
+    ['o analgésico', 'обезболивающее', 'Медицина', 1], ['o antipirético', 'жаропонижающее', 'Медицина', 1],
+    ['o antitússico', 'средство от кашля', 'Медицина', 1], ['o antiácido', 'средство от изжоги', 'Медицина', 1],
+    ['o laxante', 'слабительное', 'Медицина', 1], ['o calmante', 'успокоительное', 'Медицина', 1],
+    ['a pomada', 'мазь', 'Медицина', 1], ['as gotas para os olhos', 'глазные капли', 'Медицина', 1],
+    ['a constipação', 'простуда', 'Медицина', 1], ['a tosse seca', 'сухой кашель', 'Медицина', 1],
+    ['o muco', 'слизь', 'Медицина', 1], ['a vacinação', 'вакцинация', 'Медицина', 1], ['a alergia', 'аллергия', 'Медицина', 1],
+    ['estar enjoado', 'тошнить, чувствовать тошноту', 'Медицина', 1],
+    // Кино
+    ['o argumento', 'сценарий', 'Кино', 0], ['o enredo', 'сюжет', 'Кино', 0], ['o elenco', 'актёрский состав', 'Кино', 0],
+    ['o cenário', 'декорации', 'Кино', 0], ['o figurino', 'костюм (в фильме)', 'Кино', 0],
+    ['perturbador', 'тревожащий', 'Кино', 0], ['assustador', 'пугающий', 'Кино', 0], ['comovente', 'трогательный', 'Кино', 0],
+    ['a banda sonora', 'саундтрек', 'Кино', 1], ['as legendas', 'субтитры', 'Кино', 1],
+    ['estrear', 'выходить в прокат, премьера', 'Кино', 1], ['rodar um filme', 'снимать фильм', 'Кино', 1],
+    ['os efeitos especiais', 'спецэффекты', 'Кино', 1], ['a maquilhagem', 'грим', 'Кино', 1], ['hilariante', 'уморительный', 'Кино', 0],
+    // Характер
+    ['o feitio', 'нрав, характер', 'Характер', 0], ['mimado', 'избалованный', 'Характер', 0],
+    ['exigente', 'требовательный', 'Характер', 0], ['avarento', 'скупой', 'Характер', 1], ['poupado', 'экономный', 'Характер', 1],
+    ['distraído', 'рассеянный', 'Характер', 0], ['aflito', 'сильно расстроенный', 'Характер', 0],
+    ['ansioso', 'тревожный', 'Характер', 1], ['caprichoso', 'капризный', 'Характер', 1], ['aconchegante', 'уютный', 'Характер', 0],
+    ['instável', 'нестабильный', 'Характер', 0], ['a inveja', 'зависть', 'Характер', 0], ['a vergonha', 'стыд', 'Характер', 1],
+    // Сравнения
+    ['corado como um tomate', 'красный как помидор', 'Сравнения', 1],
+    ['são como um pero', 'здоровый как бык (букв. как яблоко)', 'Сравнения', 1],
+    ['lento como uma lesma', 'медленный как улитка', 'Сравнения', 1],
+    ['esperto como uma raposa', 'хитрый как лиса', 'Сравнения', 1],
+    ['branco como a cal', 'белый как мел', 'Сравнения', 1], ['gordo como um pote', 'толстый как бочка', 'Сравнения', 1],
+    ['fiel como um cão', 'верный как собака', 'Сравнения', 1], ['pesado como chumbo', 'тяжёлый как свинец', 'Сравнения', 1],
+    ['fresco como uma alface', 'свежий как огурец', 'Сравнения', 1], ['surdo como uma porta', 'глухой как пень', 'Сравнения', 1],
+    ['teimoso como um burro', 'упрямый как осёл', 'Сравнения', 1], ['magro como um espeto', 'тощий как жердь', 'Сравнения', 1],
+    ['forte como um touro', 'сильный как бык', 'Сравнения', 1], ['vaidoso como um pavão', 'тщеславный как павлин', 'Сравнения', 1],
+    // Разное
+    ['o sotaque', 'акцент', 'Разное', 0], ['o falante nativo', 'носитель языка', 'Разное', 0],
+    ['ter orgulho em', 'гордиться', 'Разное', 0], ['ter algo em comum', 'иметь что-то общее', 'Разное', 0],
+    ['o apoio', 'поддержка', 'Разное', 0], ['os brincos', 'серьги', 'Разное', 0], ['a carteira', 'кошелёк', 'Разное', 0],
+    ['o visto', 'виза', 'Разное', 0], ['a vista', 'вид (на что-то)', 'Разное', 0], ['a palestra', 'лекция, выступление', 'Разное', 0],
+    ['a briga', 'ссора, драка', 'Разное', 0], ['fino', 'тонкий', 'Разное', 0], ['o fornecedor', 'поставщик', 'Разное', 0],
+    ['os servos', 'слуги', 'Разное', 0], ['a cesta', 'корзина', 'Разное', 0], ['a corrente', 'течение, поток', 'Разное', 0],
+    ['a barragem', 'плотина, дамба', 'Разное', 0], ['o apagão', 'блэкаут', 'Разное', 0], ['a fila', 'очередь', 'Разное', 0],
+    ['o carinho', 'забота, ласка', 'Разное', 0], ['a lenda', 'легенда, миф', 'Разное', 0],
+    ['a legenda', 'подпись, субтитр', 'Разное', 0], ['lendário', 'легендарный', 'Разное', 0],
+    ['a tripulação', 'экипаж', 'Разное', 0], ['o ramo', 'веник, букет, ветка', 'Разное', 0],
+    ['a adega', 'винный погреб', 'Разное', 0], ['o ermitão', 'отшельник', 'Разное', 0],
+    ['o recado', 'записка, сообщение', 'Разное', 0], ['a ferramenta', 'инструмент', 'Разное', 0],
+    ['o acordo', 'соглашение', 'Разное', 0], ['a montagem', 'сборка', 'Разное', 0],
+    ['o vício', 'зависимость (привычка)', 'Разное', 0], ['o Entrudo', 'масленица, карнавал', 'Разное', 0],
+    ['a Quaresma', 'Великий пост', 'Разное', 0], ['o recheio', 'начинка', 'Разное', 0],
+    ['a tempestade', 'буря', 'Разное', 0], ['o furacão', 'ураган', 'Разное', 0], ['a rolha', 'пробка (винная)', 'Разное', 0],
+    ['o saca-rolhas', 'штопор', 'Разное', 0], ['o escaldão', 'солнечный ожог', 'Разное', 0],
+    ['o nojo', 'тошнота, отвращение', 'Разное', 0], ['o alívio', 'облегчение', 'Разное', 0], ['o aço', 'сталь', 'Разное', 0],
+    ['a rede neural', 'нейросеть', 'Разное', 0], ['em pessoa', 'лично', 'Разное', 0], ['cara a cara', 'лицом к лицу', 'Разное', 0]
+  ];
+
+  // [предложение, инфинитив, время, лицо, ответ, доска]
+  var SENTENCES = [
+    // Presente do Conjuntivo
+    ['— Achas que ele vem hoje? — Não sei, mas espero que ___.', 'vir', 'cpres', 2, 'venha', 'B1.2'],
+    ['— Achas que o tempo vai ficar melhor? — Não sei, mas espero que ___.', 'ficar', 'cpres', 2, 'fique', 'B1.2'],
+    ['— Achas que os gatos querem comer? — Não sei, mas espero que não ___.', 'querer', 'cpres', 4, 'queiram', 'B1.2'],
+    ['Receio que não ___ sem lhe lembrar.', 'fazer', 'cpres', 2, 'faça', 'B1.2'],
+    ['Não acho que ___ fácil.', 'ser', 'cpres', 2, 'seja', 'B1.2'],
+    ['Duvido que todos ___ na sexta-feira treze.', 'acreditar', 'cpres', 4, 'acreditem', 'B1.2'],
+    ['É bom que as pessoas ___ cuidado neste dia.', 'ter', 'cpres', 4, 'tenham', 'B1.2'],
+    ['Talvez nada de mal lhes ___.', 'acontecer', 'cpres', 2, 'aconteça', 'B1.2'],
+    ['Oxalá não se ___ nada.', 'passar', 'cpres', 2, 'passe', 'B1.2'],
+    ['Embora alguém ___ em casa, não há garantia de estar seguro.', 'ficar', 'cpres', 2, 'fique', 'B1.2'],
+    ['Embora alguém ___ esta superstição, nada lhe acontece.', 'ignorar', 'cpres', 2, 'ignore', 'B1.2'],
+    ['Por muito que a gente ___, não se vira mais feliz.', 'ganhar', 'cpres', 2, 'ganhe', 'B1.2'],
+    ['Por muitas pessoas que eu ___, ninguém me faz rir.', 'conhecer', 'cpres', 0, 'conheça', 'B1.2'],
+    ['Por melhor que ___ o escritório, não me permitem andar de pijama.', 'ser', 'cpres', 2, 'seja', 'B1.2'],
+    ['Qualquer desporto que eu ___, não gosto dele.', 'fazer', 'cpres', 0, 'faça', 'B1.2'],
+    ['O que quer que eu ___, tudo me engorda.', 'comer', 'cpres', 0, 'coma', 'B1.2'],
+    ['Com quem quer que eu ___, os clientes não compram o produto.', 'trabalhar', 'cpres', 0, 'trabalhe', 'B1.2'],
+    ['Tomara que a minha carteira ___ ali no restaurante.', 'estar', 'cpres', 2, 'esteja', 'B1.2'],
+    // Imperativo
+    ['___! (tu)', 'fazer', 'impa', 1, 'faz', 'B1.2'],
+    ['Não ___! (tu)', 'fazer', 'impn', 1, 'faças', 'B1.2'],
+    ['___! (vocês)', 'fazer', 'impa', 4, 'façam', 'B1.2'],
+    ['Não ___! (vocês)', 'fazer', 'impn', 4, 'façam', 'B1.2'],
+    ['___! (você, formal)', 'fazer', 'impa', 2, 'faça', 'B1.2'],
+    ['Não ___! (você, formal)', 'fazer', 'impn', 2, 'faça', 'B1.2'],
+    // PPCC
+    ['É bom que ele ___ a horas.', 'vir', 'cppc', 2, 'tenha vindo', 'B1.2'],
+    ['Espero que ele já ___ isso quando o chefe voltar.', 'fazer', 'cppc', 2, 'tenha feito', 'B1.2'],
+    ['Caso já ___, podes ir estudar.', 'almoçar', 'cppc', 1, 'tenhas almoçado', 'B1.2'],
+    ['Embora nós ___, fomos com eles ao restaurante.', 'jantar', 'cppc', 3, 'tenhamos jantado', 'B1.2'],
+    ['Não saio daqui até que ___ uma decisão.', 'tomar', 'cppc', 4, 'tenham tomado', 'B1.2'],
+    ['Vou adiar a reunião para que todos ___ antes de começarmos.', 'chegar', 'cppc', 4, 'tenham chegado', 'B1.2'],
+    // Futuro do Conjuntivo
+    ['Se amanhã ___ bom tempo, vamos à praia.', 'estar', 'cfut', 2, 'estiver', 'B1.2'],
+    ['Se eu ___ com ele, vou dizer-lhe que estás à procura dele.', 'dar', 'cfut', 0, 'der', 'B1.2'],
+    ['Se eles ___ o prometido, será bom.', 'fazer', 'cfut', 4, 'fizerem', 'B1.2'],
+    ['Se ___ cedo, telefonem-me.', 'chegar', 'cfut', 4, 'chegarem', 'B1.2'],
+    ['Se não ___ os óculos, não vejo bem ao longe.', 'pôr', 'cfut', 0, 'puser', 'B1.2'],
+    ['Se ___ transferido para o Porto, ponho a casa à venda.', 'ser', 'cfut', 0, 'for', 'B1.2'],
+    ['Se eles não ___ dinheiro, poderão continuar a alugar.', 'ter', 'cfut', 4, 'tiverem', 'B1.2'],
+    ['Quando eu ___ à Rússia, vou levar pastéis de nata.', 'ir', 'cfut', 0, 'for', 'B1.2'],
+    ['Vou ficar feliz quando eu ___ a minha mãe.', 'ver', 'cfut', 0, 'vir', 'B1.2'],
+    ['Poderão ficar na nossa casa sempre que ___ a Portugal.', 'vir', 'cfut', 4, 'vierem', 'B1.2'],
+    ['Não vou poder sentir-me feliz enquanto a guerra ___.', 'continuar', 'cfut', 2, 'continuar', 'B1.2'],
+    ['Veste-te como tu ___!', 'querer', 'cfut', 1, 'quiseres', 'B1.2'],
+    ['Fazemos conforme ele ___.', 'dizer', 'cfut', 2, 'disser', 'B1.2'],
+    ['Logo que ___, telefona!', 'chegar', 'cfut', 1, 'chegares', 'B1.2'],
+    ['Assim que ___, avisa!', 'saber', 'cfut', 1, 'souberes', 'B1.2'],
+    ['Quem ___ o nosso livro de auto-ajuda, vai encontrar a felicidade!', 'comprar', 'cfut', 2, 'comprar', 'B1.2'],
+    ['Quem ___ o primeiro, vai encontrar um lugar para estacionar.', 'ser', 'cfut', 2, 'for', 'B1.2'],
+    ['Vou preparar o bolo que ___.', 'querer', 'cfut', 1, 'quiseres', 'B1.2'],
+    ['Vai aonde ___.', 'querer', 'cfut', 1, 'quiseres', 'B1.2'],
+    ['Vou aonde vocês ___.', 'dizer', 'cfut', 4, 'disserem', 'B1.2'],
+    ['Estejas onde ___, vou-te encontrar!', 'estar', 'cfut', 1, 'estiveres', 'B1.2'],
+    ['Faças o que ___, não vais mudar nada.', 'fazer', 'cfut', 1, 'fizeres', 'B1.2'],
+    ['Venhas quando ___, avisa!', 'vir', 'cfut', 1, 'vieres', 'B1.2'],
+    ['Seja o que ___, vamos resolver esse problema!', 'ser', 'cfut', 2, 'for', 'B1.2'],
+    ['Esteja onde ___, telefone!', 'estar', 'cfut', 2, 'estiver', 'B1.2'],
+    // Imperfeito do Conjuntivo
+    ['Quem me dera que ele ___ no exame. Ele estudou pouco.', 'passar', 'cimp', 2, 'passasse', 'B1.2'],
+    ['Tomara que a minha carteira ___ ali (mas é pouco provável).', 'estar', 'cimp', 2, 'estivesse', 'B1.2'],
+    ['Se nós ___, escolheríamos o mesmo.', 'escolher', 'cimp', 3, 'escolhêssemos', 'B1.2'],
+    ['Se eles não ___ dinheiro, podiam continuar a alugar.', 'ter', 'cimp', 4, 'tivessem', 'B1.2'],
+    // Condicional e Futuro
+    ['Eu ___ de receber o meu título.', 'gostar', 'cond', 0, 'gostaria', 'B1.1'],
+    ['O senhor ___ ajudar-me?', 'poder', 'cond', 2, 'poderia', 'B1.1'],
+    ['Ele disse que ___ a horas.', 'chegar', 'cond', 2, 'chegaria', 'B1.1'],
+    ['Eu pensava que ele ___ do livro.', 'gostar', 'cond', 2, 'gostaria', 'B1.1'],
+    ['Ele disse que ___ os salários.', 'aumentar', 'cond', 2, 'aumentaria', 'B1.1'],
+    ['No fim de semana eu ___ tudo para a festa.', 'preparar', 'fut', 0, 'prepararei', 'B1.1'],
+    ['Ele ___ Portugal no próximo ano.', 'visitar', 'fut', 2, 'visitará', 'B1.1'],
+    ['Nós ___ este filme logo.', 'ver', 'fut', 3, 'veremos', 'B1.1'],
+    ['Os ministros ___ no país na próxima semana.', 'estar', 'fut', 4, 'estarão', 'B1.1'],
+    ['A IA ___ os médicos.', 'ajudar', 'fut', 2, 'ajudará', 'B1.1'],
+    ['A IA ___ os trabalhos simples.', 'fazer', 'fut', 2, 'fará', 'B1.1'],
+    ['O que ___ nós?', 'fazer', 'fut', 3, 'faremos', 'B1.1'],
+    ['Eu ___ os salários.', 'aumentar', 'fut', 0, 'aumentarei', 'B1.1'],
+    // Haver de
+    ['Um dia, tu ___ de vir à minha casa!', 'haver', 'pres', 1, 'hás', 'B1.1'],
+    ['Um dia, ele ___ de nos visitar.', 'haver', 'pres', 2, 'há', 'B1.1'],
+    ['Nós ___ de nos encontrar todos um dia!', 'haver', 'pres', 3, 'havemos', 'B1.1'],
+    ['Eu ___ de ir a Coimbra.', 'haver', 'pres', 0, 'hei', 'B1.1'],
+    // Imperfeito e PPS
+    ['Quando eu era estudante, eu ___ no casino.', 'trabalhar', 'imp', 0, 'trabalhava', 'B1.1'],
+    ['Desde que nos ___ para Portugal, o nosso filho tem estudado no King\'s College.', 'mudar', 'pps', 3, 'mudámos', 'B1.1'],
+    ['Desde que eu ___ o showroom no Dubai, tenho ido lá cada mês.', 'abrir', 'pps', 0, 'abri', 'B1.1'],
+    ['Desde que nós ___ os gatinhos, eu tenho limpado o chão cada dia.', 'adotar', 'pps', 3, 'adotámos', 'B1.1'],
+    ['Ele não nos ___ entrar.', 'deixar', 'pps', 2, 'deixou', 'B1.1'],
+    ['Ontem ___ ao médico que tinha feito a operação.', 'ir', 'pps', 0, 'fui', 'B1.1'],
+    ['Eu ___ tarde para casa.', 'voltar', 'pps', 0, 'voltei', 'B1.1'],
+    // Particípio e tempos compostos
+    ['Tenho ___ muito nas últimas duas semanas.', 'trabalhar', 'part', null, 'trabalhado', 'B1.1'],
+    ['Ultimamente tens ___ pouco com a mãe.', 'falar', 'part', null, 'falado', 'B1.1'],
+    ['As indústrias têm ___ muitos animais.', 'matar', 'part', null, 'matado', 'B1.1'],
+    ['Os bombeiros já tinham ___ as pessoas.', 'salvar', 'part', null, 'salvado', 'B1.1'],
+    ['As pessoas têm ___ a ideia.', 'aceitar', 'part', null, 'aceitado', 'B1.1'],
+    ['Tenho ___ imenso trabalho.', 'ter', 'part', null, 'tido', 'B1.1'],
+    ['Eu tenho ___ português nos últimos 3 anos.', 'estudar', 'part', null, 'estudado', 'B1.1'],
+    ['Os gatinhos não se têm ___ bem.', 'portar', 'part', null, 'portado', 'B1.1'],
+    ['Quando nós chegámos à estação, o comboio já ___.', 'partir', 'mqpc', 2, 'tinha partido', 'B1.1'],
+    ['Ele estava nervoso porque nunca ___ um concerto.', 'dar', 'mqpc', 2, 'tinha dado', 'B1.1'],
+    ['Já lhe ___ quando tu telefonaste.', 'escrever', 'mqpc', 0, 'tinha escrito', 'B1.1'],
+    ['Quando ela nasceu, a avó já ___.', 'morrer', 'mqpc', 2, 'tinha morrido', 'B1.1'],
+    ['Ele disse que ___ tarde para casa.', 'voltar', 'mqpc', 2, 'tinha voltado', 'B1.1'],
+    ['Eu nunca antes ___ esse passeio.', 'fazer', 'mqpc', 0, 'tinha feito', 'B1.1'],
+    // Infinitivo Pessoal
+    ['Nós trabalhamos para tu ___ uma vida melhor.', 'ter', 'infp', 1, 'teres', 'B1.1'],
+    ['Lavem as mãos antes de ___!', 'comer', 'infp', 4, 'comerem', 'B1.1'],
+    ['Eles ficaram zangados por ___ atrasados.', 'estar', 'infp', 3, 'estarmos', 'B1.1'],
+    ['É perigoso ___ sozinho.', 'passear', 'infp', 1, 'passeares', 'B1.1'],
+    ['É importante ___ mais tempo juntos.', 'passar', 'infp', 3, 'passarmos', 'B1.1'],
+    ['É melhor ___ o médico.', 'consultar', 'infp', 4, 'consultarem', 'B1.1'],
+    ['Antes de ___, lava as mãos.', 'comer', 'infp', 1, 'comeres', 'B1.1'],
+    ['Em vez de ___ no computador, é melhor fazeres o trabalho de casa.', 'jogar', 'infp', 1, 'jogares', 'B1.1'],
+    ['No caso de ele ___, diz que eu não estou.', 'telefonar', 'infp', 2, 'telefonar', 'B1.1'],
+    ['Ao ___ de casa, não te esqueças de desligar as luzes.', 'sair', 'infp', 1, 'saíres', 'B1.1'],
+    ['Ao ___ às compras, não te esqueças de comprar o sal.', 'ir', 'infp', 1, 'ires', 'B1.1'],
+    ['Ao ___ a São Petersburgo, nós visitámos os meus pais.', 'vir', 'infp', 3, 'virmos', 'B1.1'],
+    ['Basta ___ a consulta.', 'marcar', 'infp', 4, 'marcarem', 'B1.1'],
+    // Gerúndio
+    ['Perdi o chapéu ___ do comboio.', 'sair', 'ger', null, 'saindo', 'B1.1'],
+    ['Os clientes podem relaxar ___ com os gatos.', 'brincar', 'ger', null, 'brincando', 'B1.1'],
+    ['___ teu amigo, tenho que te ajudar.', 'ser', 'ger', null, 'sendo', 'B1.1']
+  ];
+
+  var api = { VERBS: VERBS, WORDS: WORDS, SENTENCES: SENTENCES };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.PTData = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Русские переводы предложений (индекс = порядок в PTData.SENTENCES). Переводы мои, не с досок. */
+(function (root) {
+  var TR = [
+    'Как думаешь, он придёт сегодня? Не знаю, но надеюсь, что придёт.',
+    'Как думаешь, погода улучшится? Не знаю, но надеюсь, что улучшится.',
+    'Как думаешь, коты хотят есть? Не знаю, но надеюсь, что не хотят.',
+    'Боюсь, что он не сделает этого без напоминания.',
+    'Не думаю, что это легко.',
+    'Сомневаюсь, что все верят в пятницу тринадцатого.',
+    'Хорошо, чтобы люди были осторожны в этот день.',
+    'Может быть, с ними не случится ничего плохого.',
+    'Дай бог, чтобы ничего не случилось.',
+    'Даже если кто-то останется дома, нет гарантии безопасности.',
+    'Даже если кто-то игнорирует это суеверие, с ним ничего не случается.',
+    'Сколько бы мы ни зарабатывали, счастливее не становимся.',
+    'Сколько бы людей я ни знал, никто не смешит меня.',
+    'Каким бы хорошим ни был офис, мне не разрешают ходить в пижаме.',
+    'Каким бы спортом я ни занимался, он мне не нравится.',
+    'Что бы я ни съел, от всего поправляюсь.',
+    'С кем бы я ни работал, клиенты не покупают продукт.',
+    'Хоть бы мой кошелёк был там, в ресторане.',
+    'Делай! (ты)',
+    'Не делай! (ты)',
+    'Делайте! (вы)',
+    'Не делайте! (вы)',
+    'Сделайте! (вы, вежливо, единственное число)',
+    'Не делайте! (вы, вежливо, единственное число)',
+    'Хорошо, что он пришёл вовремя.',
+    'Надеюсь, к возвращению начальника он уже сделает это.',
+    'Если ты уже пообедал, можешь идти заниматься.',
+    'Хотя мы уже поужинали, мы пошли с ними в ресторан.',
+    'Я не уйду отсюда, пока они не примут решение.',
+    'Я перенесу встречу, чтобы все успели прийти до того, как мы начнём.',
+    'Если завтра будет хорошая погода, мы поедем на пляж.',
+    'Если я столкнусь с ним, скажу, что ты его ищешь.',
+    'Если они сделают обещанное, это будет хорошо.',
+    'Если приедете рано, позвоните мне.',
+    'Если я не надену очки, я плохо вижу вдаль.',
+    'Если меня переведут в Порту, я выставлю дом на продажу.',
+    'Если у них не будет денег, они смогут и дальше снимать.',
+    'Когда я поеду в Россию, я возьму с собой пастел-де-ната.',
+    'Я буду счастлив, когда увижу маму.',
+    'Вы сможете остановиться в нашем доме всякий раз, когда приедете в Португалию.',
+    'Я не смогу чувствовать себя счастливым, пока продолжается война.',
+    'Одевайся как хочешь!',
+    'Делаем так, как он скажет.',
+    'Как только приедешь, позвони!',
+    'Как только узнаешь, сообщи!',
+    'Кто купит нашу книгу по саморазвитию, найдёт счастье!',
+    'Кто будет первым, найдёт место для парковки.',
+    'Я приготовлю торт, какой ты захочешь.',
+    'Иди куда хочешь.',
+    'Я пойду туда, куда вы скажете.',
+    'Где бы ты ни был, я тебя найду!',
+    'Что бы ты ни делал, ты ничего не изменишь.',
+    'Приходи когда хочешь, но предупреди!',
+    'Что бы это ни было, мы решим эту проблему!',
+    'Где бы вы ни были, позвоните!',
+    'Если бы только он сдал экзамен. Он мало занимался.',
+    'Хоть бы мой кошелёк был там (но это маловероятно).',
+    'Если бы мы выбирали, мы бы выбрали то же самое.',
+    'Если бы у них не было денег, они могли бы и дальше снимать.',
+    'Я бы хотел получить свой диплом.',
+    'Не могли бы вы мне помочь?',
+    'Он сказал, что приедет вовремя.',
+    'Я думал, что ему понравится книга.',
+    'Он сказал, что повысит зарплаты.',
+    'В выходные я всё подготовлю к празднику.',
+    'В следующем году он посетит Португалию.',
+    'Мы посмотрим этот фильм позже.',
+    'На следующей неделе министры будут в стране.',
+    'ИИ будет помогать врачам.',
+    'ИИ будет выполнять простую работу.',
+    'Что будем делать мы?',
+    'Я повышу зарплаты.',
+    'Когда-нибудь ты обязательно придёшь ко мне домой!',
+    'Когда-нибудь он обязательно навестит нас.',
+    'Мы обязательно все когда-нибудь встретимся!',
+    'Я обязательно поеду в Коимбру.',
+    'Когда я был студентом, я работал в казино.',
+    'С тех пор как мы переехали в Португалию, наш сын учится в King\'s College.',
+    'С тех пор как я открыл шоурум в Дубае, я езжу туда каждый месяц.',
+    'С тех пор как мы взяли котят, я каждый день мою пол.',
+    'Он не дал нам войти.',
+    'Вчера я ходил к врачу, который делал операцию.',
+    'Я вернулся домой поздно.',
+    'Я много работал последние две недели.',
+    'В последнее время ты мало разговариваешь с мамой.',
+    'Промышленность убивает много животных.',
+    'Пожарные уже спасли людей.',
+    'Люди принимают эту идею.',
+    'У меня было очень много работы.',
+    'Я изучаю португальский последние три года.',
+    'Котята ведут себя плохо.',
+    'Когда мы пришли на станцию, поезд уже ушёл.',
+    'Он нервничал, потому что никогда раньше не давал концерт.',
+    'Я уже написал ему, когда ты позвонил.',
+    'Когда она родилась, бабушка уже умерла.',
+    'Он сказал, что вернулся домой поздно.',
+    'Я никогда раньше не совершал эту прогулку.',
+    'Мы работаем, чтобы у тебя была лучшая жизнь.',
+    'Помойте руки перед едой!',
+    'Они разозлились из-за того, что мы опоздали.',
+    'Опасно гулять одному.',
+    'Важно проводить больше времени вместе.',
+    'Лучше вам обратиться к врачу.',
+    'Перед едой помой руки.',
+    'Вместо того чтобы играть на компьютере, лучше сделай домашнее задание.',
+    'Если он позвонит, скажи, что меня нет.',
+    'Выходя из дома, не забудь выключить свет.',
+    'Идя за покупками, не забудь купить соль.',
+    'Когда мы приехали в Санкт-Петербург, мы навестили моих родителей.',
+    'Достаточно записаться на приём.',
+    'Я потерял шляпу, выходя из поезда.',
+    'Клиенты могут расслабиться, играя с котами.',
+    'Раз я твой друг, я должен тебе помочь.'
+  ];
+  if (typeof module !== 'undefined' && module.exports) module.exports = TR;
+  else root.PTTr = TR;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Допустимые варианты ответа. Составлены мной, не с доски, только уверенные.
+   ru[португальское] = дополнительные русские ответы при вводе перевода.
+   pt[португальское] = дополнительные португальские слова при вводе по-русски. */
+(function (root) {
+  var ru = {
+    'apoiar': ['поддержать', 'поддерживать', 'подбодрить'],
+    'confiar em': ['доверять', 'довериться', 'полагаться на', 'положиться на'],
+    'contar com': ['рассчитывать', 'рассчитывать на', 'полагаться на', 'надеяться на'],
+    'queixar-se de': ['жаловаться', 'пожаловаться на', 'пожаловаться'],
+    'abusar de': ['злоупотреблять', 'злоупотребить', 'злоупотреблять чем-то'],
+    'arrepender-se de': ['раскаиваться', 'сожалеть о', 'пожалеть о', 'жалеть о'],
+    'tratar de': ['заниматься', 'ухаживать', 'позаботиться о', 'заботиться о'],
+    'dar-se bem/mal com': ['ладить с', 'ладить', 'не ладить с', 'не ладить'],
+    'conhecer-se com': ['познакомиться с', 'знакомиться', 'знакомиться с'],
+    'ficar amigos': ['стать друзьями', 'подружиться с'],
+    'fazer amigos': ['заводить друзей', 'найти друзей', 'обзаводиться друзьями', 'подружиться'],
+    'resultar em': ['приводить к', 'привести к', 'заканчиваться'],
+    'resultar de': ['происходить от', 'быть следствием', 'вытекать из', 'следовать из'],
+    'lidar com': ['справляться', 'справляться с', 'справиться с', 'иметь дело', 'иметь дело с'],
+    'mimar': ['баловать', 'избаловать'],
+    'pegar em': ['взять', 'брать', 'схватить', 'хватать', 'взять в руки'],
+    'deixar de fazer': ['перестать', 'бросить', 'прекратить', 'перестать делать', 'бросить делать'],
+    'deixar fazer': ['позволять', 'разрешать', 'позволить', 'разрешить'],
+    'voltar a fazer': ['снова делать', 'делать снова', 'делать опять', 'сделать ещё раз', 'сделать еще раз'],
+    'montar': ['собрать', 'собирать', 'монтировать'],
+    'processar alguém': ['подавать в суд', 'подать в суд', 'судиться с', 'судиться'],
+    'descarregar': ['скачивать', 'скачать', 'выгружать', 'разгружать'],
+    'carregar': ['нажимать', 'нажать', 'заряжать', 'зарядить', 'загружать', 'загрузить', 'нести'],
+    'espirrar': ['чихнуть'],
+    'chatear': ['раздражать', 'надоедать', 'досаждать', 'доставать', 'надоесть'],
+    'reparar em': ['замечать', 'заметить', 'обращать внимание на', 'обратить внимание на'],
+    'dar por': ['замечать', 'заметить', 'осознавать', 'осознать'],
+    'dar jeito': ['пригодиться', 'сгодиться', 'пригождаться', 'быть кстати', 'быть полезным'],
+    'ter a ver com': ['иметь отношение', 'иметь отношение к', 'быть связанным с', 'относиться к'],
+    'pedir emprestado': ['одалживать', 'занимать', 'занять', 'взять взаймы', 'брать в долг', 'взять в долг'],
+    'emprestar': ['одалживать', 'дать взаймы', 'давать взаймы', 'дать в долг', 'давать в долг'],
+    'devolver': ['возвращать', 'отдать', 'отдавать', 'возвратить'],
+    'dar para': ['выходить на', 'быть возможным', 'можно', 'хватать'],
+    'dar com': ['наткнуться', 'наткнуться на', 'встретить', 'найти', 'натолкнуться на'],
+    'dar em': ['привести к', 'приводить к', 'закончиться'],
+    'ficar com': ['взять себе', 'оставить себе', 'забрать себе', 'остаться с', 'взять'],
+    'ficar por fazer': ['остаться несделанным', 'остаться не сделанным', 'остаться невыполненным'],
+    'ficar de': ['договориться', 'пообещать', 'обещать'],
+    'ficar a pensar': ['задуматься', 'призадуматься', 'размышлять'],
+    'ficar a saber': ['узнать', 'узнавать', 'выяснить', 'выяснять'],
+    'ligar a': ['обращать внимание', 'обращать внимание на', 'придавать значение'],
+    'cheirar a': ['пахнуть', 'пахнуть чем-то', 'пахнет'],
+    'soar a': ['звучать', 'звучит как', 'звучать похоже на'],
+    'saber a': ['иметь вкус', 'на вкус как', 'иметь вкус чего-то', 'быть на вкус как'],
+    'achar piada a': ['находить забавным', 'находить смешным', 'считать смешным', 'считать забавным'],
+    'enganar-se': ['ошибаться', 'ошибиться', 'заблуждаться'],
+    'regatear': ['торговаться', 'поторговаться'],
+    'mexer em': ['трогать', 'копаться', 'копаться в', 'рыться в'],
+    'mexer-se': ['двигаться', 'шевелиться', 'пошевелиться'],
+    'contemplar': ['любоваться', 'созерцать', 'наблюдать'],
+    'assustar-se': ['испугаться', 'пугаться', 'напугаться'],
+    'meter-se em': ['вмешиваться', 'вмешаться', 'вмешиваться в', 'лезть в'],
+    'assaltar': ['напасть', 'ограбить', 'грабить', 'нападать'],
+    'estar viciado em': ['быть зависимым', 'быть зависимым от', 'зависеть от'],
+    'ir parar': ['оказаться', 'попасть', 'очутиться'],
+    'inventar': ['придумывать', 'придумать', 'выдумать', 'изобретать', 'изобрести'],
+    'insultar': ['оскорбить', 'оскорблять', 'обзывать'],
+    'ofender': ['обидеть', 'оскорблять', 'оскорбить'],
+    'encenar': ['ставить', 'поставить спектакль', 'ставить пьесу', 'инсценировать'],
+    'interagir': ['взаимодействие', 'общаться', 'контактировать'],
+    'inserir': ['вставить', 'вводить', 'добавлять', 'вносить'],
+    'ficar inspirado por': ['вдохновиться', 'вдохновляться', 'вдохновиться кем-то'],
+    'ocupar o lugar': ['занять место', 'занимать место', 'занять'],
+    'caber': ['вмещаться', 'умещаться', 'поместиться'],
+    'esgotar': ['исчерпывать', 'истощить', 'закончиться', 'распродать'],
+    'entrar em vigor': ['вступить в силу', 'начать действовать'],
+    'derrotar': ['победить', 'разгромить', 'одолеть', 'обыграть'],
+    'contribuir para': ['вносить вклад', 'внести вклад в', 'способствовать', 'содействовать'],
+    'escusar': ['избавить', 'не нужно', 'не требуется'],
+    'sugerir': ['предложить', 'советовать', 'подсказать'],
+    'expandir': ['расширить', 'расширяться', 'развивать'],
+    'encomendar': ['заказывать', 'заказать', 'заказать с доставкой'],
+    'bisbilhotar': ['подглядывать', 'подслушивать', 'шпионить', 'совать нос'],
+    'fofocar': ['сплетничать', 'судачить', 'сплетни'],
+    'atracar': ['причаливать', 'пришвартоваться', 'причалить'],
+    'deitar fora': ['выкинуть', 'выбрасывать', 'выкидывать'],
+    'Que coincidência!': ['какое совпадение', 'вот это совпадение', 'какое совпадение!'],
+    'Antes a morte que tal sorte!': ['лучше смерть, чем такая судьба', 'лучше умереть, чем такая участь', 'лучше смерть, чем такая участь', 'лучше смерть чем такая судьба', 'лучше смерть чем такая участь'],
+    'Não leves a mal!': ['не сердись', 'не обижайся', 'не пойми неправильно', 'не пойми превратно'],
+    'Anda mas é beber um vinho': ['давай-ка выпьем вина', 'давай выпьем вина', 'пойдём лучше выпьем вина', 'давай лучше выпьем вина'],
+    'Anda mas é dormir!': ['иди уже спать', 'иди спать', 'иди-ка спать', 'иди лучше спать'],
+    'Sei lá!': ['не знаю', 'откуда я знаю', 'понятия не имею', 'кто его знает'],
+    'cá para mim': ['по-моему', 'на мой взгляд', 'как по мне', 'по моему', 'мне кажется'],
+    'tanto faz': ['всё равно', 'без разницы', 'все равно', 'безразлично'],
+    'na mesma': ['всё равно', 'по-прежнему', 'все равно', 'по прежнему', 'всё так же', 'все так же'],
+    'pelo menos': ['по крайней мере', 'хотя бы', 'как минимум', 'по меньшей мере'],
+    'da última vez': ['в прошлый раз', 'в последний раз'],
+    'seguir à letra': ['следовать буквально', 'следовать инструкции', 'выполнять буквально', 'следовать по инструкции'],
+    'graças a': ['благодаря'],
+    'no caso de': ['в случае', 'на случай', 'в случае, если'],
+    'em meados de': ['в середине', 'в середине месяца'],
+    'ora... ora...': ['то... то...', 'то то', 'то... то'],
+    'estar à toa': ['бездельничать', 'быть не у дел', 'слоняться без дела', 'бить баклуши'],
+    'não é o meu género': ['не в моём вкусе', 'не в моем вкусе', 'не мой жанр', 'не моё', 'не мое'],
+    'voltar às vacas frias': ['вернуться к нашим баранам', 'вернёмся к нашим баранам', 'вернемся к нашим баранам', 'вернуться к теме'],
+    'ficar a ver navios': ['остаться ни с чем', 'остаться у разбитого корыта', 'остаться с носом'],
+    'Será que...?': ['неужели', 'интересно', 'неужели...?', 'интересно, ...'],
+    'Estou à sua disposição': ['я к вашим услугам', 'я в вашем распоряжении', 'к вашим услугам'],
+    'Não hesite em contactar-nos': ['не стесняйтесь обращаться', 'не стесняйтесь обращаться к нам', 'не стесняйтесь связываться с нами', 'не стесняйтесь связаться с нами'],
+    'o sótão': ['мансарда', 'чердачное помещение'],
+    'a cave': ['погреб', 'подвальное помещение'],
+    'as instalações': ['помещение', 'объект', 'здания', 'сооружения'],
+    'o imóvel': ['объект недвижимости', 'недвижимое имущество', 'объект'],
+    'a agência imobiliária': ['риелторское агентство', 'риэлторское агентство', 'агентство по недвижимости'],
+    'o agente imobiliário': ['риелтор', 'риэлтор', 'агент', 'маклер'],
+    'o proprietário': ['владелец', 'хозяин', 'домовладелец'],
+    'o comprador': ['покупатель недвижимости'],
+    'a moradia': ['вилла', 'частный дом', 'особняк', 'коттедж', 'жилой дом'],
+    'o prédio': ['здание', 'дом', 'многоэтажка', 'жилой дом', 'многоэтажный дом'],
+    'o terreno': ['участок', 'земля', 'участок земли', 'земельный надел'],
+    'o lote': ['участок', 'лот'],
+    'a área útil': ['полезная площадь'],
+    'a área bruta': ['валовая площадь', 'площадь брутто'],
+    'os vidros duplos': ['двойные стёкла', 'двойные стекла', 'двойное остекление', 'стеклопакет'],
+    'o isolamento térmico': ['тепловая изоляция', 'термоизоляция', 'утепление'],
+    'o isolamento acústico': ['звукоизоляция', 'акустическая изоляция'],
+    'a orientação solar': ['ориентация относительно солнца', 'ориентация по сторонам света'],
+    'o preço pedido': ['цена продажи', 'заявленная цена', 'объявленная цена', 'цена в объявлении'],
+    'o valor de mercado': ['рыночная цена', 'рыночная ценность'],
+    'a valorização': ['повышение стоимости', 'удорожание', 'прирост стоимости', 'рост цены'],
+    'a desvalorização': ['снижение стоимости', 'обесценивание', 'обесценение', 'потеря стоимости', 'падение цены'],
+    'o telhado': ['кровля'],
+    'o chão': ['земля', 'напольное покрытие'],
+    'o quintal': ['дворик', 'задний двор', 'внутренний двор'],
+    'o armazém': ['складское помещение', 'хранилище'],
+    'a arrecadação': ['кладовка', 'кладовая', 'подсобка', 'чулан'],
+    'a despensa': ['кладовая', 'кладовка', 'продуктовая кладовая'],
+    'a lareira': ['очаг'],
+    'a chaminé': ['дымоход', 'печная труба', 'дымовая труба'],
+    'as persianas': ['ставни', 'жалюзи'],
+    'os estores': ['жалюзи', 'рулонные шторы', 'рольставни'],
+    'as cortinas': ['занавески', 'портьеры', 'гардины'],
+    'soalheiro': ['солнечный', 'залитый солнцем', 'солнечный дом'],
+    'estar virado a sul': ['быть обращённым на юг', 'быть обращенным на юг', 'выходит на юг', 'окна на юг'],
+    'as assoalhadas': ['комнаты в квартире', 'комнаты'],
+    'em segunda mão': ['вторичка', 'б/у', 'бу', 'бывший в употреблении', 'подержанный'],
+    'em planta': ['на стадии проекта', 'по проекту', 'на стадии строительства', 'новостройка'],
+    'marcar uma visita': ['записаться на просмотр', 'договориться о просмотре', 'назначить визит', 'назначить осмотр'],
+    'negociar o preço': ['торговаться', 'договариваться о цене', 'обсуждать цену'],
+    'fazer uma proposta': ['предложить цену', 'сделать оферту'],
+    'baixar o preço': ['понизить цену', 'уменьшить цену', 'скинуть цену', 'сбавить цену', 'сделать скидку'],
+    'estar em bom estado': ['в хорошем состоянии', 'находиться в хорошем состоянии'],
+    'a precisar de obras': ['нуждающийся в ремонте', 'нуждается в ремонте', 'нужен ремонт', 'требует ремонта', 'под ремонт'],
+    'remodelado': ['реконструированный', 'обновлённый', 'обновленный', 'после ремонта', 'с ремонтом'],
+    'degradado': ['обветшалый', 'ветхий', 'запущенный', 'разрушающийся', 'изношенный'],
+    'a humidade': ['сырость', 'влага'],
+    'o bolor': ['грибок', 'плесень на стене'],
+    'a infiltração': ['протечка', 'просачивание', 'протекание', 'течь', 'просачивание воды'],
+    'a canalização': ['водопровод', 'трубы', 'водопроводные трубы', 'сантехника'],
+    'os esgotos': ['сточные воды', 'стоки', 'канализационные трубы'],
+    'a pressão': ['давление воды', 'напор'],
+    'a impermeabilização': ['гидроизоляция', 'влагоизоляция'],
+    'pagar em prestações': ['платить частями', 'платить по частям', 'выплачивать в рассрочку', 'оплата в рассрочку'],
+    'a taxa': ['ставка', 'тариф', 'пошлина'],
+    'o interruptor': ['рубильник', 'тумблер', 'переключатель'],
+    'o promotor imobiliário': ['застройщик', 'девелопер недвижимости'],
+    'o sobrinho / a sobrinha': ['племянник', 'племянница', 'племянник или племянница'],
+    'o primo / a prima': ['двоюродный брат', 'двоюродная сестра', 'кузен', 'кузина', 'двоюродный брат или сестра'],
+    'o bisavô / a bisavó': ['прадед', 'прабабушка', 'прадедушка'],
+    'o sogro / a sogra': ['тесть', 'тёща', 'теща', 'свёкор', 'свекор', 'свекровь', 'тесть или тёща'],
+    'o genro / a nora': ['зять', 'невестка', 'сноха', 'зять или невестка'],
+    'o cunhado': ['шурин', 'деверь', 'муж сестры', 'брат жены', 'брат мужа', 'свояк'],
+    'a cunhada': ['золовка', 'свояченица', 'жена брата', 'сестра жены', 'сестра мужа'],
+    'o adversário': ['противник', 'оппонент', 'соперник'],
+    'o árbitro': ['арбитр', 'рефери'],
+    'o campeonato': ['первенство'],
+    'a Copa do Mundo': ['чемпионат мира', 'мундиаль', 'чемпионат мира по футболу'],
+    'o torneio': ['соревнование', 'состязание'],
+    'a vitória': ['триумф', 'выигрыш'],
+    'a derrota': ['проигрыш'],
+    'o empate': ['ничья', 'равный счёт', 'равный счет'],
+    'vencer': ['победить', 'выигрывать', 'выиграть', 'одерживать победу'],
+    'empatar': ['играть вничью', 'сыграть в ничью', 'свести вничью', 'сравнять счёт', 'сравнять счет'],
+    'o treinador': ['наставник', 'коуч'],
+    'a equipa': ['коллектив', 'бригада'],
+    'a medalha de ouro': ['золото', 'золотая награда'],
+    'o remo': ['академическая гребля', 'весло'],
+    'o andebol': ['ручной мяч'],
+    'patinar': ['кататься на коньках', 'кататься на роликах', 'кататься на роликовых коньках'],
+    'o atleta': ['атлет', 'спортсменка', 'легкоатлет'],
+    'amador': ['любительский', 'дилетант', 'непрофессионал'],
+    'o comprimido': ['пилюля', 'таблетки'],
+    'a injeção': ['укол', 'шприц'],
+    'a picada': ['укус', 'укус насекомого', 'жало'],
+    'o anti-inflamatório': ['противовоспалительное средство', 'противовоспалительный препарат', 'противовоспалительное лекарство'],
+    'o analgésico': ['анальгетик', 'болеутоляющее', 'обезболивающее средство', 'болеутоляющее средство'],
+    'o antipirético': ['жаропонижающее средство', 'жаропонижающий препарат', 'жаропонижающий'],
+    'o antitússico': ['противокашлевое', 'противокашлевое средство', 'от кашля', 'лекарство от кашля'],
+    'o antiácido': ['антацид', 'от изжоги', 'лекарство от изжоги', 'антацидное средство'],
+    'o laxante': ['слабительное средство', 'слабительный препарат'],
+    'o calmante': ['седативное', 'успокоительное средство', 'успокаивающее', 'седативное средство'],
+    'as gotas para os olhos': ['капли для глаз', 'капли в глаза', 'офтальмологические капли'],
+    'a constipação': ['простудное заболевание', 'орви'],
+    'a tosse seca': ['непродуктивный кашель', 'кашель без мокроты'],
+    'o muco': ['мокрота', 'слизистое отделяемое'],
+    'a vacinação': ['прививка', 'иммунизация', 'прививки', 'вакцинирование'],
+    'estar enjoado': ['тошнить', 'чувствовать тошноту', 'меня тошнит', 'подташнивать'],
+    'o argumento': ['киносценарий'],
+    'o enredo': ['фабула', 'сюжетная линия'],
+    'o elenco': ['актёры', 'актеры', 'состав актёров', 'состав актеров', 'актерский состав'],
+    'o cenário': ['декорация', 'обстановка', 'место действия'],
+    'o figurino': ['костюмы', 'сценический костюм', 'костюм в фильме', 'театральный костюм'],
+    'perturbador': ['беспокоящий', 'тревожный', 'вызывающий беспокойство'],
+    'assustador': ['страшный', 'жуткий', 'ужасающий', 'устрашающий'],
+    'comovente': ['волнующий', 'умилительный', 'берущий за душу', 'проникновенный'],
+    'a banda sonora': ['звуковая дорожка', 'музыка к фильму', 'музыка из фильма', 'музыкальное сопровождение'],
+    'as legendas': ['титры'],
+    'estrear': ['дебютировать', 'выйти в прокат', 'выходить на экраны', 'выйти на экраны', 'провести премьеру'],
+    'rodar um filme': ['снять фильм', 'снимать кино', 'снимать картину'],
+    'os efeitos especiais': ['специальные эффекты', 'спецэффект', 'визуальные эффекты'],
+    'a maquilhagem': ['макияж', 'гримирование'],
+    'hilariante': ['очень смешной', 'смешной', 'уморительно смешной', 'комичный', 'потешный'],
+    'o feitio': ['характер', 'темперамент', 'склад характера', 'нрав'],
+    'mimado': ['балованный', 'изнеженный', 'избалован'],
+    'exigente': ['взыскательный', 'придирчивый', 'строгий', 'привередливый'],
+    'avarento': ['жадный', 'скряга', 'скупердяй', 'жадина', 'прижимистый'],
+    'poupado': ['бережливый', 'расчётливый', 'расчетливый', 'рачительный'],
+    'distraído': ['невнимательный', 'отвлечённый', 'отвлеченный', 'забывчивый'],
+    'aflito': ['встревоженный', 'обеспокоенный', 'расстроенный', 'взволнованный', 'огорчённый', 'огорченный'],
+    'ansioso': ['беспокойный', 'нервный', 'встревоженный', 'взволнованный', 'нетерпеливый'],
+    'caprichoso': ['прихотливый', 'своенравный', 'капризничающий', 'взбалмошный'],
+    'aconchegante': ['тёплый', 'теплый', 'комфортный', 'домашний'],
+    'instável': ['неустойчивый', 'непостоянный', 'шаткий', 'переменчивый', 'изменчивый'],
+    'a inveja': ['завидки', 'завистливость'],
+    'a vergonha': ['смущение', 'позор', 'срам'],
+    'corado como um tomate': ['красный, как помидор', 'красный как томат', 'красный как рак', 'красный как свёкла', 'красный как свекла'],
+    'são como um pero': ['здоров как бык', 'здоровый, как бык', 'здоров как лошадь', 'здоровый как лошадь'],
+    'lento como uma lesma': ['медленный как черепаха', 'медлительный как улитка', 'медлительный как черепаха', 'медленный, как улитка'],
+    'esperto como uma raposa': ['умный как лиса', 'хитрый, как лиса', 'хитёр как лиса', 'хитер как лиса', 'хитрющий как лиса'],
+    'branco como a cal': ['белый как известь', 'белый, как мел', 'бледный как мел', 'белый как полотно', 'бледный как полотно'],
+    'gordo como um pote': ['толстый, как бочка', 'толстый как кадка', 'жирный как бочка'],
+    'fiel como um cão': ['верный, как собака', 'преданный как собака', 'верный как пёс', 'верный как пес', 'преданный как пёс', 'преданный как пес'],
+    'pesado como chumbo': ['тяжёлый, как свинец', 'тяжелый как свинец', 'тяжелый, как свинец'],
+    'fresco como uma alface': ['свежий как салат', 'свежий как листок салата', 'свежий, как огурец', 'свежий как огурчик', 'бодрый как огурец'],
+    'surdo como uma porta': ['глухой как дверь', 'глухой, как пень', 'глухой как тетерев', 'глухой как бревно', 'глух как пень'],
+    'teimoso como um burro': ['упрямый как осел', 'упрямый, как осёл', 'упрямый как баран', 'упрямый как мул', 'упёртый как осёл', 'упертый как осел'],
+    'magro como um espeto': ['худой как жердь', 'тощий как щепка', 'худой как щепка', 'тощий, как жердь', 'тощий как скелет', 'худой как скелет', 'тощий как палка', 'худой как палка'],
+    'forte como um touro': ['сильный, как бык', 'силён как бык', 'силен как бык'],
+    'vaidoso como um pavão': ['гордый как павлин', 'тщеславный, как павлин', 'самодовольный как павлин', 'чванливый как павлин', 'важный как павлин', 'надутый как павлин'],
+    'o sotaque': ['выговор', 'произношение', 'говор'],
+    'o falante nativo': ['носитель', 'коренной носитель', 'носитель этого языка', 'натив'],
+    'ter orgulho em': ['гордиться чем-то', 'испытывать гордость', 'быть гордым'],
+    'ter algo em comum': ['иметь общее', 'иметь нечто общее', 'есть что-то общее'],
+    'o apoio': ['помощь', 'опора', 'содействие'],
+    'os brincos': ['серёжки', 'сережки', 'серьга', 'серёжка', 'сережка'],
+    'a carteira': ['кошелек', 'бумажник', 'портмоне'],
+    'o visto': ['разрешение на въезд', 'визовое разрешение', 'визовая отметка'],
+    'a vista': ['вид на', 'панорама', 'вид (на что-то)', 'пейзаж'],
+    'a palestra': ['доклад', 'публичное выступление', 'лекция или выступление'],
+    'a briga': ['ругань', 'потасовка', 'перепалка', 'скандал', 'склока', 'стычка'],
+    'fino': ['тонкая', 'изящный', 'утончённый', 'утонченный'],
+    'o fornecedor': ['снабженец', 'подрядчик', 'дистрибьютор'],
+    'os servos': ['крепостные', 'слуга', 'прислуга', 'челядь', 'холопы'],
+    'a cesta': ['корзинка', 'лукошко', 'плетёная корзина', 'плетеная корзина', 'корзина для покупок'],
+    'a corrente': ['течение реки', 'цепь', 'цепочка', 'ток', 'электрический ток'],
+    'a barragem': ['запруда', 'водохранилище'],
+    'o apagão': ['отключение электричества', 'отключение света', 'отключение электроэнергии', 'массовое отключение электричества'],
+    'a fila': ['ряд', 'шеренга', 'вереница', 'колонна'],
+    'o carinho': ['нежность', 'ласка', 'привязанность', 'теплота', 'заботливость'],
+    'a lenda': ['предание', 'сказание', 'миф'],
+    'a legenda': ['субтитры', 'надпись', 'субтитр', 'подпись к картинке', 'подпись к фото', 'пояснение'],
+    'lendário': ['мифический', 'прославленный', 'знаменитый', 'былинный'],
+    'a tripulação': ['команда', 'судовая команда', 'команда корабля', 'экипаж корабля', 'экипаж судна', 'члены экипажа'],
+    'o ramo': ['букет цветов', 'веточка', 'ветвь', 'букет'],
+    'a adega': ['погреб', 'винный погреб', 'винодельня', 'винный подвал'],
+    'o ermitão': ['пустынник', 'затворник', 'анахорет', 'схимник'],
+    'o recado': ['сообщение', 'послание', 'поручение', 'весточка', 'записочка'],
+    'a ferramenta': ['орудие', 'приспособление', 'инструменты'],
+    'o acordo': ['договор', 'договорённость', 'договоренность', 'уговор'],
+    'a montagem': ['монтаж', 'установка', 'постановка', 'сборочный процесс'],
+    'o vício': ['порок', 'вредная привычка', 'дурная привычка', 'привычка', 'пагубная привычка'],
+    'o Entrudo': ['карнавал', 'сырная неделя', 'масленичная неделя', 'мясопуст'],
+    'a Quaresma': ['пост', 'великопостный период', 'великий пост перед пасхой', 'сорок дней поста'],
+    'o recheio': ['фарш', 'наполнение', 'начинение', 'наполнитель'],
+    'a tempestade': ['шторм', 'гроза', 'непогода'],
+    'o furacão': ['тайфун', 'циклон'],
+    'a rolha': ['винная пробка', 'затычка', 'пробка для бутылки', 'бутылочная пробка'],
+    'o saca-rolhas': ['открывалка для вина', 'открывашка для вина', 'штопор для вина', 'открывалка для бутылок'],
+    'o escaldão': ['ожог от солнца', 'ожог солнцем', 'обгорание на солнце', 'ожог кожи на солнце'],
+    'o nojo': ['омерзение', 'брезгливость', 'гадливость', 'отвращение к чему-то'],
+    'o alívio': ['чувство облегчения', 'облегчение боли'],
+    'a rede neural': ['нейронная сеть', 'нейросети', 'нейронка', 'искусственная нейронная сеть', 'искусственная нейросеть'],
+    'em pessoa': ['собственной персоной', 'вживую', 'самолично', 'персонально', 'очно'],
+    'cara a cara': ['с глазу на глаз', 'лицо в лицо', 'нос к носу', 'один на один', 'тет-а-тет'],
+    // глаголы
+    'ser': ['быть', 'являться'],
+    'estar': ['находиться', 'быть'],
+    'ter': ['обладать', 'владеть'],
+    'ir': ['идти', 'ехать', 'ходить', 'ездить', 'пойти', 'поехать'],
+    'vir': ['приходить', 'приехать', 'прийти', 'приезжать'],
+    'ver': ['увидеть', 'смотреть', 'посмотреть'],
+    'ler': ['прочитать', 'прочесть'],
+    'dar': ['дать', 'отдавать', 'отдать'],
+    'fazer': ['сделать', 'совершать', 'изготавливать'],
+    'dizer': ['сказать', 'говорить', 'сообщать'],
+    'trazer': ['принести', 'привезти', 'приносить', 'привозить'],
+    'poder': ['быть в состоянии', 'мочь делать', 'иметь возможность'],
+    'saber': ['знать', 'уметь'],
+    'pôr': ['положить', 'поставить', 'ставить', 'класть', 'помещать', 'надевать'],
+    'haver': ['иметься', 'существовать', 'быть'],
+    'ouvir': ['услышать', 'слушать', 'выслушать'],
+    'pedir': ['попросить', 'заказывать', 'заказать', 'просить о'],
+    'sair': ['выйти', 'уходить', 'уйти', 'выезжать'],
+    'cair': ['упасть', 'свалиться'],
+    'construir': ['построить', 'создавать', 'возводить'],
+    'destruir': ['разрушить', 'уничтожать', 'уничтожить'],
+    'incluir': ['включить', 'содержать'],
+    'trair': ['предать', 'изменять', 'изменить'],
+    'conseguir': ['суметь', 'получаться', 'удаваться', 'добиться', 'смочь'],
+    'seguir': ['следовать', 'идти за', 'продолжать'],
+    'sentir': ['чувствовать', 'ощущать', 'почувствовать', 'ощутить'],
+    'vestir': ['одеть', 'одеваться', 'надеть', 'одевать'],
+    'dormir': ['поспать', 'засыпать', 'заснуть'],
+    'preferir': ['предпочесть', 'предпочитать'],
+    'abrir': ['открыть', 'раскрывать'],
+    'cobrir': ['покрыть', 'накрыть', 'накрывать', 'закрывать'],
+    'descobrir': ['открыть', 'обнаружить', 'обнаруживать', 'узнать', 'раскрывать'],
+    'escrever': ['написать', 'записать', 'записывать'],
+    'descrever': ['описать'],
+    'morrer': ['умереть', 'погибать', 'погибнуть'],
+    'matar': ['убить', 'уничтожать'],
+    'salvar': ['спасти', 'сохранить', 'сохранять'],
+    'aceitar': ['принять', 'согласиться', 'согласиться на', 'соглашаться'],
+    'eleger': ['избрать', 'выбирать'],
+    'envolver': ['вовлечь', 'обернуть', 'включать', 'вовлекать', 'охватывать'],
+    'perder': ['потерять', 'проиграть', 'упустить', 'проигрывать'],
+    'escolher': ['выбрать', 'избирать'],
+    'resolver': ['решить', 'разрешить', 'урегулировать', 'решить проблему'],
+    'conhecer': ['знать', 'познакомиться', 'знакомиться', 'узнать'],
+    'esquecer': ['забыть', 'позабыть'],
+    'medir': ['измерить', 'мерить'],
+    'rir': ['посмеяться', 'засмеяться', 'смеяться над'],
+    'valer': ['стоить', 'быть достойным', 'быть ценным'],
+    'repetir': ['повторить', 'повторяться'],
+    'subir': ['подняться', 'взобраться', 'подниматься', 'вырасти'],
+    'fugir': ['убежать', 'бежать', 'сбежать', 'сбегать'],
+    'manter': ['сохранять', 'поддерживать', 'сохранить', 'содержать'],
+    'compor': ['сочинить', 'составить', 'составлять', 'сочинять'],
+    'propor': ['предложить', 'предлагать'],
+    'prever': ['предвидеть', 'предсказывать', 'предсказать'],
+    'desfazer': ['разобрать', 'отменить', 'разрушить', 'расторгнуть', 'отменять', 'разбирать'],
+    'convir': ['подходить', 'быть выгодным', 'подойти', 'устраивать'],
+    'falar': ['разговаривать', 'поговорить', 'сказать', 'говорить'],
+    'comer': ['кушать', 'съесть', 'поесть'],
+    'partir': ['уехать', 'ломать', 'сломать', 'отправляться', 'отправиться', 'разбить', 'уходить'],
+    'beber': ['выпить', 'пить'],
+    'viver': ['жить', 'проживать'],
+    'vender': ['продать', 'торговать'],
+    'ficar': ['остаться', 'становиться', 'оказаться', 'находиться'],
+    'ganhar': ['заработать', 'выиграть', 'получать', 'выигрывать', 'получить', 'побеждать'],
+    'gastar': ['потратить', 'расходовать', 'израсходовать', 'тратить'],
+    'pagar': ['заплатить', 'оплатить', 'оплачивать', 'расплатиться'],
+    'praticar': ['тренироваться', 'заниматься', 'применять', 'упражняться'],
+    'indicar': ['указать', 'показывать', 'показать', 'рекомендовать'],
+    'aplicar': ['применить', 'использовать', 'нанести', 'наносить', 'использовать'],
+    'alugar': ['снять', 'сдавать', 'сдать', 'арендовать', 'сдавать в аренду', 'снимать в аренду', 'взять в аренду', 'взять напрокат'],
+    'começar': ['начать', 'приступать', 'приступить', 'стартовать'],
+    'passar': ['проходить', 'проводить', 'пройти', 'провести', 'передавать', 'передать'],
+    'passear': ['прогуляться', 'гулять', 'погулять'],
+    'trabalhar': ['поработать', 'функционировать'],
+    'estudar': ['изучать', 'учиться', 'заниматься', 'учить'],
+    'chegar': ['прибывать', 'приехать', 'прибыть', 'приходить', 'прийти', 'достигать', 'достичь'],
+    'comprar': ['купить', 'приобретать', 'приобрести'],
+    'tomar': ['принимать', 'взять', 'принять', 'пить'],
+    'ajudar': ['помочь', 'содействовать'],
+    'gostar': ['любить', 'нравиться', 'понравиться'],
+    'precisar': ['нуждаться в', 'нужно', 'требоваться'],
+    'levar': ['взять с собой', 'увезти', 'отвезти', 'увозить', 'брать', 'носить', 'нести', 'отнести'],
+    'voltar': ['вернуться', 'возвратиться', 'приходить обратно'],
+    'acabar': ['закончить', 'окончить', 'завершать', 'закончиться', 'завершить', 'кончать'],
+    'continuar': ['продолжить', 'не прекращать'],
+    'acordar': ['проснуться', 'будить', 'разбудить', 'просыпаться', 'пробуждаться'],
+    'ligar': ['позвонить', 'включить', 'включать', 'соединить', 'связывать', 'звонить по телефону'],
+    'esperar': ['ожидать', 'подождать', 'надеяться', 'ждать'],
+    'encontrar': ['найти', 'встретить', 'встретиться', 'находить', 'встречать'],
+    'entrar': ['войти', 'заходить', 'зайти'],
+    'deixar': ['оставить', 'позволить', 'разрешать', 'разрешить', 'позволять', 'покидать', 'бросать'],
+    'jantar': ['поужинать'],
+    'almoçar': ['пообедать', 'обедать'],
+    'explicar': ['объяснить', 'разъяснять', 'разъяснить'],
+    'mudar': ['изменить', 'переехать', 'переезжать', 'изменять', 'сменить', 'меняться'],
+    'telefonar': ['позвонить', 'звонить', 'позвонить по телефону'],
+    'avisar': ['предупредить', 'сообщить', 'извещать', 'оповещать'],
+    'lembrar': ['напомнить', 'помнить', 'вспомнить', 'вспоминать'],
+    'acreditar': ['поверить', 'верить в', 'доверять'],
+    'ignorar': ['игнорировать', 'не обращать внимания', 'не знать', 'пренебрегать'],
+    'acontecer': ['случиться', 'происходить', 'произойти'],
+    'preparar': ['приготовить', 'подготовить', 'готовить', 'подготавливать'],
+    'visitar': ['посетить', 'навестить', 'навещать', 'посещать'],
+    'aumentar': ['увеличить', 'повысить', 'повышать', 'расти', 'возрастать'],
+    'adotar': ['усыновить', 'брать', 'принять', 'принимать', 'удочерить', 'взять'],
+    'brincar': ['шутить', 'играть', 'поиграть'],
+    'consultar': ['проконсультироваться', 'консультировать', 'проконсультировать', 'справиться'],
+    'jogar': ['играть', 'сыграть', 'бросать', 'бросить'],
+    'tentar': ['попытаться', 'пробовать', 'попробовать', 'стараться', 'пытаться'],
+    'mostrar': ['показать', 'демонстрировать', 'продемонстрировать'],
+    'contribuir': ['вносить вклад', 'внести вклад', 'способствовать'],
+    'ofender': ['обидеть', 'оскорблять'],
+    'viajar': ['поехать', 'путешествовать', 'ездить'],
+    'marcar': ['назначить', 'отметить', 'назначать', 'отмечать', 'записать', 'записывать'],
+    'portar': ['вести себя'],
+    'proteger': ['защитить', 'оберегать', 'охранять']
+  };
+
+  // португальские синонимы для режима «русское слово, ввод по-португальски»
+  var pt = {
+    'apoiar': ['dar apoio a'],
+    'confiar em': ['ter confiança em', 'fiar-se em'],
+    'queixar-se de': ['reclamar de', 'queixar-se', 'reclamar'],
+    'arrepender-se de': ['lamentar', 'arrepender-se'],
+    'tratar de': ['cuidar de', 'ocupar-se de', 'encarregar-se de'],
+    'descarregar': ['fazer download', 'fazer o download', 'transferir'],
+    'chatear': ['aborrecer', 'irritar', 'incomodar', 'maçar'],
+    'enganar-se': ['errar', 'estar enganado', 'cometer um erro'],
+    'reparar em': ['notar', 'perceber', 'reparar'],
+    'dar por': ['notar', 'aperceber-se de', 'aperceber-se'],
+    'devolver': ['restituir', 'entregar de volta'],
+    'bisbilhotar': ['espiar', 'cuscar', 'meter o nariz em'],
+    'fofocar': ['mexericar', 'bisbilhotar', 'dizer mal'],
+    'sugerir': ['propor', 'aconselhar'],
+    'derrotar': ['vencer', 'bater', 'ganhar a'],
+    'inventar': ['criar', 'imaginar', 'idealizar'],
+    'ofender': ['magoar', 'insultar'],
+    'insultar': ['injuriar', 'ofender'],
+    'contemplar': ['admirar', 'observar'],
+    'deitar fora': ['atirar fora', 'deitar ao lixo', 'lançar fora', 'jogar fora'],
+    'o prédio': ['o edifício', 'o bloco'],
+    'a moradia': ['a casa', 'a vivenda'],
+    'a fila': ['a bicha'],
+    'a picada': ['a ferroada'],
+    'o apagão': ['o corte de energia', 'o corte de eletricidade', 'o corte de luz'],
+    'cá para mim': ['na minha opinião', 'a meu ver', 'para mim', 'na minha perspetiva'],
+    'pelo menos': ['ao menos', 'no mínimo'],
+    'tanto faz': ['é indiferente', 'não importa', 'tanto me faz'],
+    'Sei lá!': ['não sei!', 'não faço ideia!'],
+    'no caso de': ['em caso de', 'caso'],
+    'o falante nativo': ['o nativo', 'o falante de língua materna'],
+    'em pessoa': ['pessoalmente', 'presencialmente'],
+    'cara a cara': ['frente a frente', 'face a face'],
+    'o treinador': ['o técnico'],
+    'a equipa': ['a equipe'],
+    'o árbitro': ['o juiz'],
+    'a injeção': ['a injecção'],
+    'a constipação': ['o resfriado'],
+    'o antipirético': ['o antitérmico'],
+    'a maquilhagem': ['a maquiagem'],
+    'o figurino': ['o traje'],
+    'o enredo': ['a trama', 'a história'],
+    'o argumento': ['o guião', 'o roteiro'],
+    'o carinho': ['a ternura', 'o afeto'],
+    'a lenda': ['o mito'],
+    'o ramo': ['o bouquet', 'o ramo de flores'],
+    'a adega': ['a cave'],
+    'o vício': ['a dependência'],
+    'o recado': ['a mensagem'],
+    'o Entrudo': ['o Carnaval'],
+    'a tempestade': ['a borrasca'],
+    'o furacão': ['o tufão', 'o ciclone'],
+    'a rede neural': ['a rede neuronal']
+  };
+
+  root.PTSyn = { ru: ru, pt: pt };
+  if (typeof module !== 'undefined' && module.exports) module.exports = root.PTSyn;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(function () {
+  'use strict';
+  var E = window.PTEngine, D = window.PTData;
+  var KEY = 'conjugar-b12-v1';
+  var DAY = 86400000;
+  var BOX_DAYS = [0, 1, 3, 7, 21];
+
+  // ---------- хранилище ----------
+  var DEFAULTS = {
+    tenses: ['cpres', 'pres', 'pps', 'imp', 'fut', 'cond', 'cimp', 'cfut', 'impa', 'impn'],
+    vf: 'all', strict: true, mode: 'one',
+    sBoard: 'all', sTense: 'all', sHint: true,
+    wTopic: 'all', wMode: 'type', wDir: 'pt',
+    lMode: 'sent', lSlow: false, voice: ''
+  };
+  var store = { srs: {}, tense: {}, words: { ok: 0, bad: 0 }, listen: { ok: 0, bad: 0 }, days: [], set: {}, alt: {} };
+  function load() {
+    try {
+      var r = localStorage.getItem(KEY);
+      if (r) { var o = JSON.parse(r); if (o && typeof o === 'object') for (var k in o) store[k] = o[k]; }
+    } catch (e) {}
+    var s = {};
+    for (var k in DEFAULTS) s[k] = DEFAULTS[k];
+    for (var k2 in (store.set || {})) s[k2] = store.set[k2];
+    if (!s.v2) { s.v2 = 1; ['impa', 'impn'].forEach(function (id) { if (s.tenses.indexOf(id) < 0) s.tenses.push(id); }); }
+    if (!s.v3) { s.v3 = 1; s.wMode = 'type'; }
+    store.set = s;
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
+  load();
+  var SET = store.set;
+
+  function today() {
+    var d = new Date();
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  }
+  function streak() {
+    var days = store.days || [], set = {}, n = 0, i;
+    days.forEach(function (d) { set[d] = 1; });
+    var d = new Date();
+    if (!set[today()]) d = new Date(d.getTime() - DAY);
+    for (i = 0; i < 4000; i++) {
+      var s = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+      if (set[s]) { n++; d = new Date(d.getTime() - DAY); } else break;
+    }
+    return n;
+  }
+
+  function record(key, group, ok, label) {
+    var now = Date.now();
+    var it = store.srs[key] || { box: 0, due: 0, ok: 0, bad: 0 };
+    if (ok) { it.ok++; it.box = Math.min(4, it.box + 1); } else { it.bad++; it.box = 0; }
+    it.due = now + BOX_DAYS[it.box] * DAY;
+    if (label) it.lab = label;
+    store.srs[key] = it;
+    if (group === 'words') store.words[ok ? 'ok' : 'bad']++;
+    else if (group === 'listen') store.listen[ok ? 'ok' : 'bad']++;
+    else {
+      var t = store.tense[group] || { ok: 0, bad: 0 };
+      t[ok ? 'ok' : 'bad']++;
+      store.tense[group] = t;
+    }
+    var td = today();
+    if (store.days.indexOf(td) < 0) { store.days.push(td); if (store.days.length > 800) store.days.shift(); }
+    save();
+  }
+  function setPref(k, v) { SET[k] = v; save(); }
+
+  // ---------- утилиты ----------
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function norm(s) { return String(s).trim().toLowerCase().replace(/\s+/g, ' '); }
+  function strip(s) { return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  function rnd(n) { return Math.floor(Math.random() * n); }
+  function pickOne(a) { return a[rnd(a.length)]; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = rnd(i + 1), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+  // оценка: сравнение ответа с эталоном. 'ok' | 'near' (верно кроме диакритики) | 'bad'
+  function judge(user, target, strict) {
+    var n = norm(user);
+    if (!n) return { v: 'empty' };
+    var t = norm(target);
+    var cands = [t];
+    if (t.indexOf('não ') === 0) cands.push(t.slice(4));
+    for (var i = 0; i < cands.length; i++) if (n === cands[i]) return { v: 'ok' };
+    var sn = strip(n);
+    for (var j = 0; j < cands.length; j++) {
+      if (sn === strip(cands[j])) return strict ? { v: 'near' } : { v: 'ok', accent: true };
+    }
+    return { v: 'bad' };
+  }
+
+  // выбор элемента: просроченные и новые важнее, свежевыученные реже
+  function score(key) {
+    var it = store.srs[key];
+    if (!it) return 1 + Math.random() * 0.5;
+    if (it.due <= Date.now()) return 2 + (4 - it.box) * 0.4 + Math.random() * 0.5;
+    return 0.1 + Math.random() * 0.3;
+  }
+  function chooseBest(makeCand, tries) {
+    var best = null, bs = -1;
+    for (var i = 0; i < tries; i++) {
+      var c = makeCand();
+      var s = score(c.key);
+      if (s > bs) { bs = s; best = c; }
+    }
+    return best;
+  }
+
+  var tenseName = function (id) { return E.TENSES[id] ? E.TENSES[id].name : id; };
+  var PRON = E.PERSONS;
+
+  // ---------- голос ----------
+  var ptVoice = null, voiceChecked = false, ptVoices = [];
+  function findVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    var vs = [];
+    try { vs = window.speechSynthesis.getVoices() || []; } catch (e) {}
+    var pts = vs.filter(function (x) { return /^pt/i.test(x.lang); });
+    ptVoices = pts.sort(function (a, b) { return voiceScore(b) - voiceScore(a); });
+    var chosen = null;
+    if (SET && SET.voice) ptVoices.forEach(function (x) { if (!chosen && (x.voiceURI === SET.voice || x.name === SET.voice)) chosen = x; });
+    return chosen || ptVoices[0] || null;
+  }
+  function voiceScore(v) {
+    var n = v.name || '', sc = 0;
+    if (/^pt[-_]PT/i.test(v.lang)) sc += 100; else sc += 30;
+    if (/natural|online/i.test(n)) sc += 40;
+    if (/premium|enhanced|neural|siri/i.test(n)) sc += 25;
+    if (/google/i.test(n)) sc += 5;
+    if (v.localService === false) sc += 5;
+    return sc;
+  }
+  function voiceRowHtml() {
+    if (!('speechSynthesis' in window)) return '';
+    if (!ptVoices.length) return '<div><div class="set-label">Голос</div><div class="muted">Португальских голосов в этом браузере нет.</div></div>';
+    var opts = ptVoices.map(function (v) {
+      return '<option value="' + esc(v.voiceURI || v.name) + '"' + (ptVoice && v.name === ptVoice.name ? ' selected' : '') + '>' + esc(v.name + ' (' + v.lang + ')') + '</option>';
+    }).join('');
+    return '<div><div class="set-label">Голос</div><div class="row"><select class="sel" data-act="voice" aria-label="Голос">' + opts + '</select>' +
+      '<button type="button" class="btn sec sm" data-act="voice-test">Проверить голос</button></div></div>';
+  }
+  function refreshVoice() { ptVoice = findVoice(); voiceChecked = true; }
+  if ('speechSynthesis' in window) {
+    refreshVoice();
+    try { window.speechSynthesis.onvoiceschanged = function () { refreshVoice(); if (TAB === 'listen' || TAB === 'words') render(); }; } catch (e) {}
+  }
+  function speak(text, slow) {
+    if (!('speechSynthesis' in window)) return false;
+    try {
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = ptVoice ? ptVoice.lang : 'pt-PT';
+      if (ptVoice) u.voice = ptVoice;
+      u.rate = slow ? 0.65 : 0.95;
+      window.speechSynthesis.speak(u);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  // ---------- состояние вкладок ----------
+  var TAB = 'conj';
+  var $view = document.getElementById('view');
+  var C = null;       // спряжения
+  var SN = null;      // предложения
+  var W = null;       // слова
+  var L = null;       // слух
+  var resetAsk = false;
+  var lastTab = null;
+  var lastInput = null;
+
+  var VERBS = D.VERBS.map(function (v) { return { inf: v[0], ru: v[1], board: !!v[2] }; });
+  var VMAP = {};
+  VERBS.forEach(function (v) { VMAP[v.inf] = v; });
+
+  function verbPool() {
+    return VERBS.filter(function (v) {
+      if (SET.vf === 'board') return v.board;
+      if (SET.vf === 'irr') return !!E.resolve(v.inf).irr;
+      if (SET.vf === 'reg') return !E.resolve(v.inf).irr;
+      return true;
+    });
+  }
+  function tensePool() {
+    var t = SET.tenses.filter(function (id) { return E.TENSES[id]; });
+    return t.length ? t : DEFAULTS.tenses;
+  }
+
+  // ---------- спряжения ----------
+  function newConj() {
+    var vp = verbPool(), tp = tensePool();
+    if (!vp.length) vp = VERBS;
+    if (SET.mode === 'table') {
+      var c = chooseBest(function () {
+        var v = pickOne(vp), t = pickOne(tp);
+        return { key: 'c|' + v.inf + '|' + t + '|t', v: v, t: t };
+      }, 12);
+      C = { verb: c.v, tense: c.t, done: false, res: null };
+      return;
+    }
+    var c2 = chooseBest(function () {
+      var v = pickOne(vp), t = pickOne(tp), T = E.TENSES[t];
+      var forms = E.conjugate(v.inf, t);
+      var idx = [];
+      if (T.single) idx = [-1]; else forms.forEach(function (f, i) { if (f) idx.push(i); });
+      var p = pickOne(idx);
+      return { key: 'c|' + v.inf + '|' + t + '|' + p, v: v, t: t, p: p };
+    }, 16);
+    C = { verb: c2.v, tense: c2.t, person: c2.p, done: false, res: null };
+  }
+
+  function keysHtml() {
+    var ch = ['á', 'à', 'â', 'ã', 'ç', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú'];
+    return '<div class="keys" aria-label="Спецсимволы">' + ch.map(function (c) {
+      return '<button type="button" class="key" data-act="ch" data-c="' + c + '">' + c + '</button>';
+    }).join('') + '</div>';
+  }
+
+  function paradigmHtml(verb, tense, hit) {
+    var forms = E.conjugate(verb, tense), T = E.TENSES[tense], rows = '';
+    if (T.single) rows = '<tr class="hit"><td>' + esc(T.name) + '</td><td>' + esc(forms[0]) + '</td></tr>';
+    else forms.forEach(function (f, i) {
+      if (!f) return;
+      rows += '<tr' + (i === hit ? ' class="hit"' : '') + '><td>' + esc(PRON[i]) + '</td><td>' + esc(f) + '</td></tr>';
+    });
+    return '<div class="scroll"><table class="paradigm">' + rows + '</table></div>';
+  }
+
+  function chipRow(items, current, act, multi) {
+    return '<div class="chips">' + items.map(function (it) {
+      var on = multi ? current.indexOf(it.id) >= 0 : current === it.id;
+      return '<button type="button" class="chip" aria-pressed="' + on + '" data-act="' + act + '" data-v="' + esc(it.id) + '">' + esc(it.label) + '</button>';
+    }).join('') + '</div>';
+  }
+
+  function conjSettings() {
+    var ind = ['pres', 'pps', 'imp', 'ppc', 'mqpc', 'fut', 'cond'];
+    var conj = ['cpres', 'cimp', 'cfut', 'cppc', 'cmqpc'];
+    var oth = ['impa', 'impn', 'infp', 'ger', 'part'];
+    var short = { pres: 'Presente', pps: 'PPS', imp: 'Imperfeito', ppc: 'PPC', mqpc: 'MQPC', fut: 'Futuro', cond: 'Condicional', cpres: 'Pres. Conj.', cimp: 'Imperf. Conj.', cfut: 'Fut. Conj.', cppc: 'PPC Conj.', cmqpc: 'MQPC Conj.', impa: 'Imperativo +', impn: 'Imperativo -', infp: 'Inf. Pessoal', ger: 'Gerúndio', part: 'Particípio' };
+    function grp(ids) { return chipRow(ids.map(function (i) { return { id: i, label: short[i] }; }), SET.tenses, 'tense', true); }
+    var vf = [{ id: 'all', label: 'Все' }, { id: 'irr', label: 'Неправильные' }, { id: 'reg', label: 'Правильные' }, { id: 'board', label: 'С досок' }];
+    var md = [{ id: 'one', label: 'Одна форма' }, { id: 'table', label: 'Вся таблица' }];
+    return '<details class="panel settings"><summary><span>Настройки</span><span><b>' + tensePool().length + '</b> времён · <b>' + verbPool().length + '</b> глаголов</span></summary>' +
+      '<div class="settings-body">' +
+      '<div><div class="set-label">Режим</div>' + chipRow(md, SET.mode, 'cmode') + '</div>' +
+      '<div><div class="set-label">Времена</div><div class="chips" style="margin-bottom:8px">' +
+      '<button type="button" class="chip ghost" data-act="preset" data-v="conj">Только Conjuntivo</button>' +
+      '<button type="button" class="chip ghost" data-act="preset" data-v="past">Прошедшие</button>' +
+      '<button type="button" class="chip ghost" data-act="preset" data-v="all">Все</button></div>' +
+      '<div class="muted" style="margin-bottom:4px">Изъявительное</div>' + grp(ind) +
+      '<div class="muted" style="margin:8px 0 4px">Conjuntivo</div>' + grp(conj) +
+      '<div class="muted" style="margin:8px 0 4px">Императив и неличные формы</div>' + grp(oth) + '</div>' +
+      '<div><div class="set-label">Глаголы</div>' + chipRow(vf, SET.vf, 'vf') + '</div>' +
+      '<label class="check"><input type="checkbox" data-act="strict"' + (SET.strict ? ' checked' : '') + '> Строго по диакритике (á, ç, ô засчитываются как ошибка)</label>' +
+      '</div></details>';
+  }
+
+  function conjCard() {
+    if (!C) newConj();
+    var v = C.verb, T = E.TENSES[C.tense], irr = E.resolve(v.inf).irr;
+    var box = '';
+    var meta = '<div class="meta"><span class="tag">' + esc(T.name) + '</span><span>' + (irr ? '<span class="tag irr">неправильный</span> ' : '') +
+      (v.board ? '' : '<span class="tag plain">вне досок</span>') + '</span></div>';
+    var head = '<div class="prompt"><div class="verb" lang="pt-PT">' + esc(v.inf) + '</div><div class="gloss">' + esc(v.ru) + '</div></div>';
+
+    if (SET.mode === 'table') {
+      var forms = E.conjugate(v.inf, C.tense), rows = '';
+      if (T.single) forms = [forms[0]];
+      forms.forEach(function (f, i) {
+        if (!f) return;
+        var r = C.res && C.res[i];
+        rows += '<div class="trow"><label for="t' + i + '">' + esc(T.single ? T.name : PRON[i]) + '</label>' +
+          '<input class="inp tin ' + (r ? r.v : '') + '" id="t' + i + '" data-i="' + i + '" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT"' + (C.done ? ' disabled' : '') + ' value="' + esc(r ? r.u : '') + '">' +
+          (r && r.v !== 'ok' ? '<div class="fix" lang="pt-PT">' + esc(f) + '</div>' : '') + '</div>';
+      });
+      var fb = '';
+      if (C.done) {
+        var okN = C.res.filter(function (r) { return r && r.v === 'ok'; }).length, tot = C.res.filter(Boolean).length;
+        fb = '<div class="fb ' + (okN === tot ? 'ok' : 'bad') + '"><div>Верно ' + okN + ' из ' + tot + '</div>' +
+          (okN < tot ? '<div class="why">' + esc(E.explain(v.inf, C.tense)) + '</div>' : '') + '</div>';
+      }
+      return '<div class="card">' + meta + head + '<div class="table-rows">' + rows + '</div>' + (C.done ? '' : keysHtml()) + fb +
+        '<div class="row">' + (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-table">Проверить</button><button class="btn sec" data-act="skip">Другой</button>') + '</div></div>';
+    }
+
+    var who = T.single ? T.name : PRON[C.person];
+    var res = C.res, cls = res ? res.v : '';
+    var target = E.conjugate(v.inf, C.tense)[T.single ? 0 : C.person];
+    var fb2 = '';
+    if (res) {
+      if (res.v === 'ok') fb2 = '<div class="fb ok"><div>Верно' + (res.accent ? ', но пишется <b lang="pt-PT">' + esc(target) + '</b>' : '') + '</div></div>';
+      else {
+        fb2 = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div>' +
+          '<div class="big" lang="pt-PT">' + esc(target) + '</div><div class="why">' + esc(E.explain(v.inf, C.tense)) + '</div>' +
+          paradigmHtml(v.inf, C.tense, T.single ? -1 : C.person) + '</div>';
+      }
+    }
+    return '<div class="card">' + meta + head + '<div class="who">' + esc(who) + '</div>' +
+      '<div class="answer"><input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Ответ"' + (C.done ? ' disabled' : '') + ' value="' + esc(res ? res.u : '') + '" data-enter="check-one">' +
+      (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-one">Проверить</button>') + '</div>' +
+      (C.done ? '' : keysHtml() + '<div class="row"><button class="btn sec sm" data-act="skip">Пропустить</button></div>') + fb2 + '</div>';
+  }
+
+  function checkOne() {
+    var inp = document.getElementById('ans');
+    if (!inp || C.done) return;
+    var T = E.TENSES[C.tense], v = C.verb;
+    var target = E.conjugate(v.inf, C.tense)[T.single ? 0 : C.person];
+    var j = judge(inp.value, target, SET.strict);
+    if (j.v === 'empty') { inp.focus(); return; }
+    j.u = inp.value;
+    C.res = j; C.done = true;
+    record('c|' + v.inf + '|' + C.tense + '|' + (T.single ? -1 : C.person), C.tense, j.v === 'ok', v.inf + ' · ' + T.name + (T.single ? '' : ' · ' + PRON[C.person]));
+    render();
+    focusNext();
+  }
+  function checkTable() {
+    if (C.done) return;
+    var T = E.TENSES[C.tense], v = C.verb, forms = E.conjugate(v.inf, C.tense);
+    if (T.single) forms = [forms[0]];
+    var ins = document.querySelectorAll('.tin'), res = [];
+    var any = false;
+    ins.forEach(function (el) {
+      var i = +el.getAttribute('data-i');
+      var j = judge(el.value, forms[i], SET.strict);
+      if (j.v === 'empty') j = { v: 'bad' };
+      else any = true;
+      j.u = el.value;
+      res[i] = j;
+    });
+    if (!any) return;
+    C.res = res; C.done = true;
+    res.forEach(function (r, i) {
+      if (!r) return;
+      record('c|' + v.inf + '|' + C.tense + '|' + (T.single ? -1 : i), C.tense, r.v === 'ok', v.inf + ' · ' + T.name + (T.single ? '' : ' · ' + PRON[i]));
+    });
+    render();
+    focusNext();
+  }
+
+  // ---------- предложения ----------
+  var SENTS = D.SENTENCES.map(function (s, i) {
+    return { i: i, text: s[0], inf: s[1], tense: s[2], person: s[3], ans: s[4], board: s[5] };
+  });
+  function sentPool() {
+    return SENTS.filter(function (s) {
+      return (SET.sBoard === 'all' || s.board === SET.sBoard) && (SET.sTense === 'all' || s.tense === SET.sTense);
+    });
+  }
+  function newSent() {
+    var p = sentPool();
+    if (!p.length) { SN = { none: true }; return; }
+    var c = chooseBest(function () { var s = pickOne(p); return { key: 's|' + s.i, s: s }; }, 10);
+    SN = { s: c.s, done: false, res: null };
+  }
+  function sentTenses() {
+    var seen = {};
+    SENTS.forEach(function (s) { seen[s.tense] = (seen[s.tense] || 0) + 1; });
+    return Object.keys(seen).map(function (id) { return { id: id, label: tenseName(id) + ' (' + seen[id] + ')' }; });
+  }
+  function sentView() {
+    var boards = [{ id: 'all', label: 'Обе доски' }, { id: 'B1.1', label: 'B1.1' }, { id: 'B1.2', label: 'B1.2' }];
+    var tl = [{ id: 'all', label: 'Все времена' }].concat(sentTenses());
+    var set = '<details class="panel settings"><summary><span>Фильтры</span><span><b>' + sentPool().length + '</b> из ' + SENTS.length + ' предложений</span></summary><div class="settings-body">' +
+      '<div><div class="set-label">Доска</div>' + chipRow(boards, SET.sBoard, 'sboard') + '</div>' +
+      '<div><div class="set-label">Время</div>' + chipRow(tl, SET.sTense, 'stense') + '</div></div></details>';
+    if (!SN) newSent();
+    if (SN.none) return set + '<div class="card"><div class="empty">Под этот фильтр предложений нет.</div></div>';
+    var s = SN.s, parts = s.text.split('___');
+    var cls = SN.res ? SN.res.v : '';
+    var inp = '<input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Пропуск" size="' + Math.max(7, s.ans.length + 2) + '"' + (SN.done ? ' disabled' : '') + ' value="' + esc(SN.res ? SN.res.u : '') + '" data-enter="check-sent">';
+    var T = E.TENSES[s.tense];
+    var hint = '<div class="hint">' + (SET.sHint ? '<span class="tag">' + esc(T.name) + '</span>' : '') + '<span class="tag plain" lang="pt-PT">' + esc(s.inf) + '</span>' +
+      (SET.sHint ? (s.person != null ? '<span class="tag plain">' + esc(PRON[s.person]) + '</span>' : '') + '<span class="tag plain">' + esc(s.board) + '</span>' : '') + '</div>';
+    var fb = '';
+    if (SN.res) {
+      if (SN.res.v === 'ok') fb = '<div class="fb ok">Верно' + (SN.res.accent ? ', но пишется <b lang="pt-PT">' + esc(s.ans) + '</b>' : '') + '</div>';
+      else {
+        var ex = '';
+        try { ex = E.explain(s.inf, s.tense); } catch (e) {}
+        fb = '<div class="fb ' + (SN.res.v === 'near' ? 'near' : 'bad') + '"><div>' + (SN.res.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(s.ans) + '</div>' +
+          (ex ? '<div class="why">' + esc(ex) + '</div>' : '') + '</div>';
+      }
+    }
+    var tr = (window.PTTr && window.PTTr[s.i]) || '';
+    var hintBar = '<div class="meta">' + hint + '<button type="button" class="icon-btn" data-act="hint" aria-pressed="' + SET.sHint + '">' + (SET.sHint ? 'Скрыть время и лицо' : 'Показать время и лицо') + '</button></div>';
+    var trHtml = tr ? '<div class="tr"><div class="muted">Перевод (мой, не с доски)</div><div>' + esc(tr) + '</div></div>' : '';
+    return set + '<div class="card">' + hintBar + '<div class="cloze" lang="pt-PT">' + esc(parts[0]) + inp + esc(parts.slice(1).join('___')) + '</div>' +
+      (SN.done ? '' : keysHtml()) +
+      '<div class="row">' + (SN.done ? '<button class="btn" data-act="next-sent" data-next>Дальше</button>' : '<button class="btn" data-act="check-sent">Проверить</button><button class="btn sec" data-act="next-sent">Пропустить</button>') + '</div>' + fb + trHtml + '</div>';
+  }
+  function checkSent() {
+    var inp = document.getElementById('ans');
+    if (!inp || SN.done) return;
+    var j = judge(inp.value, SN.s.ans, SET.strict);
+    if (j.v === 'empty') { inp.focus(); return; }
+    j.u = inp.value;
+    SN.res = j; SN.done = true;
+    record('s|' + SN.s.i, SN.s.tense, j.v === 'ok', SN.s.text.replace('___', SN.s.ans));
+    render();
+    focusNext();
+  }
+
+  // ---------- слова ----------
+  var WORDS = D.WORDS.map(function (w) { return { pt: w[0], ru: w[1], topic: w[2], own: !!w[3] }; })
+    .concat(VERBS.map(function (v) { return { pt: v.inf, ru: v.ru, topic: 'Инфинитивы', own: true }; }));
+  function wordTopics() {
+    var seen = {}, out = [];
+    WORDS.forEach(function (w) { if (!seen[w.topic]) { seen[w.topic] = 1; out.push(w.topic); } });
+    return out;
+  }
+  function wordPool() { return WORDS.filter(function (w) { return SET.wTopic === 'all' || w.topic === SET.wTopic; }); }
+  function newWord() {
+    var p = wordPool();
+    if (!p.length) { W = { none: true }; return; }
+    var c = chooseBest(function () { var w = pickOne(p); return { key: 'w|' + w.pt, w: w }; }, 12);
+    var w = c.w, opts = null;
+    if (SET.wMode === 'quiz') {
+      var dist = shuffle(p.filter(function (x) { return x.pt !== w.pt; }));
+      if (dist.length < 3) dist = shuffle(WORDS.filter(function (x) { return x.pt !== w.pt; }));
+      opts = shuffle([w].concat(dist.slice(0, 3)));
+    }
+    W = { w: w, shown: false, picked: null, opts: opts };
+  }
+  function wordView() {
+    var tops = [{ id: 'all', label: 'Все (' + WORDS.length + ')' }].concat(wordTopics().map(function (t) {
+      return { id: t, label: t + ' (' + WORDS.filter(function (w) { return w.topic === t; }).length + ')' };
+    }));
+    var md = [{ id: 'cards', label: 'Карточки' }, { id: 'quiz', label: 'Тест' }, { id: 'type', label: 'Ввод' }];
+    var dr = [{ id: 'pt', label: 'PT → RU' }, { id: 'ru', label: 'RU → PT' }];
+    var set = '<div class="chips modes">' + md.map(function (m) { return '<button type="button" class="chip" aria-pressed="' + (SET.wMode === m.id) + '" data-act="wmode" data-v="' + m.id + '">' + m.label + '</button>'; }).join('') + '</div>' +
+      '<details class="panel settings"><summary><span>Настройки</span><span><b>' + wordPool().length + '</b> слов</span></summary><div class="settings-body">' + voiceRowHtml() +
+      '<div><div class="set-label">Направление</div>' + chipRow(dr, SET.wDir, 'wdir') + '</div>' +
+      '<div><div class="set-label">Тема</div>' + chipRow(tops, SET.wTopic, 'wtopic') + '</div></div></details>';
+    if (!W || (SET.wMode === 'quiz') !== !!(W && W.opts)) newWord();
+    if (W.none) return set + '<div class="card"><div class="empty">В этой теме слов нет.</div></div>';
+    var w = W.w, ptSide = SET.wDir === 'pt';
+    var front = ptSide ? w.pt : w.ru, back = ptSide ? w.ru : w.pt;
+    var note = (w.own ? 'перевод мой, не с доски · ' : '') + w.topic;
+    var spk = ptSide || W.shown || W.picked || W.res ? '<button type="button" class="icon-btn" data-act="say" data-t="' + esc(w.pt) + '" aria-label="Произнести"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>Слушать</button>' : '';
+    if (SET.wMode === 'type') {
+      var rs = W.res, tcls = rs ? (rs.v === 'ok' ? 'ok' : rs.v === 'near' ? 'near' : 'bad') : '';
+      var ref = ptSide ? w.ru : w.pt, tfb = '';
+      if (W.pending) tfb = '<div class="fb near">Проверяю, не синоним ли это...</div>';
+      else if (rs) {
+        if (rs.v === 'ok') tfb = '<div class="fb ok"><div>' + (rs.mine ? 'Засчитано по твоему решению, вариант запомнен' : rs.syn ? 'Засчитано как синоним' : 'Верно') + '</div>' +
+          (rs.syn && !rs.mine ? '<div class="why">На доске: <b lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(ref) + '</b></div>' : '') + (rs.note ? '<div class="why">' + esc(rs.note) + '</div>' : '') + '</div>';
+        else tfb = '<div class="fb ' + (rs.v === 'near' ? 'near' : 'bad') + '"><div>' + (rs.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div>' +
+          '<div class="big" lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(ref) + '</div>' +
+          (rs.note ? '<div class="why">' + esc(rs.note) + '</div>' : '') + (rs.nosyn ? '<div class="why">Синонимы проверить не удалось, засчитывается только совпадение с вариантами на доске и в моём списке.</div>' : '') + (rs.v === 'bad' ? '<div class="row"><button type="button" class="btn sec sm" data-act="accept-mine">Мой вариант верный, засчитать</button></div>' : '') + '</div>';
+      }
+      var busy = W.pending || W.res;
+      return set + '<div class="card"><div class="meta"><span class="tag plain">' + esc(note) + '</span>' + spk + '</div>' +
+        '<div class="flip"><div class="term" lang="' + (ptSide ? 'pt-PT' : 'ru') + '">' + esc(front) + '</div><div class="note">' + (ptSide ? 'Введите перевод на русском' : 'Введите слово по-португальски') + '</div></div>' +
+        '<div class="answer"><input class="inp ' + tcls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="' + (ptSide ? 'ru' : 'pt-PT') + '" aria-label="Ответ"' + (busy ? ' disabled' : '') + ' value="' + esc(W.u || '') + '" data-enter="check-word">' +
+        (W.res ? '<button class="btn" data-act="next-word" data-next>Дальше</button>' : '<button class="btn" data-act="check-word"' + (W.pending ? ' disabled' : '') + '>Проверить</button>') + '</div>' +
+        (busy || !ptSide ? (busy ? '' : keysHtml()) : '') + tfb +
+        (W.res || W.pending ? '' : '<div class="row"><button class="btn sec sm" data-act="next-word">Пропустить</button></div>') + '</div>';
+    }
+    if (SET.wMode === 'quiz') {
+      var opts = W.opts.map(function (o, i) {
+        var txt = ptSide ? o.ru : o.pt, c = '';
+        if (W.picked != null) { if (o.pt === w.pt) c = 'ok'; else if (W.picked === i) c = 'bad'; }
+        return '<button type="button" class="opt ' + c + '" data-act="pick" data-i="' + i + '"' + (W.picked != null ? ' disabled' : '') + ' lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(txt) + '</button>';
+      }).join('');
+      return set + '<div class="card"><div class="meta"><span class="tag plain">' + esc(note) + '</span>' + spk + '</div>' +
+        '<div class="flip"><div class="term" lang="' + (ptSide ? 'pt-PT' : 'ru') + '">' + esc(front) + '</div></div><div class="options">' + opts + '</div>' +
+        (W.picked != null ? '<div class="row"><button class="btn" data-act="next-word" data-next>Дальше</button></div>' : '') + '</div>';
+    }
+    return set + '<div class="card"><div class="meta"><span class="tag plain">' + esc(note) + '</span>' + spk + '</div>' +
+      '<div class="flip"><div class="term" lang="' + (ptSide ? 'pt-PT' : 'ru') + '">' + esc(front) + '</div>' +
+      (W.shown ? '<div class="back" lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(back) + '</div>' : '') + '</div>' +
+      '<div class="row">' + (W.shown ? '<button class="btn" data-act="know" data-v="1" data-next>Знал</button><button class="btn sec" data-act="know" data-v="0">Не знал</button>' : '<button class="btn" data-act="show" data-next>Показать ответ</button>') + '</div></div>';
+  }
+
+  // ---------- проверка ввода слов ----------
+  var sampleFn = null, wseq = 0;
+  try {
+    if (window.claude && window.claude.use) window.claude.use('sample').then(function (f) { sampleFn = f || null; }, function () {});
+  } catch (e) {}
+  function ruNorm(x) { return norm(x).replace(/ё/g, 'е').replace(/[.,!?;:«»"()]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function variantsOf(ref) {
+    var out = [norm(ref)], bare = ref.replace(/\([^)]*\)/g, ' ');
+    out.push(norm(bare));
+    bare.split(/[,;\/]/).forEach(function (x) { x = norm(x); if (x) out.push(x); });
+    return out.filter(function (x, i) { return x && out.indexOf(x) === i; });
+  }
+  function altKey(w) { return 'w|' + w.pt + '|' + SET.wDir; }
+  function extraRu(w) { return ((window.PTSyn && window.PTSyn.ru[w.pt]) || []).concat((store.alt && store.alt[altKey(w)]) || []); }
+  function extraPt(w) { return ((window.PTSyn && window.PTSyn.pt[w.pt]) || []).concat((store.alt && store.alt[altKey(w)]) || []); }
+  function matchRu(user, ref, w) {
+    var n = ruNorm(user);
+    var list = variantsOf(ref).concat(extraRu(w)).map(ruNorm);
+    var more = [];
+    list.forEach(function (v) { var t = v.replace(/\s(на|в|с|о|за|к|от|из|над|у|по)$/, ''); if (t !== v) more.push(t); });
+    list = list.concat(more);
+    return list.indexOf(n) >= 0 ? { v: 'ok' } : { v: 'bad' };
+  }
+  function ptCore(x) { return norm(x).replace(/[.!?]/g, '').replace(/^(o|a|os|as|um|uma)\s+/, ''); }
+  function matchPt(user, ref, w) {
+    var best = { v: 'bad' };
+    variantsOf(ref).concat(extraPt(w)).forEach(function (t) {
+      [judge(user, t, SET.strict), judge(ptCore(user), ptCore(t), SET.strict)].forEach(function (j) {
+        if (j.v === 'ok') { if (best.v !== 'ok') best = j; } else if (j.v === 'near' && best.v === 'bad') best = j;
+      });
+    });
+    return best;
+  }
+  function acceptMine() {
+    if (!W || !W.res || W.res.v !== 'bad') return;
+    var w = W.w, k = 'w|' + w.pt, ak = altKey(w);
+    store.alt = store.alt || {};
+    store.alt[ak] = (store.alt[ak] || []).concat([norm(W.res.u)]);
+    var it = store.srs[k];
+    if (it) { it.bad = Math.max(0, it.bad - 1); it.ok++; it.box = Math.max(it.box, 1); it.due = Date.now() + BOX_DAYS[it.box] * DAY; }
+    store.words.bad = Math.max(0, store.words.bad - 1); store.words.ok++;
+    W.res.v = 'ok'; W.res.syn = true; W.res.mine = true;
+    save(); render(); focusNext();
+  }
+  function finishWord(u, m) {
+    W.res = { v: m.v, u: u, syn: m.syn, note: m.note, nosyn: m.nosyn };
+    W.u = u; W.pending = false;
+    record('w|' + W.w.pt, 'words', m.v === 'ok', W.w.pt + ' · ' + W.w.ru);
+    render(); focusNext();
+  }
+  function checkWord() {
+    var inp = document.getElementById('ans');
+    if (!inp || !W || W.res || W.pending) return;
+    var u = inp.value;
+    if (!norm(u)) { inp.focus(); return; }
+    var w = W.w, ptSide = SET.wDir === 'pt';
+    var ref = ptSide ? w.ru : w.pt;
+    var m = ptSide ? matchRu(u, ref, w) : matchPt(u, ref, w);
+    if (m.v !== 'bad') { finishWord(u, m); return; }
+    if (!sampleFn) { finishWord(u, { v: 'bad', nosyn: true }); return; }
+    var ref0 = W, my = ++wseq;
+    W.pending = true; W.u = u; render();
+    var q = 'Ты проверяешь ответ ученика, который учит европейский португальский (pt-PT, уровень B1.2).\n' +
+      (ptSide ? 'Португальское слово или выражение: «' + w.pt + '».\nЭталонный перевод на русском: «' + w.ru + '».\nУченик написал по-русски: «' + u + '».\n' +
+        'Это верный перевод? Засчитывай точные совпадения по смыслу и близкие синонимы, которые передают то же значение.'
+        : 'Русское слово или выражение: «' + w.ru + '».\nЭталонный перевод на португальский: «' + w.pt + '».\nУченик написал по-португальски: «' + u + '».\n' +
+        'Это допустимый перевод на европейский португальский? Засчитывай точные совпадения по смыслу и настоящие синонимы или эквиваленты (с правильной орфографией). Слово с орфографической ошибкой не засчитывай.') +
+      '\nОтветь только JSON: {"verdict":"exact"|"synonym"|"no","note":"до 12 слов по-русски, пояснение"}. Если ответ другого слова с иным значением, ставь "no".';
+    sampleFn.json(q, { modelTier: 'quick' }).then(function (r) {
+      if (my !== wseq || W !== ref0 || W.res) return;
+      var ok = r && (r.verdict === 'exact' || r.verdict === 'synonym');
+      finishWord(u, { v: ok ? 'ok' : 'bad', syn: ok, note: r && r.note ? String(r.note) : '' });
+    }, function () {
+      if (my !== wseq || W !== ref0 || W.res) return;
+      finishWord(u, { v: 'bad', nosyn: true });
+    });
+  }
+
+  // ---------- слух ----------
+  var LSENTS = SENTS.filter(function (s) { return s.tense !== 'part' && s.tense !== 'ger' && s.tense !== 'infp' || s.text.split(' ').length > 5; });
+  function newListen() {
+    var items;
+    if (SET.lMode === 'word') items = WORDS.filter(function (w) { return w.topic !== 'Инфинитивы'; }).map(function (w) { return { key: 'l|' + w.pt, text: w.pt, ru: w.ru }; });
+    else items = LSENTS.map(function (s) {
+      var t = s.text.replace('___', s.ans).replace(/^[—–-]\s*/, '').replace(/\s[—–]\s/g, '. ');
+      return { key: 'l|s' + s.i, text: t, ru: null };
+    });
+    var c = chooseBest(function () { return pickOne(items); }, 10);
+    L = { item: c, done: false, res: null, reveal: false };
+  }
+  function tokens(s) { return s.replace(/[.,;:!?¿¡"()]/g, ' ').split(/\s+/).filter(Boolean); }
+  function lcsMark(a, b) {
+    var n = a.length, m = b.length, i, j, dp = [];
+    for (i = 0; i <= n; i++) { dp.push(new Array(m + 1).fill(0)); }
+    for (i = n - 1; i >= 0; i--) for (j = m - 1; j >= 0; j--)
+      dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    var ma = new Array(n).fill(false), mb = new Array(m).fill(false);
+    i = 0; j = 0;
+    while (i < n && j < m) {
+      if (a[i] === b[j]) { ma[i] = true; mb[j] = true; i++; j++; }
+      else if (dp[i + 1][j] >= dp[i][j + 1]) i++; else j++;
+    }
+    return { ma: ma, mb: mb };
+  }
+  function listenView() {
+    var md = [{ id: 'sent', label: 'Предложения' }, { id: 'word', label: 'Слова и выражения' }];
+    var set = '<details class="panel settings"><summary><span>Настройки</span><span>' + (ptVoice ? 'голос: ' + esc(ptVoice.name) : 'голос не найден') + '</span></summary><div class="settings-body">' +
+      voiceRowHtml() + '<div><div class="set-label">Материал</div>' + chipRow(md, SET.lMode, 'lmode') + '</div>' +
+      '<label class="check"><input type="checkbox" data-act="slow"' + (SET.lSlow ? ' checked' : '') + '> Медленнее</label></div></details>';
+    if (!L) newListen();
+    var it = L.item;
+    var noSpeech = !('speechSynthesis' in window);
+    var warn = '';
+    if (noSpeech) warn = '<div class="fb near">В этом браузере нет синтеза речи. Диктант недоступен, но можно открыть текст и переписать его для тренировки орфографии.</div>';
+    else if (!ptVoice) warn = '<div class="fb near">На устройстве не найден португальский голос. Кнопка попробует системный, но звучать он может неверно. Голоса добавляются в настройках системы.</div>';
+    var fb = '';
+    if (L.res) {
+      var tt = tokens(it.text), uu = tokens(L.res.u);
+      var m = lcsMark(tt.map(strip2), uu.map(strip2));
+      var tgt = tt.map(function (w, i) { return '<span class="w ' + (m.ma[i] ? '' : 'miss') + '">' + esc(w) + '</span>'; }).join(' ');
+      var ext = uu.filter(function (w, i) { return !m.mb[i]; });
+      fb = '<div class="fb ' + (L.res.v === 'ok' ? 'ok' : 'bad') + ' diff"><div>' + (L.res.v === 'ok' ? 'Все слова на месте' : 'Красным отмечено то, что пропущено или написано иначе') + '</div>' +
+        '<div class="big" lang="pt-PT">' + tgt + '</div>' +
+        (ext.length ? '<div class="why">Лишнее или неверное в вашем тексте: <span class="diff"><span class="w extra">' + ext.map(esc).join(' ') + '</span></span></div>' : '') +
+        (it.ru ? '<div class="why">' + esc(it.ru) + '</div>' : '') + '</div>';
+    }
+    return set + '<div class="card"><div class="meta"><span class="tag">Диктант</span></div>' +
+      warn +
+      '<div class="row"><button type="button" class="btn" data-act="play"' + (noSpeech ? ' disabled' : '') + '>Прослушать</button>' +
+      '<button type="button" class="btn sec" data-act="reveal">' + (L.reveal ? 'Скрыть текст' : 'Показать текст') + '</button></div>' +
+      (L.reveal && !L.done ? '<div class="fb near" lang="pt-PT">' + esc(it.text) + '</div>' : '') +
+      '<textarea class="inp" id="ans" lang="pt-PT" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Запишите услышанное"' + (L.done ? ' disabled' : '') + '>' + esc(L.res ? L.res.u : '') + '</textarea>' +
+      (L.done ? '' : keysHtml()) +
+      '<div class="row">' + (L.done ? '<button class="btn" data-act="next-listen" data-next>Дальше</button>' : '<button class="btn" data-act="check-listen">Проверить</button><button class="btn sec" data-act="next-listen">Другая фраза</button>') + '</div>' + fb + '</div>';
+  }
+  function strip2(w) { return strip(w); }
+  function checkListen() {
+    var inp = document.getElementById('ans');
+    if (!inp || L.done || !norm(inp.value)) return;
+    var tt = tokens(L.item.text).map(norm), uu = tokens(inp.value).map(norm);
+    var ok = tt.length === uu.length && tt.every(function (w, i) { return w === uu[i]; });
+    var near = !ok && strip(tt.join(' ')) === strip(uu.join(' '));
+    var v = ok ? 'ok' : (near && !SET.strict ? 'ok' : 'bad');
+    L.res = { v: v, u: inp.value }; L.done = true;
+    record(L.item.key, 'listen', v === 'ok', L.item.text);
+    render();
+    focusNext();
+  }
+
+  // ---------- прогресс ----------
+  function progressView() {
+    var tot = 0, ok = 0;
+    Object.keys(store.tense).forEach(function (k) { tot += store.tense[k].ok + store.tense[k].bad; ok += store.tense[k].ok; });
+    var wt = store.words.ok + store.words.bad, lt = store.listen.ok + store.listen.bad;
+    var allTot = tot + wt + lt, allOk = ok + store.words.ok + store.listen.ok;
+    var learned = Object.keys(store.srs).filter(function (k) { return store.srs[k].box >= 3; }).length;
+    var tiles = '<div class="tiles">' +
+      '<div class="tile"><b>' + allTot + '</b><span>всего ответов</span></div>' +
+      '<div class="tile"><b>' + (allTot ? Math.round(allOk / allTot * 100) : 0) + '%</b><span>точность</span></div>' +
+      '<div class="tile"><b>' + streak() + '</b><span>дней подряд</span></div>' +
+      '<div class="tile"><b>' + learned + '</b><span>закреплено (коробка 3+)</span></div></div>';
+    var rows = Object.keys(store.tense).map(function (id) {
+      var t = store.tense[id], n = t.ok + t.bad;
+      return { id: id, n: n, p: n ? Math.round(t.ok / n * 100) : 0 };
+    }).filter(function (r) { return r.n > 0; }).sort(function (a, b) { return a.p - b.p; });
+    var bars = rows.length ? '<div class="bars">' + rows.map(function (r) {
+      return '<div class="bar"><span>' + esc(tenseName(r.id)) + ' <span class="muted">(' + r.n + ')</span></span><span class="track"><span class="fill" style="display:block;width:' + r.p + '%"></span></span><span class="pct">' + r.p + '%</span></div>';
+    }).join('') + '</div>' : '<div class="empty">Пока нет данных. Ответьте на несколько заданий.</div>';
+    var weak = Object.keys(store.srs).map(function (k) { var it = store.srs[k]; return { k: k, it: it, d: it.bad - it.ok }; })
+      .filter(function (x) { return x.it.bad > 0 && x.it.box < 2; }).sort(function (a, b) { return b.d - a.d || b.it.bad - a.it.bad; }).slice(0, 10);
+    var weakHtml = weak.length ? '<div class="list">' + weak.map(function (x) {
+      return '<div class="li"><span class="f" lang="pt-PT">' + esc(x.it.lab || x.k) + '</span><span class="muted">ошибок ' + x.it.bad + ', верно ' + x.it.ok + '</span></div>';
+    }).join('') + '</div>' : '<div class="empty">Слабых мест пока не видно.</div>';
+    var reset = resetAsk ?
+      '<div class="fb bad"><div>Удалить весь прогресс в этом браузере?</div><div class="row"><button class="btn sm" data-act="reset-yes">Да, удалить</button><button class="btn sec sm" data-act="reset-no">Отмена</button></div></div>' :
+      '<div class="row"><button class="btn sec sm" data-act="reset">Сбросить прогресс</button></div>';
+    return '<div class="card">' + tiles + '</div>' +
+      '<div class="card"><h2>Точность по временам</h2>' + bars + '</div>' +
+      '<div class="card"><h2>Слабые места</h2>' + weakHtml + '</div>' +
+      '<div class="card">' + reset + '<div class="muted">Прогресс хранится только в этом браузере и на этом устройстве. Интервалы повторения: 1, 3, 7 и 21 день.</div></div>';
+  }
+
+  // ---------- каркас ----------
+  var TABS = [['conj', 'Спряжения'], ['sent', 'Предложения'], ['words', 'Слова'], ['listen', 'Слух'], ['prog', 'Прогресс']];
+  function render() {
+    var s = streak();
+    document.getElementById('streak').textContent = s ? 'Серия: ' + s + ' ' + dayWord(s) : '';
+    document.getElementById('tabs').innerHTML = TABS.map(function (t) {
+      return '<button type="button" role="tab" class="tab" aria-selected="' + (TAB === t[0]) + '" data-act="tab" data-v="' + t[0] + '">' + t[1] + '</button>';
+    }).join('');
+    var open = {};
+    var det = $view.querySelector('details.settings');
+    var wasOpen = det && det.open && lastTab === TAB;
+    lastTab = TAB;
+    var html = '';
+    if (TAB === 'conj') html = conjSettings() + conjCard();
+    else if (TAB === 'sent') html = sentView();
+    else if (TAB === 'words') html = wordView();
+    else if (TAB === 'listen') html = listenView();
+    else html = progressView();
+    $view.innerHTML = html;
+    if (wasOpen) { var d2 = $view.querySelector('details.settings'); if (d2) d2.open = true; }
+    if (TAB !== 'prog') {
+      var a = document.getElementById('ans') || document.querySelector('.tin');
+      if (a && !a.disabled && document.activeElement !== a && !(TAB === 'listen' && false)) { try { a.focus({ preventScroll: true }); } catch (e) {} }
+    }
+  }
+  function dayWord(n) { var m = n % 10, h = n % 100; if (m === 1 && h !== 11) return 'день'; if (m >= 2 && m <= 4 && (h < 12 || h > 14)) return 'дня'; return 'дней'; }
+  function focusNext() {
+    var b = document.querySelector('[data-next]');
+    if (b) { try { b.focus({ preventScroll: true }); } catch (e) {} }
+  }
+
+  // ---------- события ----------
+  document.addEventListener('focusin', function (e) {
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' && t.type === 'text' || t.tagName === 'INPUT' && !t.type || t.tagName === 'TEXTAREA')) lastInput = t;
+  });
+  document.addEventListener('mousedown', function (e) {
+    if (e.target.closest && e.target.closest('.key')) e.preventDefault();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter') return;
+    var t = e.target;
+    if (t.tagName === 'TEXTAREA') { if (e.shiftKey) return; e.preventDefault(); checkListen(); return; }
+    var act = t.getAttribute && t.getAttribute('data-enter');
+    if (act) { e.preventDefault(); doAct(act, t); return; }
+    if (t.classList && t.classList.contains('tin')) {
+      e.preventDefault();
+      var ins = Array.prototype.slice.call(document.querySelectorAll('.tin')), i = ins.indexOf(t);
+      if (i < ins.length - 1) ins[i + 1].focus(); else checkTable();
+    }
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target, act = t.getAttribute && t.getAttribute('data-act');
+    if (act === 'strict') { setPref('strict', t.checked); }
+    if (act === 'slow') { setPref('lSlow', t.checked); }
+    if (act === 'voice') { setPref('voice', t.value); refreshVoice(); speak('Bom dia! Vamos praticar português.', false); render(); }
+  });
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest ? e.target.closest('[data-act]') : null;
+    if (!el || el.tagName === 'INPUT') return;
+    doAct(el.getAttribute('data-act'), el);
+  });
+
+  function togglePreset(v) {
+    if (v === 'conj') SET.tenses = ['cpres', 'cimp', 'cfut', 'cppc', 'cmqpc'];
+    else if (v === 'past') SET.tenses = ['pps', 'imp', 'ppc', 'mqpc'];
+    else SET.tenses = Object.keys(E.TENSES);
+    save();
+  }
+
+  function doAct(act, el) {
+    var v = el.getAttribute('data-v');
+    switch (act) {
+      case 'tab': TAB = v; resetAsk = false; render(); break;
+      case 'ch':
+        if (lastInput && !lastInput.disabled && document.body.contains(lastInput)) {
+          var c = el.getAttribute('data-c'), s = lastInput.selectionStart, e2 = lastInput.selectionEnd, val = lastInput.value;
+          if (s == null) { s = e2 = val.length; }
+          lastInput.value = val.slice(0, s) + c + val.slice(e2);
+          lastInput.focus();
+          try { lastInput.setSelectionRange(s + 1, s + 1); } catch (er) {}
+        } else {
+          var a = document.getElementById('ans') || document.querySelector('.tin');
+          if (a && !a.disabled) { a.value += el.getAttribute('data-c'); a.focus(); }
+        }
+        break;
+      case 'tense':
+        var i = SET.tenses.indexOf(v);
+        if (i >= 0) { if (SET.tenses.length > 1) SET.tenses.splice(i, 1); } else SET.tenses.push(v);
+        save(); C = null; render(); break;
+      case 'preset': togglePreset(v); C = null; render(); break;
+      case 'vf': setPref('vf', v); C = null; render(); break;
+      case 'cmode': setPref('mode', v); C = null; render(); break;
+      case 'check-one': checkOne(); break;
+      case 'check-table': checkTable(); break;
+      case 'next': case 'skip': newConj(); render(); break;
+      case 'sboard': setPref('sBoard', v); SN = null; render(); break;
+      case 'stense': setPref('sTense', v); SN = null; render(); break;
+      case 'hint': setPref('sHint', !SET.sHint); render(); break;
+      case 'check-sent': checkSent(); break;
+      case 'next-sent': newSent(); render(); break;
+      case 'wmode': setPref('wMode', v); W = null; render(); break;
+      case 'wdir': setPref('wDir', v); W = null; render(); break;
+      case 'wtopic': setPref('wTopic', v); W = null; render(); break;
+      case 'check-word': checkWord(); break;
+      case 'accept-mine': acceptMine(); break;
+      case 'show': W.shown = true; render(); focusNext(); break;
+      case 'know':
+        record('w|' + W.w.pt, 'words', v === '1', W.w.pt + ' · ' + W.w.ru);
+        newWord(); render(); break;
+      case 'pick':
+        if (W.picked != null) break;
+        W.picked = +el.getAttribute('data-i');
+        record('w|' + W.w.pt, 'words', W.opts[W.picked].pt === W.w.pt, W.w.pt + ' · ' + W.w.ru);
+        render(); focusNext(); break;
+      case 'next-word': wseq++; newWord(); render(); break;
+      case 'voice-test': speak('Bom dia! Hoje vamos praticar o conjuntivo e o infinitivo pessoal.', false); break;
+      case 'say': speak(el.getAttribute('data-t'), false); break;
+      case 'lmode': setPref('lMode', v); L = null; render(); break;
+      case 'play': speak(L.item.text, SET.lSlow); break;
+      case 'reveal': L.reveal = !L.reveal; var keep = document.getElementById('ans'); var kv = keep ? keep.value : ''; render(); var k2 = document.getElementById('ans'); if (k2 && !L.done) k2.value = kv; break;
+      case 'check-listen': checkListen(); break;
+      case 'next-listen': newListen(); render(); break;
+      case 'reset': resetAsk = true; render(); break;
+      case 'reset-no': resetAsk = false; render(); break;
+      case 'reset-yes':
+        store.srs = {}; store.tense = {}; store.words = { ok: 0, bad: 0 }; store.listen = { ok: 0, bad: 0 }; store.days = [];
+        save(); resetAsk = false; render(); break;
+    }
+  }
+
+  render();
+})();
+
+</script>
+<script>
+if ("serviceWorker" in navigator) { window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); }); }
+</script>
+</body>
+</html>
