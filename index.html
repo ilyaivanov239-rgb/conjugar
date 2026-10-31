@@ -223,7 +223,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 <header class="top"><div class="brand">Conjugar<small>B1.2 · pt-PT</small></div><div class="streak" id="streak"></div></header>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwmm6rd</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwny24b</p>
 </div>
 <script>
 /* Движок спряжений европейского португальского (pt-PT).
@@ -2603,10 +2603,12 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var fb = '';
     if (L.res) {
       var tt = tokens(it.text), uu = tokens(L.res.u);
-      var m = lcsMark(tt.map(strip2), uu.map(strip2));
+      var kf = SET.strict ? norm : strip2;
+      var m = lcsMark(tt.map(kf), uu.map(kf));
+      var onlyAcc = L.res.v !== 'ok' && strip(tt.join(' ')) === strip(uu.join(' '));
       var tgt = tt.map(function (w, i) { return '<span class="w ' + (m.ma[i] ? '' : 'miss') + '">' + esc(w) + '</span>'; }).join(' ');
       var ext = uu.filter(function (w, i) { return !m.mb[i]; });
-      fb = '<div class="fb ' + (L.res.v === 'ok' ? 'ok' : 'bad') + ' diff"><div>' + (L.res.v === 'ok' ? 'Все слова на месте' : 'Красным отмечено то, что пропущено или написано иначе') + '</div>' +
+      fb = '<div class="fb ' + (L.res.v === 'ok' ? 'ok' : 'bad') + ' diff"><div>' + (L.res.v === 'ok' ? 'Все слова на месте' : onlyAcc ? 'Слова те же, ошибка только в диакритике (á, ç, ô) или в ударных формах. Красным отмечено, где пишется иначе' : 'Красным отмечено то, что пропущено или написано иначе') + '</div>' +
         '<div class="big" lang="pt-PT">' + tgt + '</div>' +
         (ext.length ? '<div class="why">Лишнее или неверное в вашем тексте: <span class="diff"><span class="w extra">' + ext.map(esc).join(' ') + '</span></span></div>' : '') +
         (it.ru ? '<div class="why">' + esc(it.ru) + '</div>' : '') + '</div>';
