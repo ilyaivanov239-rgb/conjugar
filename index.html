@@ -29,6 +29,7 @@ html{-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none!important
   --muted: #5a6372;
   --line: #d8dce4;
   --hdr: #1B3F94;
+  --amber: #D99A1E;
   --accent: #1f45b7;
   --accent-ink: #ffffff;
   --accent-soft: #e4eafb;
@@ -50,6 +51,7 @@ html{-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none!important
     --muted: #98a2b3;
     --line: #2a313d;
     --hdr: #12296B;
+    --amber: #E0A93A;
     --accent: #8ea8ff;
     --accent-ink: #0d1117;
     --accent-soft: #1c2542;
@@ -70,6 +72,7 @@ html{-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none!important
   --muted: #98a2b3;
   --line: #2a313d;
   --hdr: #12296B;
+  --amber: #E0A93A;
   --accent: #8ea8ff;
   --accent-ink: #0d1117;
   --accent-soft: #1c2542;
@@ -197,8 +200,8 @@ button { cursor: pointer; }
 textarea.inp { width: 100%; min-height: 84px; resize: vertical; font-size: 18px; }
 
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
-.tile { background: var(--surface-2); border-radius: 10px; padding: 10px 12px; }
-.tile b { display: block; font-family: var(--display); font-size: 24px; font-variant-numeric: tabular-nums; }
+.tile { background: var(--accent-soft); border-radius: 12px; padding: 12px; }
+.tile b { display: block; color: var(--accent); font-family: var(--display); font-size: 24px; font-variant-numeric: tabular-nums; }
 .tile span { font-size: 12px; color: var(--muted); }
 .bars { display: flex; flex-direction: column; gap: 9px; }
 .bar { display: grid; grid-template-columns: minmax(110px, 38%) 1fr 52px; gap: 10px; align-items: center; font-size: 13px; }
@@ -228,8 +231,19 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 
 .bbar { display: flex; flex-direction: column; gap: 6px; padding: 0 2px; }
 .bbar-t { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.bprog { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
-.bprog > i { display: block; height: 100%; background: var(--accent); }
+.rt { display: grid; gap: 5px; }
+.rt-i { display: block; height: 10px; border-radius: 3px; background: var(--line); box-sizing: border-box; }
+.rt-i.ok { background: var(--accent); }
+.rt-i.bad { background: var(--amber); }
+.rt-i.cur { background: var(--surface); border: 2px solid var(--accent); }
+.rt.big .rt-i { height: 34px; border-radius: 6px; }
+.rt-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); font-weight: 500; }
+.rt-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.rt-legend .rt-i { width: 12px; height: 12px; border-radius: 3px; }
+.li .sub { display: block; font-size: 13px; color: var(--muted); }
+.li.two { flex-direction: column; gap: 2px; }
+.tiles.t3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.tiles.t3 .tile b { font-size: 22px; }
 
 </style>
 </head>
@@ -237,7 +251,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá<small>B1.2 · pt-PT</small></div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwpgkge</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwppv67</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2064,7 +2078,23 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var n = b.items.length, cleared = b.items.filter(function (c) { return b.t[c.key] && b.t[c.key].cleared; }).length;
     var left = b.round === 0 ? 'Раунд: ' + Math.min(n, n - b.queue.length) + ' из ' + n : 'Повтор ошибок: осталось ' + (n - cleared);
     return '<div class="bbar"><div class="bbar-t"><span>' + left + '</span><span>с первого раза: ' + b.firstOk + '</span></div>' +
-      '<div class="bprog"><i style="width:' + Math.round(cleared / n * 100) + '%"></i></div></div>';
+      tilesHtml(b, false) + '</div>';
+  }
+  // плитки раунда: синяя = с первого раза, янтарная = была ошибка, контур = текущее, серая = ещё впереди
+  function tilesHtml(b, big) {
+    var n = b.items.length;
+    return '<div class="rt' + (big ? ' big' : '') + '" style="grid-template-columns:repeat(' + Math.min(n, 10) + ',minmax(0,1fr))" aria-hidden="true">' + b.items.map(function (c) {
+      var t = b.t[c.key], cls = 'rt-i';
+      if (t && t.tries > 0) cls += t.firstOk ? ' ok' : ' bad';
+      else if (b.cur === c && !b.finished) cls += ' cur';
+      if (t && t.tries > 0 && !t.cleared && b.cur === c) cls += ' cur';
+      return '<i class="' + cls + '"></i>';
+    }).join('') + '</div>';
+  }
+  function batchParts(sec, c) {
+    if (sec === 'w') return [c.w.pt, c.w.ru];
+    if (sec === 'c') return [batchLabel(sec, c), c.v.ru || ''];
+    return [batchLabel(sec, c), ''];
   }
   function withBar(sec, html) {
     var bar = batchBarHtml(sec);
@@ -2078,9 +2108,11 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var tries = 0;
     b.items.forEach(function (c) { tries += b.t[c.key] ? b.t[c.key].tries : 0; });
     var list = hard.length ? '<h2>С первого раза не получилось</h2><div class="list">' + hard.map(function (c) {
-      return '<div class="li"><span class="f" lang="pt-PT">' + esc(batchLabel(sec, c)) + '</span></div>';
+      var pp = batchParts(sec, c);
+      return '<div class="li' + (pp[1] ? ' two' : '') + '"><span class="f" lang="pt-PT">' + esc(pp[0]) + '</span>' + (pp[1] ? '<span class="sub">' + esc(pp[1]) + '</span>' : '') + '</div>';
     }).join('') + '</div>' : '<div class="fb ok">Все ' + n + ' с первого раза. Можно брать следующий раунд.</div>';
-    return '<div class="card"><h2>Раунд пройден</h2><div class="tiles">' +
+    return '<div class="card"><h2>Раунд пройден</h2>' + tilesHtml(b, true) +
+      '<div class="rt-legend"><span><i class="rt-i ok"></i>с первого раза</span><span><i class="rt-i bad"></i>вернулось в повтор</span></div><div class="tiles t3">' +
       '<div class="tile"><b>' + b.firstOk + ' из ' + n + '</b><span>с первого раза</span></div>' +
       '<div class="tile"><b>' + b.round + '</b><span>' + (b.round % 10 === 1 && b.round % 100 !== 11 ? 'повтор' : b.round % 10 >= 2 && b.round % 10 <= 4 && (b.round % 100 < 12 || b.round % 100 > 14) ? 'повтора' : 'повторов') + '</span></div>' +
       '<div class="tile"><b>' + tries + '</b><span>всего ответов</span></div></div>' + list +
@@ -2658,7 +2690,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var wt = store.words.ok + store.words.bad, lt = store.listen.ok + store.listen.bad;
     var allTot = tot + wt + lt, allOk = ok + store.words.ok + store.listen.ok;
     var learned = Object.keys(store.srs).filter(function (k) { return store.srs[k].box >= 3; }).length;
-    var tiles = '<div class="tiles">' +
+    var tiles = '<div class="tiles t3">' +
       '<div class="tile"><b>' + allTot + '</b><span>всего ответов</span></div>' +
       '<div class="tile"><b>' + (allTot ? Math.round(allOk / allTot * 100) : 0) + '%</b><span>точность</span></div>' +
       '<div class="tile"><b>' + streak() + '</b><span>дней подряд</span></div>' +
