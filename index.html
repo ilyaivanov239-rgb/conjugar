@@ -1997,16 +1997,41 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     return out;
   }
   function wordPool() { return WORDS.filter(function (w) { return SET.wTopic === 'all' || w.topic === SET.wTopic; }); }
+  // тип слова: глагол, существительное, прилагательное, сравнение, выражение
+  function wtype(w) {
+    var t = w.pt, first = t.split(/[\s,]+/)[0];
+    if (w.topic === 'Сравнения') return 'simile';
+    if (w.topic === 'Инфинитивы') return 'verb';
+    if (/[!?]$|\.\.\./.test(t) || w.topic === 'Выражения') return 'phrase';
+    if (/^(a precisar|a ver)\b/.test(t)) return 'phrase';
+    if (/^(o|a|os|as)\s/.test(t)) return 'noun';
+    if (/^(em|no|na|da|do|de|cá|pelo|tanto|graças|ora|cara|ao|por|para)\b/.test(t)) return 'phrase';
+    if (/(ar|er|ir|ôr)(-se)?$/.test(first)) return 'verb';
+    return 'adj';
+  }
+  function quizOptions(w, pool) {
+    var ty = wtype(w), ptSide = SET.wDir === 'pt';
+    var show = function (x) { return ptSide ? x.ru : x.pt; };
+    var uniq = function (arr) { var seen = {}; seen[show(w)] = 1; return arr.filter(function (x) { var k = show(x); if (seen[k]) return false; seen[k] = 1; return true; }); };
+    var same = function (src) { return uniq(src.filter(function (x) { return x.pt !== w.pt && wtype(x) === ty; })); };
+    var cand = same(pool);
+    if (cand.length < 6) cand = same(WORDS);
+    var L = show(w).length;
+    cand = cand.map(function (x) { return { x: x, d: Math.abs(show(x).length - L) + Math.random() * 6 }; })
+      .sort(function (a, b) { return a.d - b.d; }).slice(0, 10).map(function (o) { return o.x; });
+    var dist = shuffle(cand).slice(0, 3);
+    if (dist.length < 3) {
+      var rest = shuffle(uniq(WORDS.filter(function (x) { return x.pt !== w.pt && dist.indexOf(x) < 0; })));
+      dist = dist.concat(rest).slice(0, 3);
+    }
+    return shuffle([w].concat(dist));
+  }
   function newWord() {
     var p = wordPool();
     if (!p.length) { W = { none: true }; return; }
     var c = chooseBest(function () { var w = pickOne(p); return { key: 'w|' + w.pt, w: w }; }, 12);
     var w = c.w, opts = null;
-    if (SET.wMode === 'quiz') {
-      var dist = shuffle(p.filter(function (x) { return x.pt !== w.pt; }));
-      if (dist.length < 3) dist = shuffle(WORDS.filter(function (x) { return x.pt !== w.pt; }));
-      opts = shuffle([w].concat(dist.slice(0, 3)));
-    }
+    if (SET.wMode === 'quiz') opts = quizOptions(w, p);
     W = { w: w, shown: false, picked: null, opts: opts };
   }
   function wordView() {
