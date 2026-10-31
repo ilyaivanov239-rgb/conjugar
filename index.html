@@ -272,7 +272,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá</div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvx260iq</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvx2as1p</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2121,7 +2121,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
     vf: 'all', strict: true, mode: 'one',
     sBoard: 'all', sTense: 'all', sHint: true,
     wTopic: 'all', wMode: 'type', wDir: 'pt',
-    lMode: 'sent', lSlow: false, voice: '', batch: 10
+    lMode: 'sent', lSlow: false, lTr: false, voice: '', batch: 10
   };
   var store = { srs: {}, tense: {}, words: { ok: 0, bad: 0 }, listen: { ok: 0, bad: 0 }, days: [], set: {}, alt: {} };
   function load() {
@@ -2778,7 +2778,8 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
     var md = [{ id: 'sent', label: 'Предложения' }, { id: 'word', label: 'Слова и выражения' }];
     var set = '<details class="panel settings"><summary><span>Настройки</span><span>' + (ptVoice ? 'голос: ' + esc(ptVoice.name) : 'голос не найден') + '</span></summary><div class="settings-body">' +
       voiceRowHtml() + '<div><div class="set-label">Материал</div>' + chipRow(md, SET.lMode, 'lmode') + '</div>' + batchSetHtml() +
-      '<label class="check"><input type="checkbox" data-act="slow"' + (SET.lSlow ? ' checked' : '') + '> Медленнее</label></div></details>';
+      '<label class="check"><input type="checkbox" data-act="slow"' + (SET.lSlow ? ' checked' : '') + '> Медленнее</label>' +
+      '<label class="check"><input type="checkbox" data-act="ltr"' + (SET.lTr ? ' checked' : '') + '> Показывать перевод до ответа</label></div></details>';
     if (!L) newListen();
     if (L.batchDone) return set + batchSummary('l');
     var it = L.item;
@@ -2804,7 +2805,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
       '<div class="row"><button type="button" class="btn" data-act="play"' + (noSpeech ? ' disabled' : '') + '>Прослушать</button>' +
       '<button type="button" class="btn sec" data-act="reveal">' + (L.reveal ? 'Скрыть текст' : 'Показать текст') + '</button></div>' +
       (L.reveal && !L.done ? '<div class="fb near" lang="pt-PT">' + esc(it.text) + '</div>' : '') +
-      (it.ru ? '<div class="tr"><div class="muted">Перевод</div><div>' + esc(it.ru) + '</div></div>' : '') +
+      (it.ru && (SET.lTr || L.done) ? '<div class="tr"><div class="muted">Перевод</div><div>' + esc(it.ru) + '</div></div>' : '') +
       '<textarea class="inp" id="ans" lang="pt-PT" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Запишите услышанное"' + (L.done ? ' disabled' : '') + '>' + esc(L.res ? L.res.u : '') + '</textarea>' +
       dock((L.done ? '' : keysHtml()) + '<div class="row">' + (L.done ? '<button class="btn" data-act="next-listen" data-next>Дальше</button>' : '<button class="btn" data-act="check-listen">Проверить</button><button type="button" class="btn sec sm" data-act="dk-listen">Не знаю</button>') + '</div>') + fb + '</div>';
   }
@@ -2925,6 +2926,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
     var t = e.target, act = t.getAttribute && t.getAttribute('data-act');
     if (act === 'strict') { setPref('strict', t.checked); }
     if (act === 'slow') { setPref('lSlow', t.checked); }
+    if (act === 'ltr') { setPref('lTr', t.checked); render(); var d3 = $view.querySelector('details.settings'); if (d3) d3.open = true; }
     if (act === 'voice') { setPref('voice', t.value); refreshVoice(); speak('Bom dia! Vamos praticar português.', false); render(); }
   });
   document.addEventListener('click', function (e) {
