@@ -223,7 +223,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 <header class="top"><div class="brand">Vamos lá<small>B1.2 · pt-PT</small></div><div class="streak" id="streak"></div></header>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwou7o8</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwp0ayq</p>
 </div>
 <script>
 /* Движок спряжений европейского португальского (pt-PT).
@@ -1929,7 +1929,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var now = Date.now();
     var bq = BT[key.charAt(0)];
     if (bq && bq.cur && bq.t[bq.cur.key] && bq.t[bq.cur.key].tries > 0) {
-      // повторный ответ внутри пачки: в расписание и статистику не идёт, считается только первая попытка
+      // повторный ответ внутри раунда: в расписание и статистику не идёт, считается только первая попытка
       var td0 = today();
       if (store.days.indexOf(td0) < 0) { store.days.push(td0); save(); }
       return;
@@ -1992,7 +1992,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     return best;
   }
 
-  // ---------- пачки: N заданий, ошибки возвращаются, пока весь круг не пройден без ошибок ----------
+  // ---------- раунды: N заданий, ошибки возвращаются, пока все ответы не станут верными ----------
   var BT = {};
   function batchOn() { return SET.batch > 0; }
   function makeBatch(pick, tries, n) {
@@ -2047,7 +2047,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var b = BT[sec];
     if (!b || b.finished || !batchOn()) return '';
     var n = b.items.length, cleared = b.items.filter(function (c) { return b.t[c.key] && b.t[c.key].cleared; }).length;
-    var left = b.round === 0 ? 'Пачка: ' + Math.min(n, n - b.queue.length) + ' из ' + n : 'Повтор ошибок: осталось ' + (n - cleared);
+    var left = b.round === 0 ? 'Раунд: ' + Math.min(n, n - b.queue.length) + ' из ' + n : 'Повтор ошибок: осталось ' + (n - cleared);
     return '<div class="bbar"><div class="bbar-t"><span>' + left + '</span><span>с первого раза: ' + b.firstOk + '</span></div>' +
       '<div class="bprog"><i style="width:' + Math.round(cleared / n * 100) + '%"></i></div></div>';
   }
@@ -2064,17 +2064,17 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     b.items.forEach(function (c) { tries += b.t[c.key] ? b.t[c.key].tries : 0; });
     var list = hard.length ? '<h2>С первого раза не получилось</h2><div class="list">' + hard.map(function (c) {
       return '<div class="li"><span class="f" lang="pt-PT">' + esc(batchLabel(sec, c)) + '</span></div>';
-    }).join('') + '</div>' : '<div class="fb ok">Все ' + n + ' с первого раза. Можно брать следующую пачку.</div>';
-    return '<div class="card"><h2>Пачка пройдена</h2><div class="tiles">' +
+    }).join('') + '</div>' : '<div class="fb ok">Все ' + n + ' с первого раза. Можно брать следующий раунд.</div>';
+    return '<div class="card"><h2>Раунд пройден</h2><div class="tiles">' +
       '<div class="tile"><b>' + b.firstOk + ' из ' + n + '</b><span>с первого раза</span></div>' +
-      '<div class="tile"><b>' + (b.round + 1) + '</b><span>' + (b.round === 0 ? 'круг' : b.round < 4 ? 'круга' : 'кругов') + '</span></div>' +
+      '<div class="tile"><b>' + b.round + '</b><span>' + (b.round % 10 === 1 && b.round % 100 !== 11 ? 'повтор' : b.round % 10 >= 2 && b.round % 10 <= 4 && (b.round % 100 < 12 || b.round % 100 > 14) ? 'повтора' : 'повторов') + '</span></div>' +
       '<div class="tile"><b>' + tries + '</b><span>всего ответов</span></div></div>' + list +
-      '<div class="row"><button type="button" class="btn" data-act="next-batch" data-v="' + sec + '" data-next>Следующая пачка</button></div></div>';
+      '<div class="row"><button type="button" class="btn" data-act="next-batch" data-v="' + sec + '" data-next>Следующий раунд</button></div></div>';
   }
   function batchSetHtml() {
-    var o = [{ id: '5', label: '5' }, { id: '10', label: '10' }, { id: '20', label: '20' }, { id: '0', label: 'Без пачек' }];
-    return '<div><div class="set-label">Пачка заданий</div>' + chipRow(o, String(SET.batch), 'batch') +
-      '<div class="muted" style="margin-top:6px">Ошибки возвращаются в конце пачки, пока весь круг не пройден верно.</div></div>';
+    var o = [{ id: '5', label: '5' }, { id: '10', label: '10' }, { id: '20', label: '20' }, { id: '0', label: 'Без раундов' }];
+    return '<div><div class="set-label">Раунд заданий</div>' + chipRow(o, String(SET.batch), 'batch') +
+      '<div class="muted" style="margin-top:6px">Ошибки возвращаются в конце раунда, пока все ответы не станут верными.</div></div>';
   }
 
   var tenseName = function (id) { return E.TENSES[id] ? E.TENSES[id].name : id; };
