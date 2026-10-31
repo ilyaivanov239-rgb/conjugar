@@ -211,6 +211,11 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 .sel { font-family: var(--ui); font-size: 14px; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); max-width: 100%; min-width: 0; }
 .modes { margin-bottom: -4px; }
 
+.bbar { display: flex; flex-direction: column; gap: 6px; padding: 0 2px; }
+.bbar-t { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bprog { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+.bprog > i { display: block; height: 100%; background: var(--accent); }
+
 </style>
 </head>
 <body>
@@ -218,7 +223,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 <header class="top"><div class="brand">Conjugar<small>B1.2 · pt-PT</small></div><div class="streak" id="streak"></div></header>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwmfdw5</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwmm6rd</p>
 </div>
 <script>
 /* Движок спряжений европейского португальского (pt-PT).
@@ -1885,7 +1890,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     vf: 'all', strict: true, mode: 'one',
     sBoard: 'all', sTense: 'all', sHint: true,
     wTopic: 'all', wMode: 'type', wDir: 'pt',
-    lMode: 'sent', lSlow: false, voice: ''
+    lMode: 'sent', lSlow: false, voice: '', batch: 10
   };
   var store = { srs: {}, tense: {}, words: { ok: 0, bad: 0 }, listen: { ok: 0, bad: 0 }, days: [], set: {}, alt: {} };
   function load() {
@@ -1922,6 +1927,13 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 
   function record(key, group, ok, label) {
     var now = Date.now();
+    var bq = BT[key.charAt(0)];
+    if (bq && bq.cur && bq.t[bq.cur.key] && bq.t[bq.cur.key].tries > 0) {
+      // повторный ответ внутри пачки: в расписание и статистику не идёт, считается только первая попытка
+      var td0 = today();
+      if (store.days.indexOf(td0) < 0) { store.days.push(td0); save(); }
+      return;
+    }
     var it = store.srs[key] || { box: 0, due: 0, ok: 0, bad: 0 };
     if (ok) { it.ok++; it.box = Math.min(4, it.box + 1); } else { it.bad++; it.box = 0; }
     it.due = now + BOX_DAYS[it.box] * DAY;
@@ -1978,6 +1990,91 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       if (s > bs) { bs = s; best = c; }
     }
     return best;
+  }
+
+  // ---------- пачки: N заданий, ошибки возвращаются, пока весь круг не пройден без ошибок ----------
+  var BT = {};
+  function batchOn() { return SET.batch > 0; }
+  function makeBatch(pick, tries, n) {
+    var items = [], seen = {}, guard = 0;
+    while (items.length < n && guard++ < n * 40) {
+      var c = chooseBest(pick, tries);
+      if (c && !seen[c.key]) { seen[c.key] = 1; items.push(c); }
+    }
+    return { items: items, queue: items.slice(), retry: [], t: {}, cur: null, round: 0, firstOk: 0, finished: false, again: false };
+  }
+  function batchNext(b) {
+    if (!b.queue.length) {
+      if (b.retry.length) { b.queue = shuffle(b.retry); b.retry = []; b.round++; }
+      else { b.finished = true; b.cur = null; return null; }
+    }
+    b.cur = b.queue.shift();
+    return b.cur;
+  }
+  function nextCand(sec, pick, tries) {
+    if (!batchOn()) { BT[sec] = null; return chooseBest(pick, tries); }
+    var b = BT[sec];
+    if (!b) b = BT[sec] = makeBatch(pick, tries, SET.batch);
+    else if (b.finished) return null;
+    else if (b.again && b.cur) { b.again = false; return b.cur; }
+    return batchNext(b);
+  }
+  function batchAnswer(sec, ok) {
+    var b = BT[sec];
+    if (!b || !b.cur) return;
+    var t = b.t[b.cur.key] || (b.t[b.cur.key] = { tries: 0, firstOk: false, cleared: false });
+    if (t.tries === 0 && ok) { t.firstOk = true; b.firstOk++; }
+    t.tries++;
+    if (ok) t.cleared = true; else if (b.retry.indexOf(b.cur) < 0) b.retry.push(b.cur);
+  }
+  function batchFix(sec) {
+    var b = BT[sec];
+    if (!b || !b.cur) return;
+    var t = b.t[b.cur.key];
+    if (!t) return;
+    var i = b.retry.indexOf(b.cur);
+    if (i >= 0) b.retry.splice(i, 1);
+    t.cleared = true;
+    if (t.tries === 1 && !t.firstOk) { t.firstOk = true; b.firstOk++; }
+  }
+  function batchLabel(sec, c) {
+    if (sec === 'c') return c.v.inf + ' · ' + tenseName(c.t) + (c.p != null && c.p >= 0 ? ' · ' + PRON[c.p] : '');
+    if (sec === 's') return c.s.text.replace('___', c.s.ans);
+    if (sec === 'w') return c.w.pt + ' · ' + c.w.ru;
+    return c.text;
+  }
+  function batchBarHtml(sec) {
+    var b = BT[sec];
+    if (!b || b.finished || !batchOn()) return '';
+    var n = b.items.length, cleared = b.items.filter(function (c) { return b.t[c.key] && b.t[c.key].cleared; }).length;
+    var left = b.round === 0 ? 'Пачка: ' + Math.min(n, n - b.queue.length) + ' из ' + n : 'Повтор ошибок: осталось ' + (n - cleared);
+    return '<div class="bbar"><div class="bbar-t"><span>' + left + '</span><span>с первого раза: ' + b.firstOk + '</span></div>' +
+      '<div class="bprog"><i style="width:' + Math.round(cleared / n * 100) + '%"></i></div></div>';
+  }
+  function withBar(sec, html) {
+    var bar = batchBarHtml(sec);
+    if (!bar) return html;
+    return html.replace('<div class="card">', function () { return bar + '<div class="card">'; });
+  }
+  function batchSummary(sec) {
+    var b = BT[sec] || { items: [], t: {}, firstOk: 0, round: 0 };
+    var n = b.items.length;
+    var hard = b.items.filter(function (c) { return !(b.t[c.key] && b.t[c.key].firstOk); });
+    var tries = 0;
+    b.items.forEach(function (c) { tries += b.t[c.key] ? b.t[c.key].tries : 0; });
+    var list = hard.length ? '<h2>С первого раза не получилось</h2><div class="list">' + hard.map(function (c) {
+      return '<div class="li"><span class="f" lang="pt-PT">' + esc(batchLabel(sec, c)) + '</span></div>';
+    }).join('') + '</div>' : '<div class="fb ok">Все ' + n + ' с первого раза. Можно брать следующую пачку.</div>';
+    return '<div class="card"><h2>Пачка пройдена</h2><div class="tiles">' +
+      '<div class="tile"><b>' + b.firstOk + ' из ' + n + '</b><span>с первого раза</span></div>' +
+      '<div class="tile"><b>' + (b.round + 1) + '</b><span>' + (b.round === 0 ? 'круг' : b.round < 4 ? 'круга' : 'кругов') + '</span></div>' +
+      '<div class="tile"><b>' + tries + '</b><span>всего ответов</span></div></div>' + list +
+      '<div class="row"><button type="button" class="btn" data-act="next-batch" data-v="' + sec + '" data-next>Следующая пачка</button></div></div>';
+  }
+  function batchSetHtml() {
+    var o = [{ id: '5', label: '5' }, { id: '10', label: '10' }, { id: '20', label: '20' }, { id: '0', label: 'Без пачек' }];
+    return '<div><div class="set-label">Пачка заданий</div>' + chipRow(o, String(SET.batch), 'batch') +
+      '<div class="muted" style="margin-top:6px">Ошибки возвращаются в конце пачки, пока весь круг не пройден верно.</div></div>';
   }
 
   var tenseName = function (id) { return E.TENSES[id] ? E.TENSES[id].name : id; };
@@ -2064,14 +2161,15 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var vp = verbPool(), tp = tensePool();
     if (!vp.length) vp = VERBS;
     if (SET.mode === 'table') {
-      var c = chooseBest(function () {
+      var c = nextCand('c', function () {
         var v = pickOne(vp), t = pickOne(tp);
         return { key: 'c|' + v.inf + '|' + t + '|t', v: v, t: t };
       }, 12);
+      if (!c) { C = { batchDone: true }; return; }
       C = { verb: c.v, tense: c.t, done: false, res: null };
       return;
     }
-    var c2 = chooseBest(function () {
+    var c2 = nextCand('c', function () {
       var v = pickOne(vp), t = pickOne(tp), T = E.TENSES[t];
       var forms = E.conjugate(v.inf, t);
       var idx = [];
@@ -2079,6 +2177,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       var p = pickOne(idx);
       return { key: 'c|' + v.inf + '|' + t + '|' + p, v: v, t: t, p: p };
     }, 16);
+    if (!c2) { C = { batchDone: true }; return; }
     C = { verb: c2.v, tense: c2.t, person: c2.p, done: false, res: null };
   }
 
@@ -2116,7 +2215,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var md = [{ id: 'one', label: 'Одна форма' }, { id: 'table', label: 'Вся таблица' }];
     return '<details class="panel settings"><summary><span>Настройки</span><span><b>' + tensePool().length + '</b> времён · <b>' + verbPool().length + '</b> глаголов</span></summary>' +
       '<div class="settings-body">' +
-      '<div><div class="set-label">Режим</div>' + chipRow(md, SET.mode, 'cmode') + '</div>' +
+      '<div><div class="set-label">Режим</div>' + chipRow(md, SET.mode, 'cmode') + '</div>' + batchSetHtml() +
       '<div><div class="set-label">Времена</div><div class="chips" style="margin-bottom:8px">' +
       '<button type="button" class="chip ghost" data-act="preset" data-v="conj">Только Conjuntivo</button>' +
       '<button type="button" class="chip ghost" data-act="preset" data-v="past">Прошедшие</button>' +
@@ -2131,6 +2230,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 
   function conjCard() {
     if (!C) newConj();
+    if (C.batchDone) return batchSummary('c');
     var v = C.verb, T = E.TENSES[C.tense], irr = E.resolve(v.inf).irr;
     var box = '';
     var meta = '<div class="meta"><span class="tag">' + esc(T.name) + '</span><span>' + (irr ? '<span class="tag irr">неправильный</span> ' : '') +
@@ -2154,7 +2254,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
           (okN < tot ? '<div class="why">' + esc(E.explain(v.inf, C.tense)) + '</div>' : '') + '</div>';
       }
       return '<div class="card">' + meta + head + '<div class="table-rows">' + rows + '</div>' + (C.done ? '' : keysHtml()) + fb +
-        '<div class="row">' + (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-table">Проверить</button><button class="btn sec" data-act="skip">Другой</button>') + '</div></div>';
+        '<div class="row">' + (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-table">Проверить</button><button type="button" class="btn sec" data-act="dk-conj">Не знаю</button>') + '</div></div>';
     }
 
     var who = T.single ? T.name : PRON[C.person];
@@ -2164,7 +2264,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     if (res) {
       if (res.v === 'ok') fb2 = '<div class="fb ok"><div>Верно' + (res.accent ? ', но пишется <b lang="pt-PT">' + esc(target) + '</b>' : '') + '</div></div>';
       else {
-        fb2 = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div>' +
+        fb2 = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.dk ? 'Не знал, запомни ответ' : res.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div>' +
           '<div class="big" lang="pt-PT">' + esc(target) + '</div><div class="why">' + esc(E.explain(v.inf, C.tense)) + '</div>' +
           paradigmHtml(v.inf, C.tense, T.single ? -1 : C.person) + '</div>';
       }
@@ -2172,23 +2272,24 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     return '<div class="card">' + meta + head + '<div class="who">' + esc(who) + '</div>' +
       '<div class="answer"><input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Ответ"' + (C.done ? ' disabled' : '') + ' value="' + esc(res ? res.u : '') + '" data-enter="check-one">' +
       (C.done ? '<button class="btn" data-act="next" data-next>Дальше</button>' : '<button class="btn" data-act="check-one">Проверить</button>') + '</div>' +
-      (C.done ? '' : keysHtml() + '<div class="row"><button class="btn sec sm" data-act="skip">Пропустить</button></div>') + fb2 + '</div>';
+      (C.done ? '' : keysHtml() + '<div class="row"><button type="button" class="btn sec sm" data-act="dk-conj">Не знаю</button></div>') + fb2 + '</div>';
   }
 
-  function checkOne() {
+  function checkOne(force) {
     var inp = document.getElementById('ans');
     if (!inp || C.done) return;
     var T = E.TENSES[C.tense], v = C.verb;
     var target = E.conjugate(v.inf, C.tense)[T.single ? 0 : C.person];
-    var j = judge(inp.value, target, SET.strict);
+    var j = force ? { v: 'bad', dk: true } : judge(inp.value, target, SET.strict);
     if (j.v === 'empty') { inp.focus(); return; }
-    j.u = inp.value;
+    j.u = force ? '' : inp.value;
     C.res = j; C.done = true;
     record('c|' + v.inf + '|' + C.tense + '|' + (T.single ? -1 : C.person), C.tense, j.v === 'ok', v.inf + ' · ' + T.name + (T.single ? '' : ' · ' + PRON[C.person]));
+    batchAnswer('c', j.v === 'ok');
     render();
     focusNext();
   }
-  function checkTable() {
+  function checkTable(force) {
     if (C.done) return;
     var T = E.TENSES[C.tense], v = C.verb, forms = E.conjugate(v.inf, C.tense);
     if (T.single) forms = [forms[0]];
@@ -2196,18 +2297,19 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var any = false;
     ins.forEach(function (el) {
       var i = +el.getAttribute('data-i');
-      var j = judge(el.value, forms[i], SET.strict);
+      var j = force ? { v: 'bad' } : judge(el.value, forms[i], SET.strict);
       if (j.v === 'empty') j = { v: 'bad' };
       else any = true;
       j.u = el.value;
       res[i] = j;
     });
-    if (!any) return;
+    if (!any && !force) return;
     C.res = res; C.done = true;
     res.forEach(function (r, i) {
       if (!r) return;
       record('c|' + v.inf + '|' + C.tense + '|' + (T.single ? -1 : i), C.tense, r.v === 'ok', v.inf + ' · ' + T.name + (T.single ? '' : ' · ' + PRON[i]));
     });
+    batchAnswer('c', res.every(function (r) { return !r || r.v === 'ok'; }));
     render();
     focusNext();
   }
@@ -2224,7 +2326,8 @@ h2 { font-size: 15px; margin: 0 0 10px; }
   function newSent() {
     var p = sentPool();
     if (!p.length) { SN = { none: true }; return; }
-    var c = chooseBest(function () { var s = pickOne(p); return { key: 's|' + s.i, s: s }; }, 10);
+    var c = nextCand('s', function () { var s = pickOne(p); return { key: 's|' + s.i, s: s }; }, 10);
+    if (!c) { SN = { batchDone: true }; return; }
     SN = { s: c.s, done: false, res: null };
   }
   function sentTenses() {
@@ -2237,9 +2340,10 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var tl = [{ id: 'all', label: 'Все времена' }].concat(sentTenses());
     var set = '<details class="panel settings"><summary><span>Фильтры</span><span><b>' + sentPool().length + '</b> из ' + SENTS.length + ' предложений</span></summary><div class="settings-body">' +
       '<div><div class="set-label">Доска</div>' + chipRow(boards, SET.sBoard, 'sboard') + '</div>' +
-      '<div><div class="set-label">Время</div>' + chipRow(tl, SET.sTense, 'stense') + '</div></div></details>';
+      '<div><div class="set-label">Время</div>' + chipRow(tl, SET.sTense, 'stense') + '</div>' + batchSetHtml() + '</div></details>';
     if (!SN) newSent();
     if (SN.none) return set + '<div class="card"><div class="empty">Под этот фильтр предложений нет.</div></div>';
+    if (SN.batchDone) return set + batchSummary('s');
     var s = SN.s, parts = s.text.split('___');
     var cls = SN.res ? SN.res.v : '';
     var inp = '<input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Пропуск" size="' + Math.max(7, s.ans.length + 2) + '"' + (SN.done ? ' disabled' : '') + ' value="' + esc(SN.res ? SN.res.u : '') + '" data-enter="check-sent">';
@@ -2252,7 +2356,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       else {
         var ex = '';
         try { ex = E.explain(s.inf, s.tense); } catch (e) {}
-        fb = '<div class="fb ' + (SN.res.v === 'near' ? 'near' : 'bad') + '"><div>' + (SN.res.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(s.ans) + '</div>' +
+        fb = '<div class="fb ' + (SN.res.v === 'near' ? 'near' : 'bad') + '"><div>' + (SN.res.dk ? 'Не знал, запомни ответ' : SN.res.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(s.ans) + '</div>' +
           (ex ? '<div class="why">' + esc(ex) + '</div>' : '') + '</div>';
       }
     }
@@ -2261,16 +2365,17 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var trHtml = tr ? '<div class="tr"><div class="muted">Перевод (мой, не с доски)</div><div>' + esc(tr) + '</div></div>' : '';
     return set + '<div class="card">' + hintBar + '<div class="cloze" lang="pt-PT">' + esc(parts[0]) + inp + esc(parts.slice(1).join('___')) + '</div>' +
       (SN.done ? '' : keysHtml()) +
-      '<div class="row">' + (SN.done ? '<button class="btn" data-act="next-sent" data-next>Дальше</button>' : '<button class="btn" data-act="check-sent">Проверить</button><button class="btn sec" data-act="next-sent">Пропустить</button>') + '</div>' + fb + trHtml + '</div>';
+      '<div class="row">' + (SN.done ? '<button class="btn" data-act="next-sent" data-next>Дальше</button>' : '<button class="btn" data-act="check-sent">Проверить</button><button type="button" class="btn sec" data-act="dk-sent">Не знаю</button>') + '</div>' + fb + trHtml + '</div>';
   }
-  function checkSent() {
+  function checkSent(force) {
     var inp = document.getElementById('ans');
     if (!inp || SN.done) return;
-    var j = judge(inp.value, SN.s.ans, SET.strict);
+    var j = force ? { v: 'bad', dk: true } : judge(inp.value, SN.s.ans, SET.strict);
     if (j.v === 'empty') { inp.focus(); return; }
-    j.u = inp.value;
+    j.u = force ? '' : inp.value;
     SN.res = j; SN.done = true;
     record('s|' + SN.s.i, SN.s.tense, j.v === 'ok', SN.s.text.replace('___', SN.s.ans));
+    batchAnswer('s', j.v === 'ok');
     render();
     focusNext();
   }
@@ -2316,7 +2421,8 @@ h2 { font-size: 15px; margin: 0 0 10px; }
   function newWord() {
     var p = wordPool();
     if (!p.length) { W = { none: true }; return; }
-    var c = chooseBest(function () { var w = pickOne(p); return { key: 'w|' + w.pt, w: w }; }, 12);
+    var c = nextCand('w', function () { var w = pickOne(p); return { key: 'w|' + w.pt, w: w }; }, 12);
+    if (!c) { W = { batchDone: true }; return; }
     var w = c.w, opts = null;
     if (SET.wMode === 'quiz') opts = quizOptions(w, p);
     W = { w: w, shown: false, picked: null, opts: opts };
@@ -2330,9 +2436,11 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var set = '<div class="chips modes">' + md.map(function (m) { return '<button type="button" class="chip" aria-pressed="' + (SET.wMode === m.id) + '" data-act="wmode" data-v="' + m.id + '">' + m.label + '</button>'; }).join('') + '</div>' +
       '<details class="panel settings"><summary><span>Настройки</span><span><b>' + wordPool().length + '</b> слов</span></summary><div class="settings-body">' + voiceRowHtml() +
       '<div><div class="set-label">Направление</div>' + chipRow(dr, SET.wDir, 'wdir') + '</div>' +
-      '<div><div class="set-label">Тема</div>' + chipRow(tops, SET.wTopic, 'wtopic') + '</div></div></details>';
-    if (!W || (SET.wMode === 'quiz') !== !!(W && W.opts)) newWord();
+      '<div><div class="set-label">Тема</div>' + chipRow(tops, SET.wTopic, 'wtopic') + '</div>' + batchSetHtml() + '</div></details>';
+    if (!W) newWord();
+    else if (!W.batchDone && !W.none && (SET.wMode === 'quiz') !== !!W.opts) { if (BT.w) BT.w.again = true; newWord(); }
     if (W.none) return set + '<div class="card"><div class="empty">В этой теме слов нет.</div></div>';
+    if (W.batchDone) return set + batchSummary('w');
     var w = W.w, ptSide = SET.wDir === 'pt';
     var front = ptSide ? w.pt : w.ru, back = ptSide ? w.ru : w.pt;
     var note = (w.own ? 'перевод мой, не с доски · ' : '') + w.topic;
@@ -2410,9 +2518,11 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var w = W.w, k = 'w|' + w.pt, ak = altKey(w);
     store.alt = store.alt || {};
     store.alt[ak] = (store.alt[ak] || []).concat([norm(W.res.u)]);
-    var it = store.srs[k];
+    var bw = BT.w, firstTry = !bw || !bw.cur || !bw.t[bw.cur.key] || bw.t[bw.cur.key].tries <= 1;
+    var it = firstTry ? store.srs[k] : null;
     if (it) { it.bad = Math.max(0, it.bad - 1); it.ok++; it.box = Math.max(it.box, 1); it.due = Date.now() + BOX_DAYS[it.box] * DAY; }
-    store.words.bad = Math.max(0, store.words.bad - 1); store.words.ok++;
+    if (firstTry) { store.words.bad = Math.max(0, store.words.bad - 1); store.words.ok++; }
+    batchFix('w');
     W.res.v = 'ok'; W.res.syn = true; W.res.mine = true;
     save(); render(); focusNext();
   }
@@ -2420,6 +2530,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     W.res = { v: m.v, u: u, syn: m.syn, note: m.note, nosyn: m.nosyn, dk: m.dk };
     W.u = u; W.pending = false;
     record('w|' + W.w.pt, 'words', m.v === 'ok', W.w.pt + ' · ' + W.w.ru);
+    batchAnswer('w', m.v === 'ok');
     render(); focusNext();
   }
   function checkWord() {
@@ -2459,7 +2570,8 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       var t = s.text.replace('___', s.ans).replace(/^[—–-]\s*/, '').replace(/\s[—–]\s/g, '. ');
       return { key: 'l|s' + s.i, text: t, ru: null };
     });
-    var c = chooseBest(function () { return pickOne(items); }, 10);
+    var c = nextCand('l', function () { return pickOne(items); }, 10);
+    if (!c) { L = { batchDone: true }; return; }
     L = { item: c, done: false, res: null, reveal: false };
   }
   function tokens(s) { return s.replace(/[.,;:!?¿¡"()]/g, ' ').split(/\s+/).filter(Boolean); }
@@ -2479,9 +2591,10 @@ h2 { font-size: 15px; margin: 0 0 10px; }
   function listenView() {
     var md = [{ id: 'sent', label: 'Предложения' }, { id: 'word', label: 'Слова и выражения' }];
     var set = '<details class="panel settings"><summary><span>Настройки</span><span>' + (ptVoice ? 'голос: ' + esc(ptVoice.name) : 'голос не найден') + '</span></summary><div class="settings-body">' +
-      voiceRowHtml() + '<div><div class="set-label">Материал</div>' + chipRow(md, SET.lMode, 'lmode') + '</div>' +
+      voiceRowHtml() + '<div><div class="set-label">Материал</div>' + chipRow(md, SET.lMode, 'lmode') + '</div>' + batchSetHtml() +
       '<label class="check"><input type="checkbox" data-act="slow"' + (SET.lSlow ? ' checked' : '') + '> Медленнее</label></div></details>';
     if (!L) newListen();
+    if (L.batchDone) return set + batchSummary('l');
     var it = L.item;
     var noSpeech = !('speechSynthesis' in window);
     var warn = '';
@@ -2505,18 +2618,19 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       (L.reveal && !L.done ? '<div class="fb near" lang="pt-PT">' + esc(it.text) + '</div>' : '') +
       '<textarea class="inp" id="ans" lang="pt-PT" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Запишите услышанное"' + (L.done ? ' disabled' : '') + '>' + esc(L.res ? L.res.u : '') + '</textarea>' +
       (L.done ? '' : keysHtml()) +
-      '<div class="row">' + (L.done ? '<button class="btn" data-act="next-listen" data-next>Дальше</button>' : '<button class="btn" data-act="check-listen">Проверить</button><button class="btn sec" data-act="next-listen">Другая фраза</button>') + '</div>' + fb + '</div>';
+      '<div class="row">' + (L.done ? '<button class="btn" data-act="next-listen" data-next>Дальше</button>' : '<button class="btn" data-act="check-listen">Проверить</button><button type="button" class="btn sec" data-act="dk-listen">Не знаю</button>') + '</div>' + fb + '</div>';
   }
   function strip2(w) { return strip(w); }
-  function checkListen() {
+  function checkListen(force) {
     var inp = document.getElementById('ans');
-    if (!inp || L.done || !norm(inp.value)) return;
-    var tt = tokens(L.item.text).map(norm), uu = tokens(inp.value).map(norm);
+    if (!inp || L.done || (!force && !norm(inp.value))) return;
+    var tt = tokens(L.item.text).map(norm), uu = tokens(force ? '' : inp.value).map(norm);
     var ok = tt.length === uu.length && tt.every(function (w, i) { return w === uu[i]; });
     var near = !ok && strip(tt.join(' ')) === strip(uu.join(' '));
-    var v = ok ? 'ok' : (near && !SET.strict ? 'ok' : 'bad');
-    L.res = { v: v, u: inp.value }; L.done = true;
+    var v = force ? 'bad' : ok ? 'ok' : (near && !SET.strict ? 'ok' : 'bad');
+    L.res = { v: v, u: force ? '' : inp.value }; L.done = true;
     record(L.item.key, 'listen', v === 'ok', L.item.text);
+    batchAnswer('l', v === 'ok');
     render();
     focusNext();
   }
@@ -2567,10 +2681,10 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var wasOpen = det && det.open && lastTab === TAB;
     lastTab = TAB;
     var html = '';
-    if (TAB === 'conj') html = conjSettings() + conjCard();
-    else if (TAB === 'sent') html = sentView();
-    else if (TAB === 'words') html = wordView();
-    else if (TAB === 'listen') html = listenView();
+    if (TAB === 'conj') html = withBar('c', conjSettings() + conjCard());
+    else if (TAB === 'sent') html = withBar('s', sentView());
+    else if (TAB === 'words') html = withBar('w', wordView());
+    else if (TAB === 'listen') html = withBar('l', listenView());
     else html = progressView();
     $view.innerHTML = html;
     if (wasOpen) { var d2 = $view.querySelector('details.settings'); if (d2) d2.open = true; }
@@ -2643,31 +2757,38 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       case 'tense':
         var i = SET.tenses.indexOf(v);
         if (i >= 0) { if (SET.tenses.length > 1) SET.tenses.splice(i, 1); } else SET.tenses.push(v);
-        save(); C = null; render(); break;
-      case 'preset': togglePreset(v); C = null; render(); break;
-      case 'vf': setPref('vf', v); C = null; render(); break;
-      case 'cmode': setPref('mode', v); C = null; render(); break;
+        save(); C = null; BT.c = null; render(); break;
+      case 'preset': togglePreset(v); C = null; BT.c = null; render(); break;
+      case 'vf': setPref('vf', v); C = null; BT.c = null; render(); break;
+      case 'cmode': setPref('mode', v); C = null; BT.c = null; render(); break;
+      case 'batch': setPref('batch', +v); BT = {}; C = null; SN = null; W = null; L = null; render(); break;
+      case 'next-batch': BT[v] = null; if (v === 'c') C = null; else if (v === 's') SN = null; else if (v === 'w') W = null; else L = null; render(); break;
+      case 'dk-conj': if (C && !C.done) { if (SET.mode === 'table') checkTable(true); else checkOne(true); } break;
+      case 'dk-sent': if (SN && !SN.done) checkSent(true); break;
+      case 'dk-listen': if (L && !L.done) checkListen(true); break;
       case 'check-one': checkOne(); break;
       case 'check-table': checkTable(); break;
       case 'next': case 'skip': newConj(); render(); break;
-      case 'sboard': setPref('sBoard', v); SN = null; render(); break;
-      case 'stense': setPref('sTense', v); SN = null; render(); break;
+      case 'sboard': setPref('sBoard', v); SN = null; BT.s = null; render(); break;
+      case 'stense': setPref('sTense', v); SN = null; BT.s = null; render(); break;
       case 'hint': setPref('sHint', !SET.sHint); render(); break;
       case 'check-sent': checkSent(); break;
       case 'next-sent': newSent(); render(); break;
-      case 'wmode': setPref('wMode', v); W = null; render(); break;
-      case 'wdir': setPref('wDir', v); W = null; render(); break;
-      case 'wtopic': setPref('wTopic', v); W = null; render(); break;
+      case 'wmode': setPref('wMode', v); if (BT.w) BT.w.again = true; W = null; render(); break;
+      case 'wdir': setPref('wDir', v); if (BT.w) BT.w.again = true; W = null; render(); break;
+      case 'wtopic': setPref('wTopic', v); W = null; BT.w = null; render(); break;
       case 'check-word': checkWord(); break;
       case 'accept-mine': acceptMine(); break;
       case 'show': W.shown = true; render(); focusNext(); break;
       case 'know':
         record('w|' + W.w.pt, 'words', v === '1', W.w.pt + ' · ' + W.w.ru);
+        batchAnswer('w', v === '1');
         newWord(); render(); break;
       case 'pick':
         if (W.picked != null) break;
         W.picked = +el.getAttribute('data-i');
         record('w|' + W.w.pt, 'words', W.opts[W.picked].pt === W.w.pt, W.w.pt + ' · ' + W.w.ru);
+        batchAnswer('w', W.opts[W.picked].pt === W.w.pt);
         render(); focusNext(); break;
       case 'dont-know':
         if (!W || W.pending) break;
@@ -2675,6 +2796,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
           if (W.picked != null) break;
           W.picked = -1;
           record('w|' + W.w.pt, 'words', false, W.w.pt + ' · ' + W.w.ru);
+          batchAnswer('w', false);
           render(); focusNext();
         } else {
           if (W.res) break;
@@ -2685,7 +2807,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       case 'next-word': wseq++; newWord(); render(); break;
       case 'voice-test': speak('Bom dia! Hoje vamos praticar o conjuntivo e o infinitivo pessoal.', false); break;
       case 'say': speak(el.getAttribute('data-t'), false); break;
-      case 'lmode': setPref('lMode', v); L = null; render(); break;
+      case 'lmode': setPref('lMode', v); L = null; BT.l = null; render(); break;
       case 'play': speak(L.item.text, SET.lSlow); break;
       case 'reveal': L.reveal = !L.reveal; var keep = document.getElementById('ans'); var kv = keep ? keep.value : ''; render(); var k2 = document.getElementById('ans'); if (k2 && !L.done) k2.value = kv; break;
       case 'check-listen': checkListen(); break;
@@ -2693,6 +2815,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
       case 'reset': resetAsk = true; render(); break;
       case 'reset-no': resetAsk = false; render(); break;
       case 'reset-yes':
+        BT = {}; C = null; SN = null; W = null; L = null;
         store.srs = {}; store.tense = {}; store.words = { ok: 0, bad: 0 }; store.listen = { ok: 0, bad: 0 }; store.days = [];
         save(); resetAsk = false; render(); break;
     }
