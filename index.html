@@ -272,7 +272,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá</div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwyrly2</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwz5zas</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2632,7 +2632,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
     var w = W.w, ptSide = SET.wDir === 'pt';
     var front = ptSide ? w.pt : w.ru, back = ptSide ? w.ru : w.pt;
     var note = w.topic;
-    var spk = ptSide || W.shown || W.picked || W.res ? '<button type="button" class="icon-btn" data-act="say" data-t="' + esc(w.pt) + '" aria-label="Произнести"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>Слушать</button>' : '';
+    var spk = ptSide || W.shown || W.picked != null || W.res ? '<button type="button" class="icon-btn" data-act="say" data-t="' + esc(w.pt) + '" aria-label="Произнести"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>Слушать</button>' : '';
     if (SET.wMode === 'type') {
       var rs = W.res, tcls = rs ? (rs.v === 'ok' ? 'ok' : rs.v === 'near' ? 'near' : 'bad') : '';
       var ref = ptSide ? w.ru : w.pt, tfb = '';
@@ -2645,7 +2645,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
           (rs.note ? '<div class="why">' + esc(rs.note) + '</div>' : '') + (rs.nosyn && !rs.dk ? '<div class="why">Синонимы проверить не удалось, засчитывается только совпадение с вариантами на доске и в моём списке.</div>' : '') + (rs.v === 'bad' && !rs.dk ? '<div class="row"><button type="button" class="btn sec sm" data-act="accept-mine">Мой вариант верный, засчитать</button></div>' : '') + '</div>';
       }
       var busy = W.pending || W.res;
-      return set + '<div class="card"><div class="meta"><span class="tag plain">' + esc(note) + '</span>' + spk + '</div>' +
+      return set + '<div class="card">' + (spk ? '<div class="meta" style="justify-content:flex-end">' + spk + '</div>' : '') +
         '<div class="flip"><div class="term" lang="' + (ptSide ? 'pt-PT' : 'ru') + '">' + esc(front) + '</div><div class="note">' + (ptSide ? 'Введите перевод на русском' : 'Введите слово по-португальски') + '</div></div>' +
         '<div class="answer"><input class="inp ' + tcls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="' + (ptSide ? 'ru' : 'pt-PT') + '" aria-label="Ответ"' + (busy ? ' disabled' : '') + ' value="' + esc(W.u || '') + '" data-enter="check-word"></div>' +
         dock((busy || !ptSide ? (busy ? '' : keysHtml()) : '') + '<div class="row">' + (W.res ? '<button class="btn" data-act="next-word" data-next>Дальше</button>' : '<button class="btn" data-act="check-word"' + (W.pending ? ' disabled' : '') + '>Проверить</button>' + (W.pending ? '' : '<button type="button" class="btn sec sm" data-act="dont-know">Не знаю</button>')) + '</div>') + tfb + '</div>';
@@ -2656,11 +2656,11 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
         if (W.picked != null) { if (o.pt === w.pt) c = 'ok'; else if (W.picked === i) c = 'bad'; }
         return '<button type="button" class="opt ' + c + '" data-act="pick" data-i="' + i + '"' + (W.picked != null ? ' disabled' : '') + ' lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(txt) + '</button>';
       }).join('');
-      return set + '<div class="card"><div class="meta"><span class="tag plain">' + esc(note) + '</span>' + spk + '</div>' +
+      return set + '<div class="card">' + (spk ? '<div class="meta" style="justify-content:flex-end">' + spk + '</div>' : '') +
         '<div class="flip"><div class="term" lang="' + (ptSide ? 'pt-PT' : 'ru') + '">' + esc(front) + '</div></div><div class="options">' + opts + '</div>' +
         (W.picked != null ? '<div class="row"><button class="btn" data-act="next-word" data-next>Дальше</button></div>' : '<div class="row"><button type="button" class="btn sec sm" data-act="dont-know">Не знаю</button></div>') + '</div>';
     }
-    return set + '<div class="card"><div class="meta"><span class="tag plain">' + esc(note) + '</span>' + spk + '</div>' +
+    return set + '<div class="card">' + (spk ? '<div class="meta" style="justify-content:flex-end">' + spk + '</div>' : '') +
       '<div class="flip"><div class="term" lang="' + (ptSide ? 'pt-PT' : 'ru') + '">' + esc(front) + '</div>' +
       (W.shown ? '<div class="back" lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(back) + '</div>' : '') + '</div>' +
       '<div class="row">' + (W.shown ? '<button class="btn" data-act="know" data-v="1" data-next>Знал</button><button class="btn sec" data-act="know" data-v="0">Не знал</button>' : '<button class="btn" data-act="show" data-next>Показать ответ</button>') + '</div></div>';
