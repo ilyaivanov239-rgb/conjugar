@@ -237,7 +237,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá<small>B1.2 · pt-PT</small></div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwpbb5a</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwpgkge</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2248,8 +2248,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     if (C.batchDone) return batchSummary('c');
     var v = C.verb, T = E.TENSES[C.tense], irr = E.resolve(v.inf).irr;
     var box = '';
-    var meta = '<div class="meta"><span class="tag tense">' + esc(T.name) + '</span><span>' + (irr ? '<span class="tag irr">неправильный</span> ' : '') +
-      (v.board ? '' : '<span class="tag plain">вне досок</span>') + '</span></div>';
+    var meta = '<div class="meta"><span class="tag tense">' + esc(T.name) + '</span><span>' + (irr ? '<span class="tag irr">неправильный</span>' : '') + '</span></div>';
     var head = '<div class="prompt"><div class="verb" lang="pt-PT">' + esc(v.inf) + '</div><div class="gloss">' + esc(v.ru) + '</div></div>';
 
     if (SET.mode === 'table') {
@@ -2377,7 +2376,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     }
     var tr = (window.PTTr && window.PTTr[s.i]) || '';
     var hintBar = '<div class="meta">' + hint + '<button type="button" class="icon-btn" data-act="hint" aria-pressed="' + SET.sHint + '">' + (SET.sHint ? 'Скрыть время и лицо' : 'Показать время и лицо') + '</button></div>';
-    var trHtml = tr ? '<div class="tr"><div class="muted">Перевод (мой, не с доски)</div><div>' + esc(tr) + '</div></div>' : '';
+    var trHtml = tr ? '<div class="tr"><div class="muted">Перевод</div><div>' + esc(tr) + '</div></div>' : '';
     return set + '<div class="card">' + hintBar + '<div class="cloze" lang="pt-PT">' + esc(parts[0]) + inp + esc(parts.slice(1).join('___')) + '</div>' +
       (SN.done ? '' : keysHtml()) +
       '<div class="row">' + (SN.done ? '<button class="btn" data-act="next-sent" data-next>Дальше</button>' : '<button class="btn" data-act="check-sent">Проверить</button><button type="button" class="btn sec" data-act="dk-sent">Не знаю</button>') + '</div>' + fb + trHtml + '</div>';
@@ -2458,7 +2457,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     if (W.batchDone) return set + batchSummary('w');
     var w = W.w, ptSide = SET.wDir === 'pt';
     var front = ptSide ? w.pt : w.ru, back = ptSide ? w.ru : w.pt;
-    var note = (w.own ? 'перевод мой, не с доски · ' : '') + w.topic;
+    var note = w.topic;
     var spk = ptSide || W.shown || W.picked || W.res ? '<button type="button" class="icon-btn" data-act="say" data-t="' + esc(w.pt) + '" aria-label="Произнести"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>Слушать</button>' : '';
     if (SET.wMode === 'type') {
       var rs = W.res, tcls = rs ? (rs.v === 'ok' ? 'ok' : rs.v === 'near' ? 'near' : 'bad') : '';
