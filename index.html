@@ -123,6 +123,7 @@ button { cursor: pointer; }
 .meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
 .tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; padding: 3px 9px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); }
 .tag.plain { background: var(--surface-2); color: var(--muted); font-weight: 500; }
+.tag.tense { font-size: 18px; font-weight: 700; letter-spacing: 0; padding: 7px 14px; border-radius: 10px; }
 .tag.irr { background: var(--warn-bg); color: var(--warn); }
 .who { font-family: var(--display); font-size: 20px; font-weight: 600; }
 .prompt { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -223,7 +224,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 <header class="top"><div class="brand">Vamos lá<small>B1.2 · pt-PT</small></div><div class="streak" id="streak"></div></header>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwp0ayq</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2). Переводы глаголов и слов с пометкой «перевод мой» добавлены не с досок.<br>Версия v1-mvwp57q4</p>
 </div>
 <script>
 /* Движок спряжений европейского португальского (pt-PT).
@@ -2233,7 +2234,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     if (C.batchDone) return batchSummary('c');
     var v = C.verb, T = E.TENSES[C.tense], irr = E.resolve(v.inf).irr;
     var box = '';
-    var meta = '<div class="meta"><span class="tag">' + esc(T.name) + '</span><span>' + (irr ? '<span class="tag irr">неправильный</span> ' : '') +
+    var meta = '<div class="meta"><span class="tag tense">' + esc(T.name) + '</span><span>' + (irr ? '<span class="tag irr">неправильный</span> ' : '') +
       (v.board ? '' : '<span class="tag plain">вне досок</span>') + '</span></div>';
     var head = '<div class="prompt"><div class="verb" lang="pt-PT">' + esc(v.inf) + '</div><div class="gloss">' + esc(v.ru) + '</div></div>';
 
@@ -2348,7 +2349,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     var cls = SN.res ? SN.res.v : '';
     var inp = '<input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Пропуск" size="' + Math.max(7, s.ans.length + 2) + '"' + (SN.done ? ' disabled' : '') + ' value="' + esc(SN.res ? SN.res.u : '') + '" data-enter="check-sent">';
     var T = E.TENSES[s.tense];
-    var hint = '<div class="hint">' + (SET.sHint ? '<span class="tag">' + esc(T.name) + '</span>' : '') + '<span class="tag plain" lang="pt-PT">' + esc(s.inf) + '</span>' +
+    var hint = '<div class="hint">' + (SET.sHint ? '<span class="tag tense">' + esc(T.name) + '</span>' : '') + '<span class="tag plain" lang="pt-PT">' + esc(s.inf) + '</span>' +
       (SET.sHint ? (s.person != null ? '<span class="tag plain">' + esc(PRON[s.person]) + '</span>' : '') + '<span class="tag plain">' + esc(s.board) + '</span>' : '') + '</div>';
     var fb = '';
     if (SN.res) {
