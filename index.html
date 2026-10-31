@@ -260,7 +260,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá<small>B1.2 · pt-PT</small></div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwq9ymp</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvwqdjzb</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2691,11 +2691,20 @@ h2 { font-size: 15px; margin: 0 0 10px; }
     $view.innerHTML = html;
     if (wasOpen) { var d2 = $view.querySelector('details.settings'); if (d2) d2.open = true; }
     if (gb) gb.setAttribute('aria-pressed', String(!!$view.querySelector('details.settings[open]')));
-    if (TAB !== 'prog') {
+    // клавиатура открывается только после явного касания поля; дальше, пока человек печатает, остаётся в потоке заданий
+    if (TAB !== 'prog' && typing) {
       var a = document.getElementById('ans') || document.querySelector('.tin');
-      if (a && !a.disabled && document.activeElement !== a && !(TAB === 'listen' && false)) { try { a.focus({ preventScroll: true }); } catch (e) {} }
+      if (a && !a.disabled && document.activeElement !== a) { try { a.focus({ preventScroll: true }); } catch (e) {} }
     }
   }
+  var typing = false;
+  function isTextField(t) { return !!t && (t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && (!t.type || t.type === 'text'))); }
+  document.addEventListener('pointerdown', function (e) { if (isTextField(e.target)) typing = true; }, true);
+  document.addEventListener('focusout', function (e) {
+    // человек убрал клавиатуру сам (поле потеряло фокус, и DOM не перестраивался): больше не возвращаем её
+    if (isTextField(e.target) && !e.relatedTarget) setTimeout(function () { if (document.contains(e.target) && document.activeElement !== e.target) typing = false; }, 0);
+  });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) typing = false; });
   function dayWord(n) { var m = n % 10, h = n % 100; if (m === 1 && h !== 11) return 'день'; if (m >= 2 && m <= 4 && (h < 12 || h > 14)) return 'дня'; return 'дней'; }
   function focusNext() {
     var b = document.querySelector('[data-next]');
@@ -2739,7 +2748,7 @@ h2 { font-size: 15px; margin: 0 0 10px; }
   function doAct(act, el) {
     var v = el.getAttribute('data-v');
     switch (act) {
-      case 'tab': TAB = v; resetAsk = false; render(); try { window.scrollTo(0, 0); } catch (e) {} break;
+      case 'tab': TAB = v; resetAsk = false; typing = false; render(); try { window.scrollTo(0, 0); } catch (e) {} break;
       case 'gear':
         var sd = $view.querySelector('details.settings');
         if (sd) {
