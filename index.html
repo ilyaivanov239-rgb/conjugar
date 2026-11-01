@@ -272,7 +272,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá</div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvxkmfdl</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvxkov3y</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2848,7 +2848,7 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
     }).join('') + '</div>' : '<div class="empty">Слабых мест пока не видно.</div>';
     var reset = resetAsk ?
       '<div class="fb bad"><div>Удалить весь прогресс в этом браузере?</div><div class="row"><button class="btn sm" data-act="reset-yes">Да, удалить</button><button class="btn sec sm" data-act="reset-no">Отмена</button></div></div>' :
-      '<div class="row"><button class="btn sec sm" data-act="reset">Сбросить прогресс</button></div>';
+      '<div class="row"><button class="btn sec sm" data-act="refresh-app">Обновить приложение</button><button class="btn sec sm" data-act="reset">Сбросить прогресс</button></div>';
     return '<div class="card">' + tiles + '</div>' +
       '<div class="card"><h2>Точность по временам</h2>' + bars + '</div>' +
       '<div class="card"><h2>Слабые места</h2>' + weakHtml + '</div>' +
@@ -3023,6 +3023,17 @@ body.kb .dock .btn:not(.sm) { min-height: 46px; }
       case 'reveal': L.reveal = !L.reveal; var keep = document.getElementById('ans'); var kv = keep ? keep.value : ''; render(); var k2 = document.getElementById('ans'); if (k2 && !L.done) k2.value = kv; break;
       case 'check-listen': checkListen(); break;
       case 'next-listen': newListen(); render(); break;
+      case 'refresh-app':
+        (function () {
+          var done = function () { location.reload(); };
+          try {
+            var ps = [];
+            if (navigator.serviceWorker) ps.push(navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); }));
+            if (window.caches) ps.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }));
+            Promise.all(ps).then(done, done);
+          } catch (e) { done(); }
+        })();
+        break;
       case 'reset': resetAsk = true; render(); break;
       case 'reset-no': resetAsk = false; render(); break;
       case 'reset-yes':
