@@ -280,7 +280,7 @@ body.onprog .foot { display: block; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá</div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvy5u01e</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvz6p47x</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -1644,6 +1644,48 @@ body.onprog .foot { display: block; }
 
 </script>
 <script>
+// Предложения к словам: ключ = португальская запись слова из WORDS.
+// Формат: [предложение с ___, ответ (варианты через |), перевод на русский]
+(function (root) {
+  root.PTWS = {
+"a meta": [["Este ano a minha ___ é aprender português a sério.","meta","В этом году моя цель — всерьёз выучить португальский."],["Já atingimos a ___ de vendas deste trimestre.","meta","Мы уже достигли плана продаж на этот квартал."],["Cada atleta cortou a ___ com um sorriso cansado.","meta","Каждый спортсмен пересёк финишную черту с усталой улыбкой."],["Sem uma ___ clara, é difícil manter a motivação.","meta","Без ясной цели трудно сохранять мотивацию."],["Quem define objetivos realistas chega mais depressa à ___.","meta","Кто ставит реалистичные цели, быстрее приходит к цели."]],
+"traçar metas": [["Em janeiro costumo ___ para o resto do ano.","traçar metas","В январе я обычно ставлю цели на остаток года."],["É importante ___ antes de começar um projeto.","traçar metas","Важно поставить цели до начала проекта."],["O treinador pediu-nos que ___ para a próxima época.","traçássemos metas","Тренер попросил нас поставить цели на следующий сезон."],["Se ___ realistas, vais sentir-te mais motivado.","traçares metas","Если поставишь реалистичные цели, будешь чувствовать себя более мотивированным."],["Ela ensina os alunos a ___ e a cumpri-las.","traçar metas","Она учит учеников ставить цели и выполнять их."]],
+"de qualquer forma": [["Não sei se chove, mas ___ levo o guarda-chuva.","de qualquer forma","Не знаю, пойдёт ли дождь, но в любом случае беру зонт."],["Pode ser que ele não venha. ___, vamos começar sem ele.","De qualquer forma","Возможно, он не придёт. В любом случае начнём без него."],["O preço é alto, mas, ___, vale a pena.","de qualquer forma","Цена высокая, но так или иначе это того стоит."],["Já era tarde; ___, decidimos esperar mais um pouco.","de qualquer forma","Было уже поздно; тем не менее мы решили подождать ещё немного."],["Ele pediu desculpa, mas ___ o mal já estava feito.","de qualquer forma","Он извинился, но в любом случае вред уже был причинён."]],
+"de qualquer modo": [["Talvez chegue atrasado, mas ___ vou à reunião.","de qualquer modo","Возможно, я опоздаю, но так или иначе пойду на встречу."],["Não gosto muito do filme. ___, vou vê-lo até ao fim.","De qualquer modo","Фильм мне не очень нравится. Так или иначе, досмотрю его до конца."],["Ela disse que não precisava de ajuda, mas ___ fui ter com ela.","de qualquer modo","Она сказала, что помощь ей не нужна, но я всё равно пошёл к ней."],["Isto é só uma ideia, mas ___ podemos discuti-la.","de qualquer modo","Это только идея, но в любом случае мы можем её обсудить."],["___, obrigado por teres vindo.","De qualquer modo","В любом случае, спасибо, что пришёл."]],
+"segundo": [["___ o jornal, o aeroporto vai fechar amanhã.","Segundo","По словам газеты, аэропорт завтра закроется."],["___ os meus cálculos, ainda faltam dois dias.","Segundo","По моим подсчётам, осталось ещё два дня."],["___ a minha irmã, o restaurante abre às sete.","Segundo","По словам моей сестры, ресторан открывается в семь."],["Este museu, ___ o guia, tem mais de trezentos anos.","segundo","Этому музею, по словам гида, больше трёхсот лет."],["___ a lei, é proibido fumar aqui.","Segundo","Согласно закону, здесь курить запрещено."]],
+"a justificação": [["Preciso de uma ___ por escrito para a minha falta.","justificação","Мне нужно письменное оправдание моего отсутствия."],["Ele não deu nenhuma ___ para o atraso.","justificação","Он не привёл никакого оправдания своему опозданию."],["A ___ do aumento de preços não convenceu ninguém.","justificação","Обоснование повышения цен никого не убедило."],["Para cada despesa é obrigatória uma ___.","justificação","Для каждого расхода обязательно обоснование."],["Isso não tem ___ possível.","justificação","Этому нет никакого возможного оправдания."]],
+"por vezes": [["___ esqueço-me de onde deixei as chaves.","Por vezes","Иногда я забываю, где оставил ключи."],["Ela é, ___, muito teimosa.","por vezes","Она порой очень упряма."],["Aos domingos vamos ___ à praia.","por vezes","По воскресеньям мы иногда ходим на пляж."],["O comboio chega ___ com atraso.","por vezes","Поезд порой прибывает с опозданием."],["___ é preciso saber ouvir em vez de falar.","Por vezes","Порой нужно уметь слушать, а не говорить."]],
+"os utensílios domésticos": [["A loja vende ___ a bons preços.","utensílios domésticos|os utensílios domésticos","Магазин продаёт предметы домашнего обихода по хорошим ценам."],["Mudámos de casa e comprámos ___ novos.","utensílios domésticos|os utensílios domésticos","Мы переехали и купили новые предметы домашнего обихода."],["Na cozinha, ___ ficam todos nesta gaveta.","os utensílios domésticos","На кухне все предметы домашнего обихода лежат в этом ящике."],["Ela trabalha numa fábrica de ___.","utensílios domésticos|os utensílios domésticos","Она работает на фабрике предметов домашнего обихода."],["Ofereceram-nos ___ como prenda de casamento.","utensílios domésticos|os utensílios domésticos","Нам подарили предметы домашнего обихода на свадьбу."]],
+"consumista": [["Vivemos numa sociedade cada vez mais ___.","consumista","Мы живём в обществе, которое становится всё более потребительским."],["O meu irmão é muito ___: compra tudo o que vê.","consumista","Мой брат настоящий потребитель: покупает всё, что видит."],["A publicidade incentiva um estilo de vida ___.","consumista","Реклама поощряет потребительский образ жизни."],["Não quero educar os meus filhos para serem ___.","consumistas","Я не хочу воспитывать своих детей потребителями."],["Esta época do ano é muito ___, com tantas promoções.","consumista","Эта пора года очень потребительская, с таким количеством акций."]],
+"o esquema": [["Fiz um ___ no quadro para explicar o processo.","esquema","Я нарисовал на доске схему, чтобы объяснить процесс."],["O professor pediu-nos um ___ do capítulo.","esquema","Преподаватель попросил нас сделать схему главы."],["Não percebo o ___ deste negócio; parece suspeito.","esquema","Я не понимаю схему этого бизнеса; она выглядит подозрительно."],["Antes de escrever, faço sempre um ___ das ideias principais.","esquema","Прежде чем писать, я всегда делаю схему главных идей."],["Vê o ___ elétrico na página seguinte.","esquema","Посмотри электрическую схему на следующей странице."]],
+"respetivo": [["Cada aluno recebeu o ___ certificado.","respetivo","Каждый ученик получил свой сертификат."],["Os convidados chegaram com os ___ parceiros.","respetivos","Гости пришли со своими партнёрами."],["Cada mala tem a ___ etiqueta.","respetiva","На каждом чемодане есть своя бирка."],["Os alunos foram para as ___ salas.","respetivas","Ученики пошли в свои классы."],["Cada departamento apresentou o ___ relatório.","respetivo","Каждый отдел представил свой отчёт."]],
+"definitivamente": [["Decidi ___ deixar de fumar.","definitivamente","Я окончательно решил бросить курить."],["Ele mudou-se ___ para o Algarve.","definitivamente","Он окончательно переехал в Алгарве."],["O assunto ficou ___ resolvido.","definitivamente","Вопрос был окончательно решён."],["___ não quero falar sobre isso.","Definitivamente","Я определённо не хочу об этом говорить."],["Fechámos a loja ___ no verão passado.","definitivamente","Мы закрыли магазин навсегда прошлым летом."]],
+"o soldador": [["O ___ trabalha numa oficina perto de Setúbal.","soldador","Сварщик работает в мастерской недалеко от Сетубала."],["Precisamos de um ___ experiente para esta estrutura metálica.","soldador","Нам нужен опытный сварщик для этой металлической конструкции."],["O meu pai foi ___ durante trinta anos.","soldador","Мой отец тридцать лет был сварщиком."],["O ___ usa uma máscara para proteger os olhos.","soldador","Сварщик надевает маску, чтобы защитить глаза."],["A empresa contratou dois ___ para a obra.","soldadores","Фирма наняла двух сварщиков для стройки."]],
+"proibir": [["A lei vai ___ fumar em espaços fechados.","proibir","Закон запретит курить в закрытых помещениях."],["Os meus pais ___-me de sair à noite.","proibiam","Родители запрещали мне выходить вечером."],["É ___ estacionar neste local.","proibido","Запрещено парковаться в этом месте."],["Se o médico me ___ de comer açúcar, obedeço.","proibir","Если врач запретит мне есть сахар, я послушаюсь."],["A escola ___ o uso de telemóveis nas aulas.","proíbe","Школа запрещает пользоваться телефонами на уроках."]],
+"assumir": [["Ele teve de ___ a responsabilidade pelo erro.","assumir","Ему пришлось взять на себя ответственность за ошибку."],["Quem ___ o cargo depois da reforma do diretor?","assumirá","Кто займёт должность после выхода директора на пенсию?"],["Ela ___ que errou e pediu desculpa.","assumiu","Она признала, что ошиблась, и извинилась."],["Não é fácil ___ riscos sozinho.","assumir","Нелегко брать на себя риски в одиночку."],["O novo governo ___ funções na próxima semana.","assume","Новое правительство вступает в должность на следующей неделе."]],
+"a enxada": [["O agricultor cavou a terra com uma ___.","enxada","Фермер копал землю мотыгой."],["A minha avó ainda usa a ___ na horta.","enxada","Моя бабушка до сих пор пользуется мотыгой на огороде."],["Com a ___ e a pá, preparámos o canteiro.","enxada","Мотыгой и лопатой мы подготовили грядку."],["Guardei a ___ no barracão do jardim.","enxada","Я убрал мотыгу в сарай в саду."],["Preciso de uma ___ nova; esta está partida.","enxada","Мне нужна новая мотыга; эта сломана."]],
+"a horta": [["Temos uma ___ pequena atrás da casa.","horta","У нас за домом небольшой огород."],["Os tomates da nossa ___ são os melhores.","horta","Помидоры с нашего огорода самые лучшие."],["Aos fins de semana, o meu avô cuida da ___.","horta","По выходным мой дедушка ухаживает за огородом."],["Plantámos alfaces e couves na ___.","horta","Мы посадили салат и капусту на огороде."],["Prefiro legumes da ___ aos do supermercado.","horta","Я предпочитаю овощи с огорода овощам из супермаркета."]],
+"a tropa": [["O meu pai fez a ___ em Tomar.","tropa","Мой отец проходил службу в Томаре."],["Quando entrei na ___, tinha dezoito anos.","tropa","Когда я пошёл в армию, мне было восемнадцать."],["A ___ marchou pela avenida principal.","tropa","Войска прошли маршем по главному проспекту."],["Depois da ___, ele começou a trabalhar na fábrica.","tropa","После службы в армии он начал работать на фабрике."],["Ele contava histórias engraçadas do tempo da ___.","tropa","Он рассказывал забавные истории со времён службы в армии."]],
+"o turno": [["Este mês faço o ___ da noite.","turno","В этом месяце я работаю в ночную смену."],["O ___ da manhã começa às seis horas.","turno","Утренняя смена начинается в шесть часов."],["Cada pessoa espera pelo seu ___ na fila.","turno","Каждый ждёт своей очереди в очереди."],["Trabalhamos por ___ na fábrica.","turnos","На фабрике мы работаем посменно."],["Agora é o teu ___ de lavar a loiça.","turno","Теперь твоя очередь мыть посуду."]],
+"o tubo de escape": [["O carro faz muito ruído porque o ___ está partido.","tubo de escape","Машина сильно шумит, потому что выхлопная труба сломана."],["Saía fumo preto do ___ do camião.","tubo de escape","Из выхлопной трубы грузовика шёл чёрный дым."],["O mecânico trocou o ___ da minha mota.","tubo de escape","Механик заменил выхлопную трубу моего мотоцикла."],["Nunca ponhas a mão perto do ___ quente.","tubo de escape","Никогда не клади руку возле горячей выхлопной трубы."],["A inspeção chumbou por causa do ___.","tubo de escape","Техосмотр не прошли из-за выхлопной трубы."]],
+"cumprir": [["É importante ___ os prazos de entrega.","cumprir","Важно соблюдать сроки поставки."],["Ele nunca ___ o que promete.","cumpre","Он никогда не выполняет то, что обещает."],["Se ___ as regras, não haverá problemas.","cumprires","Если будешь соблюдать правила, проблем не будет."],["A empresa ___ todas as exigências da lei.","cumpriu","Компания выполнила все требования закона."],["Ela ___ a sua palavra e voltou na data combinada.","cumpriu","Она сдержала слово и вернулась в оговорённый день."]],
+"em plena cidade": [["Encontrámos uma quinta ___.","em plena cidade","Мы нашли ферму прямо посреди города."],["Houve um assalto ___, à luz do dia.","em plena cidade","Произошло ограбление прямо посреди города, средь бела дня."],["Vivem numa casa com jardim ___.","em plena cidade","Они живут в доме с садом прямо посреди города."],["___ ainda se ouvem os galos de manhã.","Em plena cidade","Прямо в городе по утрам ещё слышны петухи."],["O carro avariou ___, no meio do trânsito.","em plena cidade","Машина сломалась прямо посреди города, в потоке движения."]],
+"acabar por + infinitivo": [["Ela ___ aceitar a proposta.","acabou por","В итоге она приняла предложение."],["Se não te despachares, ___ perder o comboio.","acabas por","Если не поторопишься, в итоге упустишь поезд."],["Estudámos tanto que ___ passar no exame.","acabámos por","Мы так много учились, что в итоге сдали экзамен."],["Ele não queria ir, mas ___ ir connosco.","acabou por","Он не хотел идти, но в конце концов пошёл с нами."],["Eu ___ comprar o carro mais caro.","acabei por","Я в итоге купил самую дорогую машину."]],
+"já lá vão ... anos": [["___ dez anos desde que cheguei a Portugal.","Já lá vão","Уже прошло десять лет с тех пор, как я приехал в Португалию."],["___ vinte anos desde o nosso casamento.","Já lá vão","Уже прошло двадцать лет с нашей свадьбы."],["___ cinco anos desde a última vez que o vi.","Já lá vão","Прошло уже пять лет с тех пор, как я видел его в последний раз."],["___ muitos anos, mas ainda me lembro daquele dia.","Já lá vão","Прошло много лет, но я всё ещё помню тот день."],["___ trinta anos desde que a fábrica fechou.","Já lá vão","Прошло уже тридцать лет с тех пор, как закрылась фабрика."]],
+"a porteira": [["A ___ do prédio guarda as chaves da garagem.","porteira","Консьержка дома хранит ключи от гаража."],["Pergunta à ___ se chegou alguma encomenda para nós.","porteira","Спроси у консьержки, не пришла ли для нас посылка."],["A ___ conhece todos os moradores pelo nome.","porteira","Консьержка знает всех жильцов по имени."],["Deixei o pacote com a ___.","porteira","Я оставил пакет у консьержки."],["Naquele bairro, a ___ sabe tudo o que se passa.","porteira","В том районе консьержка знает всё, что происходит."]],
+"dizer respeito a": [["Isto não ___ a ti.","diz respeito","Это тебя не касается."],["O assunto ___ a todos nós.","diz respeito","Вопрос касается всех нас."],["Tudo o que ___ à segurança é prioritário.","diz respeito","Всё, что касается безопасности, в приоритете."],["Aquelas regras só ___ aos funcionários novos.","dizem respeito","Эти правила касаются только новых сотрудников."],["Não se meta em coisas que não lhe ___.","digam respeito","Не вмешивайтесь в то, что вас не касается."]],
+"o sustento": [["Ele ganha o ___ da família com dois empregos.","sustento","Он зарабатывает на пропитание семьи двумя работами."],["A pesca era o ___ de toda a aldeia.","sustento","Рыбалка была средством к существованию всей деревни."],["Perdeu o emprego e ficou sem ___.","sustento","Он потерял работу и остался без средств к существованию."],["A horta garante parte do nosso ___.","sustento","Огород обеспечивает часть нашего пропитания."],["É dali que tira o ___ para os filhos.","sustento","Именно оттуда он берёт средства на содержание детей."]],
+"a mão de obra": [["Falta ___ qualificada na construção civil.","mão de obra","В строительстве не хватает квалифицированной рабочей силы."],["A ___ é mais barata noutros países.","mão de obra","Рабочая сила дешевле в других странах."],["A empresa contratou ___ estrangeira para a colheita.","mão de obra","Фирма наняла иностранную рабочую силу для сбора урожая."],["O orçamento inclui materiais e ___.","mão de obra","Смета включает материалы и работу."],["Os custos de ___ subiram este ano.","mão de obra","Затраты на рабочую силу выросли в этом году."]],
+"a coexistência": [["A ___ pacífica entre vizinhos é essencial.","coexistência","Мирное сосуществование соседей необходимо."],["Há uma ___ de culturas neste bairro.","coexistência","В этом районе сосуществуют разные культуры."],["A ___ de várias religiões enriquece a cidade.","coexistência","Сосуществование нескольких религий обогащает город."],["A ___ entre turistas e moradores nem sempre é fácil.","coexistência","Сосуществование туристов и жителей не всегда лёгкое."],["Defendemos a ___ harmoniosa de todos os povos.","coexistência","Мы выступаем за гармоничное сосуществование всех народов."]],
+"os grelos": [["Hoje o prato do dia é bacalhau com ___.","grelos","Сегодня блюдо дня: треска с листьями репы."],["A minha avó cozinha ___ com batatas.","grelos","Моя бабушка готовит листья репы с картошкой."],["Os ___ são típicos do inverno em Portugal.","grelos","Листья репы типичны для зимы в Португалии."],["Comprámos ___ frescos no mercado.","grelos","Мы купили свежие листья репы на рынке."],["Gosto de arroz de ___ com carne de porco.","grelos","Я люблю рис с листьями репы и со свининой."]],
+"ter que ver com": [["Isso não ___ com o que combinámos.","tem que ver|tem a ver","Это не имеет отношения к тому, о чём мы договорились."],["O cansaço ___ com o stress do trabalho.","tem que ver|tem a ver","Усталость связана со стрессом на работе."],["O que é que isso ___ com o assunto?","tem que ver|tem a ver","Какое это имеет отношение к делу?"],["Eu não ___ nada com esta discussão.","tenho que ver|tenho a ver","Я не имею к этому спору никакого отношения."],["O problema ___ com a falta de comunicação.","tem que ver|tem a ver","Проблема связана с отсутствием общения."]],
+"valorizar": [["A empresa quer ___ o trabalho dos seus funcionários.","valorizar","Компания хочет ценить работу своих сотрудников."],["A renovação da casa ___ o imóvel.","valoriza","Ремонт дома повышает стоимость недвижимости."],["Aprendi a ___ as pequenas coisas da vida.","valorizar","Я научился ценить мелочи жизни."],["Os pais devem ___ o esforço dos filhos.","valorizar","Родители должны ценить усилия детей."],["Este curso ___ o teu currículo.","valoriza","Этот курс повышает ценность твоего резюме."]],
+"a progressão profissional": [["A empresa oferece boas oportunidades de ___.","progressão profissional","Компания предлагает хорошие возможности карьерного роста."],["Para ele, a ___ é mais importante do que o salário.","progressão profissional","Для него карьерный рост важнее зарплаты."],["Sem formação, a ___ torna-se difícil.","progressão profissional","Без обучения карьерный рост становится трудным."],["Falámos sobre a minha ___ na reunião anual.","progressão profissional","Мы говорили о моём карьерном росте на ежегодной встрече."],["O plano de ___ está definido para os próximos cinco anos.","progressão profissional","План карьерного роста определён на ближайшие пять лет."]],
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* Допустимые варианты ответа. Составлены мной, не с доски, только уверенные.
    ru[португальское] = дополнительные русские ответы при вводе перевода.
    pt[португальское] = дополнительные португальские слова при вводе по-русски. */
@@ -2129,7 +2171,7 @@ body.onprog .foot { display: block; }
     vf: 'all', strict: true, mode: 'one',
     sBoard: 'all', sTense: 'all', sHint: true,
     wTopic: 'all', wMode: 'type', wDir: 'pt',
-    lMode: 'sent', lSlow: false, lTr: false, voice: '', batch: 10
+    lMode: 'sent', lSlow: false, lTr: false, wTr: true, voice: '', batch: 10
   };
   var store = { srs: {}, tense: {}, words: { ok: 0, bad: 0 }, listen: { ok: 0, bad: 0 }, days: [], set: {}, alt: {} };
   function load() {
@@ -2280,7 +2322,7 @@ body.onprog .foot { display: block; }
   function batchLabel(sec, c) {
     if (sec === 'c') return c.v.inf + ' · ' + tenseName(c.t) + (c.p != null && c.p >= 0 ? ' · ' + PRON[c.p] : '');
     if (sec === 's') return c.s.text.replace('___', c.s.ans);
-    if (sec === 'w') return c.w.pt + ' · ' + c.w.ru;
+    if (sec === 'w' || sec === 'wc') return c.w.pt + ' · ' + c.w.ru;
     return c.text;
   }
   function batchBarHtml(sec) {
@@ -2303,7 +2345,7 @@ body.onprog .foot { display: block; }
     }).join('') + '</div>';
   }
   function batchParts(sec, c) {
-    if (sec === 'w') return [c.w.pt, c.w.ru];
+    if (sec === 'w' || sec === 'wc') return [c.w.pt, c.w.ru];
     if (sec === 'c') return [batchLabel(sec, c), c.v.ru || ''];
     return [batchLabel(sec, c), ''];
   }
@@ -2636,7 +2678,7 @@ body.onprog .foot { display: block; }
     if (!W) newWord();
     else if (!W.batchDone && !W.none && (SET.wMode === 'quiz') !== !!W.opts) { if (BT.w) BT.w.again = true; newWord(); }
     if (W.none) return set + '<div class="card"><div class="empty">В этой теме слов нет.</div></div>';
-    if (W.batchDone) return set + batchSummary('w');
+    if (W.batchDone) return clozeStage(set);
     var w = W.w, ptSide = SET.wDir === 'pt';
     var front = ptSide ? w.pt : w.ru, back = ptSide ? w.ru : w.pt;
     var note = w.topic;
@@ -2672,6 +2714,74 @@ body.onprog .foot { display: block; }
       '<div class="flip"><div class="term" lang="' + (ptSide ? 'pt-PT' : 'ru') + '">' + esc(front) + '</div>' +
       (W.shown ? '<div class="back" lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(back) + '</div>' : '') + '</div>' +
       '<div class="row">' + (W.shown ? '<button class="btn" data-act="know" data-v="1" data-next>Знал</button><button class="btn sec" data-act="know" data-v="0">Не знал</button>' : '<button class="btn" data-act="show" data-next>Показать ответ</button>') + '</div></div>';
+  }
+
+
+  // ---------- второй этап раунда слов: те же слова во фразах, ввод вместо выбора ----------
+  var WC = null;
+  function wsents(w) { return (window.PTWS && window.PTWS[w.pt]) || null; }
+  function startCloze() {
+    var b0 = BT.w;
+    if (!b0) return null;
+    var items = b0.items.filter(function (c) { return wsents(c.w); }).map(function (c) { return { key: 'wc|' + c.w.pt, w: c.w }; });
+    if (!items.length) return null;
+    items = shuffle(items);
+    return (BT.wc = { items: items, queue: items.slice(), retry: [], t: {}, cur: null, round: 0, firstOk: 0, finished: false, again: false });
+  }
+  function newCloze() {
+    var b = BT.wc;
+    var c = (b.again && b.cur) ? (b.again = false, b.cur) : batchNext(b);
+    if (!c) { WC = { done: true }; return; }
+    var list = wsents(c.w);
+    store.wsUse = store.wsUse || {};
+    var n = store.wsUse[c.w.pt];
+    if (n == null) n = rnd(list.length);
+    store.wsUse[c.w.pt] = n + 1;
+    save();
+    WC = { c: c, s: list[n % list.length], res: null };
+  }
+  function clozeStage(set) {
+    var b = BT.wc || startCloze();
+    if (!b) return set + batchSummary('w');
+    if (!WC) newCloze();
+    if (WC.done) return set + batchSummary('wc');
+    var s = WC.s, parts = s[0].split('___'), alts = s[1].split('|'), res = WC.res;
+    var inp = '<input class="inp ' + (res ? res.v : '') + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Пропуск" size="' + Math.max(7, alts[0].length + 2) + '"' + (res ? ' disabled' : '') + ' value="' + esc(res ? res.u : '') + '" data-enter="check-cloze">';
+    var w = WC.c.w;
+    var hint = '<div class="hint"><span class="tag plain" lang="pt-PT">' + esc(w.pt) + '</span><span class="muted">' + esc(w.ru) + '</span></div>';
+    var full = (parts[0] + alts[0] + parts.slice(1).join('___'));
+    var fb = '';
+    if (res) {
+      var say = '<button type="button" class="icon-btn" data-act="say" data-t="' + esc(full) + '" aria-label="Произнести фразу"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>Слушать фразу</button>';
+      if (res.v === 'ok') fb = '<div class="fb ok"><div>Верно' + (res.accent ? ', но пишется <b lang="pt-PT">' + esc(alts[0]) + '</b>' : '') + '</div></div>';
+      else fb = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.dk ? 'Не знал, запомни ответ' : res.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(alts[0]) + '</div></div>';
+      fb += '<div class="row">' + say + '</div>';
+    }
+    var trBtn = '<div class="meta"><button type="button" class="icon-btn" data-act="wtr" aria-pressed="' + SET.wTr + '">' + (SET.wTr ? 'Скрыть перевод' : 'Показать перевод') + '</button></div>';
+    var trHtml = SET.wTr ? '<div class="tr"><div class="muted">Перевод</div><div>' + esc(s[2]) + '</div></div>' : '';
+    var html = '<div class="card"><div class="meta"><span class="tag">Вставьте слово</span></div>' + hint +
+      '<div class="cloze" lang="pt-PT">' + esc(parts[0]) + inp + esc(parts.slice(1).join('___')) + '</div>' + trHtml + trBtn +
+      dock('<div class="row">' + (res ? '<button class="btn" data-act="next-cloze" data-next>Дальше</button>' : '<button class="btn" data-act="check-cloze">Проверить</button><button type="button" class="btn sec sm" data-act="dk-cloze">Не знаю</button>') + '</div>') + fb + '</div>';
+    return set + withBar('wc', html);
+  }
+  function checkCloze(force) {
+    var inp = document.getElementById('ans');
+    if (!inp || !WC || WC.res || WC.done) return;
+    var alts = WC.s[1].split('|'), j = { v: 'bad' };
+    if (force) j = { v: 'bad', dk: true };
+    else {
+      alts.forEach(function (a) {
+        var r = judge(inp.value, a, SET.strict);
+        if (r.v === 'empty') j = r;
+        else if (r.v === 'ok' && j.v !== 'ok') j = r;
+        else if (r.v === 'near' && j.v === 'bad') j = r;
+      });
+    }
+    if (j.v === 'empty') { inp.focus(); return; }
+    j.u = force ? '' : inp.value;
+    WC.res = j;
+    batchAnswer('wc', j.v === 'ok');
+    render(); focusNext();
   }
 
   // ---------- проверка ввода слов ----------
@@ -2996,8 +3106,8 @@ body.onprog .foot { display: block; }
         save(); C = null; BT.c = null; render(); break;
       case 'preset': togglePreset(v); C = null; BT.c = null; render(); break;
       case 'vf': setPref('vf', v); C = null; BT.c = null; render(); break;
-      case 'batch': setPref('batch', +v); BT = {}; C = null; SN = null; W = null; L = null; render(); break;
-      case 'next-batch': BT[v] = null; if (v === 'c') C = null; else if (v === 's') SN = null; else if (v === 'w') W = null; else L = null; render(); break;
+      case 'batch': setPref('batch', +v); BT = {}; C = null; SN = null; W = null; WC = null; L = null; render(); break;
+      case 'next-batch': if (v === 'wc') v = 'w'; if (v === 'w') { BT.wc = null; WC = null; } BT[v] = null; if (v === 'c') C = null; else if (v === 's') SN = null; else if (v === 'w') W = null; else L = null; render(); break;
       case 'dk-conj': if (C && !C.done) checkOne(true); break;
       case 'dk-sent': if (SN && !SN.done) checkSent(true); break;
       case 'dk-listen': if (L && !L.done) checkListen(true); break;
@@ -3010,7 +3120,7 @@ body.onprog .foot { display: block; }
       case 'next-sent': newSent(); render(); break;
       case 'wmode': setPref('wMode', v); if (BT.w) BT.w.again = true; W = null; render(); break;
       case 'wdir': setPref('wDir', v); if (BT.w) BT.w.again = true; W = null; render(); break;
-      case 'wtopic': setPref('wTopic', v); W = null; BT.w = null; render(); break;
+      case 'wtopic': setPref('wTopic', v); W = null; BT.w = null; BT.wc = null; WC = null; render(); break;
       case 'check-word': checkWord(); break;
       case 'accept-mine': acceptMine(); break;
       case 'show': W.shown = true; render(); focusNext(); break;
@@ -3039,6 +3149,10 @@ body.onprog .foot { display: block; }
         }
         break;
       case 'next-word': wseq++; newWord(); render(); break;
+      case 'check-cloze': checkCloze(false); break;
+      case 'dk-cloze': checkCloze(true); break;
+      case 'next-cloze': newCloze(); render(); break;
+      case 'wtr': setPref('wTr', !SET.wTr); { var keepc = document.getElementById('ans'); var kvc = keepc ? keepc.value : ''; render(); var k3 = document.getElementById('ans'); if (k3 && WC && !WC.res) k3.value = kvc; } break;
       case 'voice-test': speak('Bom dia! Hoje vamos praticar o conjuntivo e o infinitivo pessoal.', false); break;
       case 'say': speak(el.getAttribute('data-t'), false); break;
       case 'lmode': setPref('lMode', v); L = null; BT.l = null; render(); break;
@@ -3060,7 +3174,7 @@ body.onprog .foot { display: block; }
       case 'reset': resetAsk = true; render(); break;
       case 'reset-no': resetAsk = false; render(); break;
       case 'reset-yes':
-        BT = {}; C = null; SN = null; W = null; L = null;
+        BT = {}; C = null; SN = null; W = null; WC = null; L = null;
         store.srs = {}; store.tense = {}; store.words = { ok: 0, bad: 0 }; store.listen = { ok: 0, bad: 0 }; store.days = [];
         save(); resetAsk = false; render(); break;
     }
