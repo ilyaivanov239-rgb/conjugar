@@ -280,7 +280,7 @@ body.onprog .foot { display: block; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá</div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvz83g34</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mvz85rq0</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -2587,7 +2587,7 @@ body.onprog .foot { display: block; }
     var cls = SN.res ? SN.res.v : '';
     var inp = '<input class="inp ' + cls + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Пропуск" size="' + Math.max(7, s.ans.length + 2) + '"' + (SN.done ? ' disabled' : '') + ' value="' + esc(SN.res ? SN.res.u : '') + '" data-enter="check-sent">';
     var T = E.TENSES[s.tense];
-    var hint = !res ? '' : '<div class="hint">' + (SET.sHint ? '<span class="tag tense">' + esc(T.name) + '</span>' : '') + '<span class="tag plain" lang="pt-PT">' + esc(s.inf) + '</span>' +
+    var hint = '<div class="hint">' + (SET.sHint ? '<span class="tag tense">' + esc(T.name) + '</span>' : '') + '<span class="tag plain" lang="pt-PT">' + esc(s.inf) + '</span>' +
       (SET.sHint ? (s.person != null ? '<span class="tag plain">' + esc(PRON[s.person]) + '</span>' : '') : '') + '</div>';
     var fb = '';
     if (SN.res) {
@@ -2748,7 +2748,7 @@ body.onprog .foot { display: block; }
     var s = WC.s, parts = s[0].split('___'), alts = s[1].split('|'), res = WC.res;
     var inp = '<input class="inp ' + (res ? res.v : '') + '" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="pt-PT" aria-label="Пропуск" size="' + Math.max(7, alts[0].length + 2) + '"' + (res ? ' disabled' : '') + ' value="' + esc(res ? res.u : '') + '" data-enter="check-cloze">';
     var w = WC.c.w;
-    var hint = '<div class="hint"><span class="tag plain" lang="pt-PT">' + esc(w.pt) + '</span><span class="muted">' + esc(w.ru) + '</span></div>';
+    var hint = !res ? '' : '<div class="hint"><span class="tag plain" lang="pt-PT">' + esc(w.pt) + '</span><span class="muted">' + esc(w.ru) + '</span></div>';
     var full = (parts[0] + alts[0] + parts.slice(1).join('___'));
     var fb = '';
     if (res) {
