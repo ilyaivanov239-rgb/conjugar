@@ -280,7 +280,7 @@ body.onprog .foot { display: block; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá</div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mw1uyswn</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mw1vfc3y</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
 <script>
@@ -3505,10 +3505,12 @@ body.onprog .foot { display: block; }
     for (var i = 0; i < cands.length; i++) if (n === cands[i]) return { v: 'ok' };
     var sn = strip(n);
     for (var j = 0; j < cands.length; j++) {
-      if (sn === strip(cands[j])) return strict ? { v: 'near' } : { v: 'ok', accent: true };
+      if (sn === strip(cands[j])) return strict ? { v: 'near', mac: /[āēīōū]|\u0304/.test(user) } : { v: 'ok', accent: true };
     }
     return { v: 'bad' };
   }
+
+  function nearTxt(r) { return 'Почти, ошибка в диакритике' + (r && r.mac ? '. Похоже, вместо тильды (~) введён макрон (¯): выбери в клавиатуре знак с волнистой линией' : ''); }
 
   // выбор элемента: просроченные и новые важнее, свежевыученные реже
   function score(key) {
@@ -3782,7 +3784,7 @@ body.onprog .foot { display: block; }
     if (res) {
       if (res.v === 'ok') fb2 = '<div class="fb ok"><div>Верно' + (res.accent ? ', но пишется <b lang="pt-PT">' + esc(target) + '</b>' : '') + '</div></div>';
       else {
-        fb2 = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.dk ? 'Не знал, запомни ответ' : res.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div>' +
+        fb2 = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.dk ? 'Не знал, запомни ответ' : res.v === 'near' ? nearTxt(res) : 'Неверно') + '</div>' +
           '<div class="big" lang="pt-PT">' + esc(target) + '</div><div class="why">' + esc(E.explain(v.inf, C.tense)) + '</div>' +
           paradigmHtml(v.inf, C.tense, T.single ? -1 : C.person) + '</div>';
       }
@@ -3848,7 +3850,7 @@ body.onprog .foot { display: block; }
       else {
         var ex = '';
         try { ex = E.explain(s.inf, s.tense); } catch (e) {}
-        fb = '<div class="fb ' + (SN.res.v === 'near' ? 'near' : 'bad') + '"><div>' + (SN.res.dk ? 'Не знал, запомни ответ' : SN.res.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(s.ans) + '</div>' +
+        fb = '<div class="fb ' + (SN.res.v === 'near' ? 'near' : 'bad') + '"><div>' + (SN.res.dk ? 'Не знал, запомни ответ' : SN.res.v === 'near' ? nearTxt(SN.res) : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(s.ans) + '</div>' +
           (ex ? '<div class="why">' + esc(ex) + '</div>' : '') + '</div>';
       }
     }
@@ -3943,7 +3945,7 @@ body.onprog .foot { display: block; }
       else if (rs) {
         if (rs.v === 'ok') tfb = '<div class="fb ok"><div>' + (rs.mine ? 'Засчитано по твоему решению, вариант запомнен' : rs.syn ? 'Засчитано как синоним' : 'Верно') + '</div>' +
           (rs.syn && !rs.mine ? '<div class="why">На доске: <b lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(ref) + '</b></div>' : '') + (rs.note ? '<div class="why">' + esc(rs.note) + '</div>' : '') + '</div>';
-        else tfb = '<div class="fb ' + (rs.v === 'near' ? 'near' : 'bad') + '"><div>' + (rs.dk ? 'Не знал, запомни ответ' : rs.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div>' +
+        else tfb = '<div class="fb ' + (rs.v === 'near' ? 'near' : 'bad') + '"><div>' + (rs.dk ? 'Не знал, запомни ответ' : rs.v === 'near' ? nearTxt(rs) : 'Неверно') + '</div>' +
           '<div class="big" lang="' + (ptSide ? 'ru' : 'pt-PT') + '">' + esc(ref) + '</div>' +
           (rs.note ? '<div class="why">' + esc(rs.note) + '</div>' : '') + (rs.nosyn && !rs.dk ? '<div class="why">Синонимы проверить не удалось, засчитывается только совпадение с вариантами на доске и в моём списке.</div>' : '') + (rs.v === 'bad' && !rs.dk ? '<div class="row"><button type="button" class="btn sec sm" data-act="accept-mine">Мой вариант верный, засчитать</button></div>' : '') + '</div>';
       }
@@ -4007,7 +4009,7 @@ body.onprog .foot { display: block; }
     if (res) {
       var say = '<button type="button" class="icon-btn" data-act="say" data-t="' + esc(full) + '" aria-label="Произнести фразу"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>Слушать фразу</button>';
       if (res.v === 'ok') fb = '<div class="fb ok"><div>Верно' + (res.accent ? ', но пишется <b lang="pt-PT">' + esc(alts[0]) + '</b>' : '') + '</div></div>';
-      else fb = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.dk ? 'Не знал, запомни ответ' : res.v === 'near' ? 'Почти, ошибка в диакритике' : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(alts[0]) + '</div></div>';
+      else fb = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.dk ? 'Не знал, запомни ответ' : res.v === 'near' ? nearTxt(res) : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(alts[0]) + '</div></div>';
       fb += '<div class="row">' + say + '</div>';
     }
     var trBtn = '<div class="meta"><button type="button" class="icon-btn" data-act="wtr" aria-pressed="' + SET.wTr + '">' + (SET.wTr ? 'Скрыть перевод' : 'Показать перевод') + '</button></div>';
