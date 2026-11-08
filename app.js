@@ -165,7 +165,7 @@
   }
   function batchNext(b) {
     if (!b.queue.length) {
-      if (b.retry.length) { b.queue = shuffle(b.retry); b.retry = []; b.round++; }
+      if (b.retry.length) { b.queue = b.retry.slice(); b.retry = []; b.round++; }
       else { b.finished = true; b.cur = null; return null; }
     }
     b.cur = b.queue.shift();
