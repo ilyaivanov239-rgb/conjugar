@@ -641,9 +641,9 @@
     var fb = '';
     if (res) {
       var say = '<button type="button" class="icon-btn" data-act="say" data-t="' + esc(full) + '" aria-label="Произнести фразу"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>Слушать фразу</button>';
-      if (res.v === 'ok' && res.syn) fb = '<div class="fb ok"><div>Верно по смыслу. Но в этом упражнении ожидалось выражение</div><div class="big" lang="pt-PT">' + esc(alts[0]) + '</div></div>';
+      if (res.v === 'ok' && res.syn) fb = '<div class="fb ok"><div>' + (res.mine ? 'Засчитано по твоему решению. В этом упражнении ожидалось' : 'Верно по смыслу. Но в этом упражнении ожидалось выражение') + '</div><div class="big" lang="pt-PT">' + esc(alts[0]) + '</div></div>';
       else if (res.v === 'ok') fb = '<div class="fb ok"><div>Верно' + (res.accent ? ', но пишется <b lang="pt-PT">' + esc(alts[0]) + '</b>' : '') + '</div></div>';
-      else fb = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.dk ? 'Не знал, запомни ответ' : res.v === 'near' ? nearTxt(res) : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(alts[0]) + '</div>' + (res.v === 'bad' && !res.dk ? diagHtml(w.pt, res.u, alts[0]) : '') + '</div>';
+      else fb = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.dk ? 'Не знал, запомни ответ' : res.v === 'near' ? nearTxt(res) : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(alts[0]) + '</div>' + (res.v === 'bad' && !res.dk ? diagHtml(w.pt, res.u, alts[0]) : '') + (res.v !== 'ok' && !res.dk && res.u ? '<div class="row"><button type="button" class="btn sec sm" data-act="accept-cloze">Мой вариант верный, засчитать</button></div>' : '') + '</div>';
       fb += '<div class="row">' + say + '</div>';
     }
     var trBtn = '<div class="meta"><button type="button" class="icon-btn" data-act="wtr" aria-pressed="' + SET.wTr + '">' + (SET.wTr ? 'Скрыть перевод' : 'Показать перевод') + '</button></div>';
@@ -706,7 +706,7 @@
   function checkCloze(force) {
     var inp = document.getElementById('ans');
     if (!inp || !WC || WC.res || WC.done) return;
-    var alts = autoAlts(WC.s[1].split('|')), j = { v: 'bad' };
+    var alts = autoAlts(WC.s[1].split('|')).concat(((store.calt && store.calt[WC.s[0]]) || []).map(function (x) { return '~' + x; })), j = { v: 'bad' };
     if (force) j = { v: 'bad', dk: true };
     else {
       alts.forEach(function (a) {
@@ -757,6 +757,15 @@
       });
     });
     return best;
+  }
+  function acceptCloze() {
+    if (!WC || !WC.res || WC.res.v === 'ok' || !WC.res.u) return;
+    store.calt = store.calt || {};
+    var k = WC.s[0], u = String(WC.res.u).trim();
+    store.calt[k] = (store.calt[k] || []).concat([u]);
+    batchFix('wc');
+    WC.res = { v: 'ok', u: WC.res.u, syn: true, mine: true };
+    save(); render(); focusNext();
   }
   function acceptMine() {
     if (!W || !W.res || W.res.v !== 'bad') return;
@@ -1070,6 +1079,7 @@
       case 'wtopic': setPref('wTopic', v); W = null; BT.w = null; BT.wc = null; WC = null; render(); break;
       case 'check-word': checkWord(); break;
       case 'accept-mine': acceptMine(); break;
+      case 'accept-cloze': acceptCloze(); break;
       case 'show': W.shown = true; render(); focusNext(); break;
       case 'know':
         record('w|' + W.w.pt, 'words', v === '1', W.w.pt + ' · ' + W.w.ru);
