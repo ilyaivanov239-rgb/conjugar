@@ -653,10 +653,24 @@
       dock('<div class="row">' + (res ? '<button class="btn" data-act="next-cloze" data-next>Дальше</button>' : '<button class="btn" data-act="check-cloze">Проверить</button><button type="button" class="btn sec sm" data-act="dk-cloze">Не знаю</button>') + '</div>') + fb + '</div>';
     return set + withBar('wc', html);
   }
+  // Если ожидается неопределённый артикль (um, numa, dum...), форма с определённым артиклем тоже верна по смыслу.
+  var INDEF = { um: 'o', uma: 'a', uns: 'os', umas: 'as', num: 'no', numa: 'na', nuns: 'nos', numas: 'nas', dum: 'do', duma: 'da', duns: 'dos', dumas: 'das' };
+  function autoAlts(list) {
+    var out = list.slice();
+    list.forEach(function (a) {
+      if (a.charAt(0) === '~') return;
+      var w = a.split(' '), def = INDEF[w[0].toLowerCase()];
+      if (!def) return;
+      var first = w[0].charAt(0) === w[0].charAt(0).toUpperCase() ? def.charAt(0).toUpperCase() + def.slice(1) : def;
+      var alt = '~' + [first].concat(w.slice(1)).join(' ');
+      if (out.indexOf(alt) < 0) out.push(alt);
+    });
+    return out;
+  }
   function checkCloze(force) {
     var inp = document.getElementById('ans');
     if (!inp || !WC || WC.res || WC.done) return;
-    var alts = WC.s[1].split('|'), j = { v: 'bad' };
+    var alts = autoAlts(WC.s[1].split('|')), j = { v: 'bad' };
     if (force) j = { v: 'bad', dk: true };
     else {
       alts.forEach(function (a) {
