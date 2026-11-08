@@ -484,7 +484,7 @@
         var ex = '';
         try { ex = E.explain(s.inf, s.tense); } catch (e) {}
         fb = '<div class="fb ' + (SN.res.v === 'near' ? 'near' : 'bad') + '"><div>' + (SN.res.dk ? 'Не знал, запомни ответ' : SN.res.v === 'near' ? nearTxt(SN.res) : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(s.ans) + '</div>' +
-          (ex ? '<div class="why">' + esc(ex) + '</div>' : '') + '</div>';
+          (SN.res.v === 'bad' && !SN.res.dk ? diagHtml(s.inf, SN.res.u, s.ans) : '') + (ex ? '<div class="why">' + esc(ex) + '</div>' : '') + '</div>';
       }
     }
     var tr = (window.PTTr && window.PTTr[s.i]) || '';
@@ -643,7 +643,7 @@
       var say = '<button type="button" class="icon-btn" data-act="say" data-t="' + esc(full) + '" aria-label="Произнести фразу"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>Слушать фразу</button>';
       if (res.v === 'ok' && res.syn) fb = '<div class="fb ok"><div>Верно по смыслу. Но в этом упражнении ожидалось выражение</div><div class="big" lang="pt-PT">' + esc(alts[0]) + '</div></div>';
       else if (res.v === 'ok') fb = '<div class="fb ok"><div>Верно' + (res.accent ? ', но пишется <b lang="pt-PT">' + esc(alts[0]) + '</b>' : '') + '</div></div>';
-      else fb = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.dk ? 'Не знал, запомни ответ' : res.v === 'near' ? nearTxt(res) : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(alts[0]) + '</div></div>';
+      else fb = '<div class="fb ' + (res.v === 'near' ? 'near' : 'bad') + '"><div>' + (res.dk ? 'Не знал, запомни ответ' : res.v === 'near' ? nearTxt(res) : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(alts[0]) + '</div>' + (res.v === 'bad' && !res.dk ? diagHtml(w.pt, res.u, alts[0]) : '') + '</div>';
       fb += '<div class="row">' + say + '</div>';
     }
     var trBtn = '<div class="meta"><button type="button" class="icon-btn" data-act="wtr" aria-pressed="' + SET.wTr + '">' + (SET.wTr ? 'Скрыть перевод' : 'Показать перевод') + '</button></div>';
@@ -652,6 +652,42 @@
       '<div class="cloze" lang="pt-PT">' + esc(parts[0]) + inp + esc(parts.slice(1).join('___')) + '</div>' + trHtml + trBtn +
       dock('<div class="row">' + (res ? '<button class="btn" data-act="next-cloze" data-next>Дальше</button>' : '<button class="btn" data-act="check-cloze">Проверить</button><button type="button" class="btn sec sm" data-act="dk-cloze">Не знаю</button>') + '</div>') + fb + '</div>';
     return set + withBar('wc', html);
+  }
+  // Подсказка: введена правильная форма глагола, но другого времени или лица.
+  function tenseDiag(inf, user, expected) {
+    inf = String(inf).replace(/-se$/, '');
+    if (!VMAP[inf] || !user || !expected) return '';
+    var clit = /-(me|te|se|o|a|os|as|lhe|lhes|nos|vos)$/;
+    var u = strip(user).replace(clit, ''), x = strip(expected).replace(clit, ''), map = {};
+    Object.keys(E.TENSES).forEach(function (t) {
+      var forms;
+      try { forms = E.conjugate(inf, t); } catch (e) { return; }
+      forms.forEach(function (f, i) {
+        if (!f) return;
+        var k = strip(f).replace(/^não /, '');
+        (map[k] = map[k] || []).push({ t: t, p: E.TENSES[t].single ? -1 : i });
+      });
+    });
+    var U = map[u], X = map[x];
+    if (!U || !X) return '';
+    if (U.some(function (m) { return X.some(function (n) { return n.t === m.t && n.p === m.p; }); })) return '';
+    var xt = X.map(function (n) { return n.t; });
+    var same = U.filter(function (m) { return xt.indexOf(m.t) >= 0; });
+    var RUK = { pres: 'настоящее', pps: 'прошедшее', imp: 'прошедшее', ppc: 'прошедшее', mqpc: 'прошедшее', fut: 'будущее', cond: 'условное', cpres: 'сослагательное', cimp: 'сослагательное', cfut: 'сослагательное', cppc: 'сослагательное', cmqpc: 'сослагательное', impa: 'императив', impn: 'императив', infp: 'инфинитив', ger: 'герундий', part: 'причастие' };
+    function nm(t) { return tenseName(t) + ' (' + RUK[t] + ')'; }
+    function uniq2(a) { return a.filter(function (v, i) { return a.indexOf(v) === i; }).slice(0, 2); }
+    if (same.length) {
+      var m0 = same[0], n0 = X.filter(function (n) { return n.t === m0.t; })[0];
+      if (m0.p < 0 || n0.p < 0) return '';
+      return 'Время верное, но лицо другое: «' + user.trim() + '» это ' + PRON[m0.p] + ', а здесь нужно ' + PRON[n0.p] + '.';
+    }
+    return 'Форма «' + user.trim() + '» существует, но это ' + uniq2(U.map(function (m) { return nm(m.t); })).join(' или ') +
+      '. Здесь нужно: ' + uniq2(X.map(function (n) { return nm(n.t); })).join(' или ') + '.';
+  }
+  function diagHtml(inf, user, expected) {
+    var t = '';
+    try { t = tenseDiag(inf, user, expected); } catch (e) {}
+    return t ? '<div class="why">' + esc(t) + '</div>' : '';
   }
   // Если ожидается неопределённый артикль (um, numa, dum...), форма с определённым артиклем тоже верна по смыслу.
   var INDEF = { um: 'o', uma: 'a', uns: 'os', umas: 'as', num: 'no', numa: 'na', nuns: 'nos', numas: 'nas', dum: 'do', duma: 'da', duns: 'dos', dumas: 'das' };
