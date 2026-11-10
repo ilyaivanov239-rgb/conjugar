@@ -5247,7 +5247,7 @@
     ["___ o que vir, ele nunca comenta.", "ver", "cpres", 2, "Veja", "Claude", "B1"]
   ];
 
-  var TENSE_LEVEL = {"pres": "A1", "pps": "A2", "imp": "A2", "impa": "A2", "impn": "A2", "ger": "A2", "part": "A2", "ppc": "B1", "mqpc": "B1", "fut": "B1", "cond": "B1", "cpres": "B1", "infp": "B1", "cimp": "B2", "cfut": "B2", "cppc": "B2", "cmqpc": "B2"};
+  var TENSE_LEVEL = {"pres": "A1", "pps": "A1", "prog": "A1", "fprox": "A1", "imp": "A2", "impa": "A2", "impn": "A2", "ger": "A2", "part": "A2", "ppc": "B1", "mqpc": "B1", "fut": "B1", "cond": "B1", "cpres": "B1", "infp": "B1", "cimp": "B2", "cfut": "B2", "cppc": "B2", "cmqpc": "B2"};
 
   var api = { VERBS: VERBS, WORDS: WORDS, SENTENCES: SENTENCES, TENSE_LEVEL: TENSE_LEVEL };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

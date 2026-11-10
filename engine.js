@@ -1347,6 +1347,10 @@
                 fn: function (v) { return composto(presente('ter'), v); } },
     mqpc:     { id: 'mqpc', name: 'Pretérito Mais-que-Perfeito Composto', mood: 'ind', persons: 5,
                 fn: function (v) { return composto(imperfeito('ter'), v); } },
+    prog:     { id: 'prog', name: 'Estar a + infinitivo', mood: 'ind', persons: 5,
+                fn: function (v) { return presente('estar').map(function (a) { return a + ' a ' + v; }); } },
+    fprox:    { id: 'fprox', name: 'Ir + infinitivo', mood: 'ind', persons: 5,
+                fn: function (v) { return presente('ir').map(function (a) { return a + ' ' + v; }); } },
     fut:      { id: 'fut', name: 'Futuro Simples', mood: 'ind', persons: 5, fn: futuro },
     cond:     { id: 'cond', name: 'Condicional', mood: 'ind', persons: 5, fn: condicional },
     cpres:    { id: 'cpres', name: 'Presente do Conjuntivo', mood: 'conj', persons: 5, fn: conjPresente },
@@ -1402,6 +1406,10 @@
         return 'Imperfeito do Conjuntivo: PPS eles (' + ppsEles + ') без -ram = ' + ppsEles.replace(/ram$/, '') + '-, плюс -sse, -sses, -sse, -ssemos, -ssem. В nós ударение на гласной перед -ssemos.';
       case 'cfut':
         return 'Futuro do Conjuntivo: PPS eles (' + ppsEles + ') без -am = ' + ppsEles.replace(/am$/, '') + ', плюс (-), -es, (-), -mos, -em.';
+      case 'prog':
+        return 'Estar a + infinitivo: estar в presente (estou, estás, está, estamos, estão) + a + инфинитив без изменений. Действие идёт прямо сейчас.';
+      case 'fprox':
+        return 'Ir + infinitivo: ir в presente (vou, vais, vai, vamos, vão) + инфинитив без изменений. Ближайшее будущее, в речи чаще, чем Futuro.';
       case 'ppc':
         return 'PPC: ter в presente (tenho, tens, tem, temos, têm) + particípio (' + participio(inf, false) + ').';
       case 'mqpc':

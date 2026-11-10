@@ -350,6 +350,7 @@
     if (!vp.length) vp = VERBS;
     var c2 = nextCand('c', function () {
       var v = pickLv(vp, function (x) { return x.lv; }), t = pickLv(tp, function (x) { return TL[x] || 'B1'; }, true), T = E.TENSES[t];
+      for (var g = 0; g < 20 && t === 'fprox' && v.inf === 'ir'; g++) v = pickLv(vp, function (x) { return x.lv; });
       var forms = E.conjugate(v.inf, t);
       var idx = [];
       if (T.single) idx = [-1]; else forms.forEach(function (f, i) { if (f) idx.push(i); });
@@ -381,10 +382,10 @@
   }
 
   function conjSettings() {
-    var ind = ['pres', 'pps', 'imp', 'ppc', 'mqpc', 'fut', 'cond'];
+    var ind = ['pres', 'prog', 'fprox', 'pps', 'imp', 'ppc', 'mqpc', 'fut', 'cond'];
     var conj = ['cpres', 'cimp', 'cfut', 'cppc', 'cmqpc'];
     var oth = ['impa', 'impn', 'infp', 'ger', 'part'];
-    var short = { pres: 'Presente', pps: 'PPS', imp: 'Imperfeito', ppc: 'PPC', mqpc: 'MQPC', fut: 'Futuro', cond: 'Condicional', cpres: 'Pres. Conj.', cimp: 'Imperf. Conj.', cfut: 'Fut. Conj.', cppc: 'PPC Conj.', cmqpc: 'MQPC Conj.', impa: 'Imperativo +', impn: 'Imperativo -', infp: 'Inf. Pessoal', ger: 'Gerúndio', part: 'Particípio' };
+    var short = { pres: 'Presente', prog: 'Estar a + inf.', fprox: 'Ir + inf.', pps: 'PPS', imp: 'Imperfeito', ppc: 'PPC', mqpc: 'MQPC', fut: 'Futuro', cond: 'Condicional', cpres: 'Pres. Conj.', cimp: 'Imperf. Conj.', cfut: 'Fut. Conj.', cppc: 'PPC Conj.', cmqpc: 'MQPC Conj.', impa: 'Imperativo +', impn: 'Imperativo -', infp: 'Inf. Pessoal', ger: 'Gerúndio', part: 'Particípio' };
     function grp(ids) { return chipRow(ids.map(function (i) { return { id: i, label: short[i] }; }), SET.tenses, 'tense', true); }
     var vf = [{ id: 'all', label: 'Все' }, { id: 'irr', label: 'Неправильные' }, { id: 'reg', label: 'Правильные' }, { id: 'board', label: 'С досок' }];
     return '<details class="panel settings"><summary><span>Настройки</span><span><b>' + tensePool().length + '</b> времён · <b>' + verbPool().length + '</b> глаголов</span></summary>' +
@@ -673,7 +674,7 @@
     if (U.some(function (m) { return X.some(function (n) { return n.t === m.t && n.p === m.p; }); })) return '';
     var xt = X.map(function (n) { return n.t; });
     var same = U.filter(function (m) { return xt.indexOf(m.t) >= 0; });
-    var RUK = { pres: 'настоящее', pps: 'прошедшее', imp: 'прошедшее', ppc: 'прошедшее', mqpc: 'прошедшее', fut: 'будущее', cond: 'условное', cpres: 'сослагательное', cimp: 'сослагательное', cfut: 'сослагательное', cppc: 'сослагательное', cmqpc: 'сослагательное', impa: 'императив', impn: 'императив', infp: 'инфинитив', ger: 'герундий', part: 'причастие' };
+    var RUK = { pres: 'настоящее', prog: 'настоящее (estar a)', fprox: 'ближайшее будущее (ir +)', pps: 'прошедшее', imp: 'прошедшее', ppc: 'прошедшее', mqpc: 'прошедшее', fut: 'будущее', cond: 'условное', cpres: 'сослагательное', cimp: 'сослагательное', cfut: 'сослагательное', cppc: 'сослагательное', cmqpc: 'сослагательное', impa: 'императив', impn: 'императив', infp: 'инфинитив', ger: 'герундий', part: 'причастие' };
     function nm(t) { return tenseName(t) + ' (' + RUK[t] + ')'; }
     function uniq2(a) { return a.filter(function (v, i) { return a.indexOf(v) === i; }).slice(0, 2); }
     if (same.length) {
