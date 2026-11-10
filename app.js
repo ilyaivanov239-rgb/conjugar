@@ -251,7 +251,7 @@
   }
   function levelRowHtml() {
     return '<div><div class="set-label">Уровень</div>' + chipRow(LV.map(function (l) { return { id: l, label: l }; }), SET.level, 'level') +
-      '<div class="muted" style="margin-top:6px">Слова и времена своего уровня встречаются чаще всего, более лёгкие реже. Выше уровня только на ступень и редко.</div></div>';
+      '<div class="muted" style="margin-top:6px">Слова и времена своего уровня встречаются чаще всего, более лёгкие реже. Выше уровня только на ступень и редко. При смене уровня набор времён выставляется под него, дальше его можно поправить вручную.</div></div>';
   }
   function levelPickerHtml() {
     return '<div class="card"><h2>Какой у вас уровень?</h2><div class="muted">От него зависит, какие времена и слова будут чаще. Менять можно в любой момент в настройках.</div>' +
@@ -1032,9 +1032,8 @@
     switch (act) {
       case 'tab': TAB = v; resetAsk = false; typing = false; render(); try { window.scrollTo(0, 0); } catch (e) {} break;
       case 'level':
-        var fresh = !Object.keys(store.srs).length && !(store.days || []).length;
         SET.level = v;
-        if (fresh) SET.tenses = levelTenses(v);
+        SET.tenses = levelTenses(v);
         save(); BT = {}; C = null; SN = null; W = null; WC = null; L = null; render(); break;
       case 'gear':
         var sd = $view.querySelector('details.settings');
