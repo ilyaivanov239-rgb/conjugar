@@ -289,16 +289,17 @@ body.onprog .foot { display: block; }
 <div class="wrap">
 <header class="top"><div class="brand">Vamos lá</div><div class="top-r"><div class="streak" id="streak"></div><button type="button" class="gear" id="gear" data-act="gear" aria-label="Настройки" title="Настройки"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 <main id="view"></main>
-<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mwbujmyx</p>
+<p class="foot">Времена, предложения и слова взяты с досок Miro (B1.1 и B1.2).<br>Версия v1-mwbusyrw</p>
 </div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Разделы"></nav>
-<script src="engine.js?v=v1-mwbujmyx"></script>
-<script src="data.js?v=v1-mwbujmyx"></script>
-<script src="tr.js?v=v1-mwbujmyx"></script>
-<script src="syn.js?v=v1-mwbujmyx"></script>
-<script src="app.js?v=v1-mwbujmyx"></script>
-<script src="wsent.js?v=v1-mwbujmyx" async></script>
+<script src="engine.js?v=v1-mwbusyrw"></script>
+<script src="data.js?v=v1-mwbusyrw"></script>
+<script src="tr.js?v=v1-mwbusyrw"></script>
+<script src="syn.js?v=v1-mwbusyrw"></script>
+<script src="app.js?v=v1-mwbusyrw"></script>
+<script src="wsent.js?v=v1-mwbusyrw" async></script>
 <script data-goatcounter="https://vamosla.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>(function(){function d(){return new Date().toISOString().slice(0,10)}function g(k){try{return localStorage.getItem(k)}catch(e){return null}}function s(k,v){try{localStorage.setItem(k,v)}catch(e){}}var n=0;(function t(){var c=window.goatcounter;if(!c||!c.count){if(n++<40)setTimeout(t,500);return}try{if(!g("gc_user")){c.count({path:"new-user",title:"Новый пользователь",event:true});s("gc_user","1")}var day=d();if(g("gc_day")!==day){c.count({path:"active-day",title:"Активен за день",event:true});s("gc_day",day)}}catch(e){}})()})();</script>
 <script>
 if ("serviceWorker" in navigator) { var hadSW = !!navigator.serviceWorker.controller, reloaded = false; navigator.serviceWorker.addEventListener("controllerchange", function () { if (hadSW && !reloaded) { reloaded = true; location.reload(); } }); window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").then(function (r) { r.update(); document.addEventListener("visibilitychange", function () { if (!document.hidden) r.update(); }); }).catch(function () {}); }); }
 </script>
