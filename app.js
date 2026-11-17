@@ -485,7 +485,7 @@
         var ex = '';
         try { ex = E.explain(s.inf, s.tense); } catch (e) {}
         fb = '<div class="fb ' + (SN.res.v === 'near' ? 'near' : 'bad') + '"><div>' + (SN.res.dk ? 'Не знал, запомни ответ' : SN.res.v === 'near' ? nearTxt(SN.res) : 'Неверно') + '</div><div class="big" lang="pt-PT">' + esc(s.ans) + '</div>' +
-          (SN.res.v === 'bad' && !SN.res.dk ? diagHtml(s.inf, SN.res.u, s.ans) : '') + (ex ? '<div class="why">' + esc(ex) + '</div>' : '') + '</div>';
+          (SN.res.v === 'bad' && !SN.res.dk ? diagHtml(s.inf, SN.res.u, s.ans, s.tense, s.person) : '') + (ex ? '<div class="why">' + esc(ex) + '</div>' : '') + '</div>';
       }
     }
     var tr = (window.PTTr && window.PTTr[s.i]) || '';
@@ -655,7 +655,7 @@
     return set + withBar('wc', html);
   }
   // Подсказка: введена правильная форма глагола, но другого времени или лица.
-  function tenseDiag(inf, user, expected) {
+  function tenseDiag(inf, user, expected, xt0, xp0) {
     inf = String(inf).replace(/-se$/, '');
     if (!VMAP[inf] || !user || !expected) return '';
     var clit = /-(me|te|se|o|a|os|as|lhe|lhes|nos|vos)$/;
@@ -670,6 +670,7 @@
       });
     });
     var U = map[u], X = map[x];
+    if (xt0 && E.TENSES[xt0]) X = [{ t: xt0, p: E.TENSES[xt0].single ? -1 : (xp0 == null ? -1 : xp0) }];
     if (!U || !X) return '';
     if (U.some(function (m) { return X.some(function (n) { return n.t === m.t && n.p === m.p; }); })) return '';
     var xt = X.map(function (n) { return n.t; });
@@ -685,9 +686,9 @@
     return 'Форма «' + user.trim() + '» существует, но это ' + uniq2(U.map(function (m) { return nm(m.t); })).join(' или ') +
       '. Здесь нужно: ' + uniq2(X.map(function (n) { return nm(n.t); })).join(' или ') + '.';
   }
-  function diagHtml(inf, user, expected) {
+  function diagHtml(inf, user, expected, xt, xp) {
     var t = '';
-    try { t = tenseDiag(inf, user, expected); } catch (e) {}
+    try { t = tenseDiag(inf, user, expected, xt, xp); } catch (e) {}
     return t ? '<div class="why">' + esc(t) + '</div>' : '';
   }
   // Если ожидается неопределённый артикль (um, numa, dum...), форма с определённым артиклем тоже верна по смыслу.
